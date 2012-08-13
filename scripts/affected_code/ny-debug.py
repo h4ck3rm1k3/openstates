@@ -35,8 +35,8 @@ def extract_sections(text):
             lines = []
 
     def filterfunc(s):
-        return (not (s.isupper() or ('shall take effect' in s)) \
-                and (re.search(r'^  Section +1.', s) or \
+        return (not (s.isupper() or ('shall take effect' in s))
+                and (re.search(r'^  Section +1.', s) or
                      re.search(r'^  S {1,2}\d+', s)))
 
     paragraphs = filter(filterfunc, paragraphs)
@@ -57,7 +57,8 @@ def main():
                 print s
                 print filename
                 pprint.pprint(parsed)
-            import pdb;pdb.set_trace()
+            import pdb
+            pdb.set_trace()
 
 
 if __name__ == '__main__':

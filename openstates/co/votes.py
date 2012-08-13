@@ -14,11 +14,12 @@ date_re = re.compile(
     ".*, \d{4}).*"
 )
 vote_re = re.compile((r"\s*"
-           "YES\s*(?P<yes_count>\d+)\s*"
-           "NO\s*(?P<no_count>\d+)\s*"
-           "EXCUSED\s*(?P<excused_count>\d+)\s*"
-           "ABSENT\s*(?P<abs_count>\d+).*"))
+                      "YES\s*(?P<yes_count>\d+)\s*"
+                      "NO\s*(?P<no_count>\d+)\s*"
+                      "EXCUSED\s*(?P<excused_count>\d+)\s*"
+                      "ABSENT\s*(?P<abs_count>\d+).*"))
 votes_re = r"(?P<name>\w+(\s\w\.)?)\s+(?P<vote>Y|N|A|E|-)"
+
 
 class COVoteScraper(VoteScraper):
     jurisdiction = 'co'
@@ -48,11 +49,11 @@ class COVoteScraper(VoteScraper):
 
             for line in data.split("\n"):
                 if known_date is None:
-                     dt = date_re.findall(line)
-                     if dt != []:
+                    dt = date_re.findall(line)
+                    if dt != []:
                         dt, dow = dt[0]
                         known_date = datetime.datetime.strptime(dt,
-                            "%A, %B %d, %Y")
+                                                                "%A, %B %d, %Y")
 
                 non_std = False
                 if re.match("(\s+)?\d+.*", line) is None:
@@ -100,7 +101,6 @@ class COVoteScraper(VoteScraper):
                    ("moved that the" in line):
                     cur_question = line
                     in_question = True
-
 
                 if in_vote:
                     if line == "":
@@ -190,7 +190,7 @@ class COVoteScraper(VoteScraper):
                 summ = summ[0]
                 yes, no, exc, ab = summ
                 yes, no, exc, ab = \
-                        int(yes), int(no), int(exc), int(ab)
+                    int(yes), int(no), int(exc), int(ab)
                 other = exc + ab
                 cur_vote_count = (yes, no, other)
                 in_vote = True
@@ -220,7 +220,7 @@ class COVoteScraper(VoteScraper):
                     if dt != []:
                         dt, dow = dt[0]
                         known_date = datetime.datetime.strptime(dt,
-                            "%A, %B %d, %Y")
+                                                                "%A, %B %d, %Y")
 
                 if in_question:
                     line = line.strip()

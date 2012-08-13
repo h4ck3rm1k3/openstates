@@ -60,6 +60,7 @@ class PALegislatorScraper(LegislatorScraper):
 
 
 class Offices(object):
+
     '''Terrible. That's what PA's offices are.
     '''
 
@@ -116,6 +117,7 @@ class Offices(object):
 
 
 class Office(object):
+
     '''They're really quite bad.'''
 
     re_phone = re.compile(r' \d{3}\-\d{4}')

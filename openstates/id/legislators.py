@@ -5,16 +5,18 @@ import lxml.html
 
 _BASE_URL = 'http://legislature.idaho.gov/%s/membership.cfm'
 
-_CHAMBERS = {'upper':'Senate', 'lower':'House'}
+_CHAMBERS = {'upper': 'Senate', 'lower': 'House'}
 _PARTY = {
-        '(R)': 'Republican',
-        '(D)': 'Democratic',
-    }
-_PHONE_NUMBERS = {'hom':'phone_number',
-                  'bus':'business_phone',
-                  'fax':'fax_number'}
+    '(R)': 'Republican',
+    '(D)': 'Democratic',
+}
+_PHONE_NUMBERS = {'hom': 'phone_number',
+                  'bus': 'business_phone',
+                  'fax': 'fax_number'}
+
 
 class IDLegislatorScraper(LegislatorScraper):
+
     """Legislator data seems to be available for the current term only."""
     jurisdiction = 'id'
 
@@ -31,13 +33,14 @@ class IDLegislatorScraper(LegislatorScraper):
         full_name = div[1][2].text.replace(u'\xa0', ' ')
         party = _PARTY[div[1][2].tail.strip()]
         leg['contact_form'] = div[1][3].xpath('string(a/@href)')
-        leg = Legislator(term, chamber, district.strip(), full_name, party, **leg)
+        leg = Legislator(term, chamber, district.strip(),
+                         full_name, party, **leg)
         leg['roles'][0] = {'chamber': chamber, 'state': self.state,
-                           'term': term, 'role':'substitute',
+                           'term': term, 'role': 'substitute',
                            'legislator': subfor[subfor.rindex('for'):],
                            'district': district.replace('District', '').strip(),
                            'party': party,
-                           'start_date':None, 'end_date':None}
+                           'start_date': None, 'end_date': None}
         leg.add_source(sub_url)
         self.save_legislator(leg)
 
@@ -51,7 +54,7 @@ class IDLegislatorScraper(LegislatorScraper):
         html = lxml.html.fromstring(index)
         html.make_links_absolute(url)
         base_table = html.xpath('body/table/tr/td[2]/table[2]')
-        district = None # keep track of district for substitutes
+        district = None  # keep track of district for substitutes
         for row in base_table[0].xpath('tr'):
             img_url = row.xpath('string(.//img/@src)')
             contact_form, additional_info_url = row.xpath('.//a/@href')
@@ -62,10 +65,11 @@ class IDLegislatorScraper(LegislatorScraper):
                 self.scrape_sub(chamber, term, district, additional_info_url)
                 continue
             else:
-                full_name = " ".join(row[1][0].text_content().replace(u'\xa0', ' ').split())
+                full_name = " ".join(
+                    row[1][0].text_content().replace(u'\xa0', ' ').split())
                 party = _PARTY[row[1][0].tail.strip()]
 
-            pieces = [ x.strip() for x in row.itertext() if x ][6:]
+            pieces = [x.strip() for x in row.itertext() if x][6:]
 
             # the first index will either be a role or the district
             role = None
@@ -102,7 +106,7 @@ class IDLegislatorScraper(LegislatorScraper):
 
             leg.add_office('district',
                            'District Office',
-                            **kwargs)
+                           **kwargs)
 
             leg.add_source(url)
             leg['photo_url'] = img_url
@@ -119,7 +123,7 @@ class IDLegislatorScraper(LegislatorScraper):
             for prop in pieces[:end]:
                 # phone numbers
                 if prop.lower()[0:3] in _PHONE_NUMBERS:
-                    leg[ _PHONE_NUMBERS[ prop.lower()[0:3] ] ] = prop
+                    leg[_PHONE_NUMBERS[prop.lower()[0:3]]] = prop
                 # profession
                 else:
                     leg['profession'] = prop

@@ -52,12 +52,12 @@ class FLBillScraper(BillScraper):
                 bill_check = "tabBodyVoteHistory" in response.text
 
             text_check = \
-                    'he page you have requested has encountered an error.' \
-                    not in response.text
+                'he page you have requested has encountered an error.' \
+                not in response.text
 
         valid = (normal and
-                bill_check and
-                text_check)
+                 bill_check and
+                 text_check)
         if not valid:
             raise ValueError('Response was invalid. Timsucks.')
         return valid

@@ -100,15 +100,18 @@ class KYLegislatorScraper(LegislatorScraper):
         elif party == '(I)':
             party = 'Independent'
 
-        district = doc.xpath('//span[@id="districtHeader"]/text()')[0].split()[-1]
+        district = doc.xpath(
+            '//span[@id="districtHeader"]/text()')[0].split()[-1]
 
         leg = Legislator(year, chamber, district, full_name, party=party,
                          photo_url=photo_url, url=member_url)
         leg.add_source(member_url)
 
-        address = '\n'.join(doc.xpath('//div[@id="FrankfortAddresses"]//span[@class="bioText"]/text()'))
+        address = '\n'.join(
+            doc.xpath('//div[@id="FrankfortAddresses"]//span[@class="bioText"]/text()'))
         phone = None
-        phone_numbers = doc.xpath('//div[@id="PhoneNumbers"]//span[@class="bioText"]/text()')
+        phone_numbers = doc.xpath(
+            '//div[@id="PhoneNumbers"]//span[@class="bioText"]/text()')
         for num in phone_numbers:
             if num.startswith('Annex: '):
                 phone = num.replace('Annex: ', '')

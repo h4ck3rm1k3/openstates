@@ -9,7 +9,7 @@ class MSCommitteeScraper(CommitteeScraper):
     jurisdiction = 'ms'
 
     def scrape(self, chamber, term_name):
-        self.save_errors=False
+        self.save_errors = False
         if int(term_name[0:4]) < 2008:
             raise NoDataForPeriod(term_name)
 
@@ -22,7 +22,7 @@ class MSCommitteeScraper(CommitteeScraper):
 
     def scrape_comm(self, chamber, term_name):
         url = 'http://billstatus.ls.state.ms.us/htms/%s_cmtememb.xml' % chamber
-        comm_page =  self.urlopen(url)
+        comm_page = self.urlopen(url)
         root = lxml.etree.fromstring(comm_page.bytes)
         if chamber == 'h':
             chamber = "lower"

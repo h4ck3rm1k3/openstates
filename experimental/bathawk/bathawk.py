@@ -34,6 +34,7 @@ HERE = dirname(abspath(__file__))
 
 
 class BathawkShell(batshell.Shell):
+
     '''Beware!
     '''
     ps1 = '(batshell) '
@@ -52,7 +53,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
        "\       "      \X/      "       /"
 ''')
     banner += cyan('\n\nWelcome to bashell. '
-                       'Type h for a list of commands.')
+                   'Type h for a list of commands.')
 
     def __init__(self, actions_object, abbr, *args, **kwargs):
 
@@ -60,13 +61,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         batshell.Shell.__init__(self, commands=BatCommands(actions_object))
 
         # The stuff below might be better placed on the commands object.
-        # Store abbreviations and this state's actions helper object in the shell.
+        # Store abbreviations and this state's actions helper object in the
+        # shell.
         self.abbr = abbr
         self.actions = actions_object
 
         # Store the state's categorizer in the shell.
         try:
-            actions_module = importlib.import_module('openstates.%s.actions' % abbr)
+            actions_module = importlib.import_module(
+                'openstates.%s.actions' % abbr)
             categorizer = getattr(actions_module, 'Categorizer', None)
             if categorizer is not None:
                 self.locals['categorizer'] = categorizer()
@@ -75,6 +78,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
 class GameState(dict):
+
     '''Keep track of the state of the matching game. This is only in its
     own class for organizational reasons.
     '''
@@ -120,7 +124,7 @@ class GameState(dict):
         self['match_counts'] = {
             rgx: len(filter(re.compile(rgx).search, self._actions))
             for rgx in self['regexes']
-            }
+        }
         types = collections.defaultdict(set)
         for k, v in game['types']:
             types[k] = set(v)
@@ -161,6 +165,7 @@ class GameState(dict):
 
 
 class BatCommands(batshell.ShellCommands):
+
     '''The commands accessible from the Bathawk shell.
     '''
 
@@ -184,7 +189,8 @@ class BatCommands(batshell.ShellCommands):
         try:
             rgx = re.compile(argtext)
         except sre_constants.error as e:
-            msg = red('Bad regex: ') + green(repr(argtext)) + ' You have failed the bat-test.'
+            msg = red('Bad regex: ') + green(repr(argtext)) + \
+                ' You have failed the bat-test.'
             puts(msg)
             print e
             return
@@ -326,9 +332,9 @@ class BatCommands(batshell.ShellCommands):
                 for i, game in enumerate(games):
                     created = game['created'].strftime('%m/%d/%Y')
                     puts(tmpl % (str(yellow(i)).rjust(5),
-                                  green(created),
-                                  cyan(str(len(game['regexes'])))
-                                  ))
+                                 green(created),
+                                 cyan(str(len(game['regexes'])))
+                                 ))
             msg = 'Enter the game number to resume (empty for new game): '
             index = raw_input(msg)
             if not index:
@@ -352,9 +358,9 @@ class BatCommands(batshell.ShellCommands):
                 for i, game in enumerate(games):
                     created = game['created'].strftime('%m/%d/%Y')
                     puts(tmpl % (str(yellow(i)).rjust(5),
-                                  green(created),
-                                  cyan(str(len(game['regexes'])))
-                                  ))
+                                 green(created),
+                                 cyan(str(len(game['regexes'])))
+                                 ))
             msg = 'Enter the game number to resume (empty for new game): '
             indexes = map(int, raw_input(msg).split())
             for i in indexes:
@@ -527,7 +533,8 @@ class BatCommands(batshell.ShellCommands):
         '''
         counts = collections.Counter(self.game_state.unmatched_actions())
         items = sorted(counts.items(), key=itemgetter(1))
-        self.pager('\n'.join(str(count).ljust(5) + action for (action, count) in items).encode('utf8'))
+        self.pager('\n'.join(str(count).ljust(5) +
+                   action for (action, count) in items).encode('utf8'))
 
     @command('md')
     def metadata(self):
@@ -538,10 +545,12 @@ class BatCommands(batshell.ShellCommands):
         ret = []
         for action in self.game_state._actions:
             ret.append(self.shell.locals['categorizer'].categorize(action))
-        import pdb;pdb.set_trace()
+        import pdb
+        pdb.set_trace()
 
 
 class FlagDecompiler(object):
+
     '''A helper class to convert compile regexes into strings with
     inline flags. Helpful for editing, dumping regexes as text.
     '''
@@ -570,4 +579,3 @@ class FlagDecompiler(object):
                 if letters:
                     return '(?%s)%s' % (''.join(letters), rgx)
         return rgx
-

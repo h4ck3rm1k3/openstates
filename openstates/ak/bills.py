@@ -79,7 +79,7 @@ class AKBillScraper(BillScraper):
             bill_list_url = ('http://www.legis.state.ak.us/basis/range_multi'
                              '.asp?session=%s&bill1=%s1&bill2=%s999' %
                              (session, abbr, abbr)
-                            )
+                             )
             doc = lxml.html.fromstring(self.urlopen(bill_list_url))
             doc.make_links_absolute(bill_list_url)
             for bill_link in doc.xpath('//table[@align="center"]//tr/td[1]//a'):
@@ -87,7 +87,6 @@ class AKBillScraper(BillScraper):
                 bill_id = bill_link.text.replace(' ', '')
                 self.scrape_bill(chamber, session, bill_id, bill_type,
                                  bill_url)
-
 
     def scrape_bill(self, chamber, session, bill_id, bill_type, url):
         doc = lxml.html.fromstring(self.urlopen(url))
@@ -104,7 +103,8 @@ class AKBillScraper(BillScraper):
         bill.add_source(url)
 
         # Get sponsors
-        spons_str = doc.xpath('//b[contains(text(), "SPONSOR")]')[0].tail.strip()
+        spons_str = doc.xpath(
+            '//b[contains(text(), "SPONSOR")]')[0].tail.strip()
         sponsors_match = re.match(
             '(SENATOR|REPRESENTATIVE)\([Ss]\) ([^,]+(,[^,]+){0,})',
             spons_str)
@@ -160,7 +160,7 @@ class AKBillScraper(BillScraper):
             if match:
                 action = 'Prefile released'
                 act_date = datetime.datetime.strptime(match.group(1),
-                                                '%m/%d/%y')
+                                                      '%m/%d/%y')
 
             bill.add_action(act_chamber, action, act_date, type=atype)
 
@@ -172,7 +172,7 @@ class AKBillScraper(BillScraper):
         # Get versions
         text_list_url = "http://www.legis.state.ak.us/"\
             "basis/get_fulltext.asp?session=%s&bill=%s" % (
-            session, bill_id)
+                session, bill_id)
         bill.add_source(text_list_url)
 
         text_doc = lxml.html.fromstring(self.urlopen(text_list_url))
@@ -184,8 +184,8 @@ class AKBillScraper(BillScraper):
 
         # Get documents
         doc_list_url = "http://www.legis.state.ak.us/"\
-                "basis/get_documents.asp?session=%s&bill=%s" % (
-                    session, bill_id )
+            "basis/get_documents.asp?session=%s&bill=%s" % (
+                session, bill_id)
         doc_list = lxml.html.fromstring(self.urlopen(doc_list_url))
         doc_list.make_links_absolute(doc_list_url)
         bill.add_source(doc_list_url)
@@ -194,12 +194,12 @@ class AKBillScraper(BillScraper):
             h_href = href.attrib['href']
             bill.add_document(h_name, h_href)
 
-
         self.save_bill(bill)
 
     def parse_vote(self, bill, action, act_chamber, act_date, url,
-        re_vote_text = re.compile(r'The question (?:being|to be reconsidered):\s*"(.*?\?)"', re.S),
-        re_header=re.compile(r'\d{2}-\d{2}-\d{4}\s{10,}\w{,20} Journal\s{10,}\d{,6}\s{,4}')):
+                   re_vote_text=re.compile(
+            r'The question (?:being|to be reconsidered):\s*"(.*?\?)"', re.S),
+            re_header=re.compile(r'\d{2}-\d{2}-\d{4}\s{10,}\w{,20} Journal\s{10,}\d{,6}\s{,4}')):
 
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)
@@ -224,7 +224,8 @@ class AKBillScraper(BillScraper):
                 else:
                     other += vcount
 
-            vote = Vote(act_chamber, act_date, motion, yes > no, yes, no, other)
+            vote = Vote(act_chamber, act_date, motion,
+                        yes > no, yes, no, other)
 
             # In lengthy documents, the "header" can be repeated in the middle
             # of content. This regex gets rid of it.
@@ -309,19 +310,19 @@ class AKBillScraper(BillScraper):
             atype.append('bill:introduced')
             atype.append('bill:reading:1')
             action = action.replace('READ THE FIRST TIME',
-                                'Read the first time')
+                                    'Read the first time')
         if 'READ THE SECOND TIME' in action:
             atype.append('bill:reading:2')
             action = action.replace('READ THE SECOND TIME',
-                                'Read the second time')
+                                    'Read the second time')
         if 'READ THE THIRD TIME' in action:
             atype.append('bill:reading:3')
             action = action.replace('READ THE THIRD TIME',
-                                'Read the third time')
+                                    'Read the third time')
         if 'TRANSMITTED TO GOVERNOR' in action:
             atype.append('governor:received')
             action = action.replace('TRANSMITTED TO GOVERNOR',
-                                'Transmitted to Governor')
+                                    'Transmitted to Governor')
         if 'SIGNED INTO LAW' in action:
             atype.append('governor:signed')
             action = action.replace('SIGNED INTO LAW', 'Signed into law')

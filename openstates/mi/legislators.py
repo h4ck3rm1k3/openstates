@@ -5,6 +5,7 @@ import lxml.html
 
 abbr = {'D': 'Democratic', 'R': 'Republican'}
 
+
 class MILegislatorScraper(LegislatorScraper):
     jurisdiction = 'mi'
 
@@ -88,7 +89,6 @@ class MILegislatorScraper(LegislatorScraper):
                            address=office_loc,
                            fax=office_fax,
                            phone=office_phone)
-
 
             leg.add_source(url)
             self.save_legislator(leg)

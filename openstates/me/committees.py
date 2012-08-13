@@ -96,6 +96,7 @@ class MECommitteeScraper(CommitteeScraper):
 
         # Special default dict.
         class Committees(dict):
+
             def __missing__(self, key):
                 val = Committee('joint', key)
                 self[key] = val

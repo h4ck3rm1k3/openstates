@@ -5,6 +5,7 @@ from types import MethodType
 
 
 class Rule(namedtuple('Rule', 'regexes types stop attrs')):
+
     '''If anyh of ``regexes`` matches the action text, the resulting
     action's types should include ``types``.
 
@@ -33,6 +34,7 @@ class Rule(namedtuple('Rule', 'regexes types stop attrs')):
 
 
 class BaseCategorizer(object):
+
     '''A class that exposes a main categorizer function
     and before and after hooks, in case a state requires specific
     steps that make use of action or category info. The return
@@ -186,9 +188,9 @@ _categorizer_rules = (
           r'Remarks of Senator (?P<legislators>[A-Z].+?) journalized',
           r'Senator\(s\) (?P<legislators>.+?) (motion|on|divided)',
           (r'by Senator(\(s\))? (?P<legislators>.+?),? '
-            '(&|Passed|on|divided|;|to|Failed|dis)'),
+           '(&|Passed|on|divided|;|to|Failed|dis)'),
           (r'(by|of) Senator(\(s\))? (?P<legislators>.+?) '
-            '(sustained|overruled|journalized)'),
+           '(sustained|overruled|journalized)'),
           r'^Senator(\(s\))? (?P<legislators>.+?) [a-z]']),
 
     # Readings.
@@ -215,13 +217,13 @@ _categorizer_rules = (
     Rule([r'(?i)referred to (?P<committees>.+)',
           r'with the report of (?P<committees>Committee on.+?)\s+intact',
           (r'bill (re)?committed to (?P<committees>Committee on.+?)'
-            '\b(with|on)\b'),
+           '\b(with|on)\b'),
           r'Committed to( the)? (?P<committees>Committee .+?) (by|with|on)'],
          'committee:referred'),
 
     Rule([(r'Reported favorably by Senator (?P<legislators>\S+) '
-            'for (?P<committees>Committee on .+?), read 2nd time '
-            'and 3rd reading ordered'),
+           'for (?P<committees>Committee on .+?), read 2nd time '
+           'and 3rd reading ordered'),
           (r'(?i)favorable report( with recommendation of amendment)? '
            r'by (?P<committees>.+)'),
           (r'(?i)Favorable report with proposal of amendment by '
@@ -233,10 +235,10 @@ _categorizer_rules = (
          'committee:passed:favorable'),
 
     Rule([(r'(?i)reported without recommendation by( (?P<legislators>'
-            'Senator.+?) for)? (?P<committees>.+)'),
-           r'proposal of amendment concurred in',
+           'Senator.+?) for)? (?P<committees>.+)'),
+          r'proposal of amendment concurred in',
           (r'(?i)proposal of amendment\s+by (?P<committees>Committee '
-            'on .+?) agreed to')],
+           'on .+?) agreed to')],
          'committee:passed'),
 
     Rule(r'Reported favorably by Senator (?P<legislators>.+?) '
@@ -250,20 +252,20 @@ _categorizer_rules = (
           r'bill amended as moved by Senator\(s\) (?P<legislators>.+)',
           r'Floor Amendment by Rep\. (?P<legislators>.+?) agreed to',
           (r'Recommendation of amendment by (?P<committees>Committee.+?)'
-            '(, as amended,)? agreed'),
+           '(, as amended,)? agreed'),
           (r'Recommendation of amendment by Senator(\(s\))?(?P<legislators>.+?)'
-            ' on behalf of (?P<committees>Committee.+) agreed')],
+           ' on behalf of (?P<committees>Committee.+) agreed')],
          'amendment:passed'),
 
     Rule(['Proposal of amendment disagreed to',
           'Motion to amend disagreed to',
           (r'Amendment as offered by Rep\.(?P<legislators>.+?) '
-            'of .+? disagreed'),
+           'of .+? disagreed'),
           r'Floor Amendment by Rep\. (?P<legislators>.+?) disagreed to'],
-          'amendment:failed'),
+         'amendment:failed'),
 
     Rule((r'Amendment as offered by Rep\.(?P<legislators>.+?) '
-           'of .+? withdrawn'), 'amendment:withdrawn'),
+          'of .+? withdrawn'), 'amendment:withdrawn'),
 
 
     # Governor.
@@ -272,7 +274,7 @@ _categorizer_rules = (
          'governor:vetoed', actor='executive'),
     Rule(r'Delivered to the Governor', 'governor:received'),
 
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

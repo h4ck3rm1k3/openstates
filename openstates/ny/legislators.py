@@ -7,7 +7,6 @@ from billy.scrape.legislators import LegislatorScraper, Legislator
 import lxml.html
 
 
-
 class NYLegislatorScraper(LegislatorScraper):
     jurisdiction = 'ny'
 
@@ -76,7 +75,7 @@ class NYLegislatorScraper(LegislatorScraper):
                          'WF': 'Working Families',
                          'C': 'Conservative',
                          'IP': 'Independence',
-                        }
+                         }
             parties = [party_map.get(p.strip(), p.strip()) for p in match
                        if p.strip()]
             if 'Republican' in parties:
@@ -97,10 +96,10 @@ class NYLegislatorScraper(LegislatorScraper):
             phone = phone.text.strip()
 
             office = dict(
-                    name='Capitol Office',
-                    type='capitol', phone=phone,
-                    fax=None, email=None,
-                    address=address)
+                name='Capitol Office',
+                type='capitol', phone=phone,
+                fax=None, email=None,
+                address=address)
             legislator.add_office(**office)
 
         except IndexError:
@@ -121,10 +120,10 @@ class NYLegislatorScraper(LegislatorScraper):
             phone = phone.text.strip()
 
             office = dict(
-                    name='District Office',
-                    type='district', phone=phone,
-                    fax=None, email=None,
-                    address=address)
+                name='District Office',
+                type='district', phone=phone,
+                fax=None, email=None,
+                address=address)
 
             legislator.add_office(**office)
         except IndexError:
@@ -147,8 +146,9 @@ class NYLegislatorScraper(LegislatorScraper):
                 else:
                     data.append(entry)
 
-        for row in _split_list_on_tag(page.xpath("//div[@id='mememailwrap']/*"),
-                                      "emailclear"):
+        for row in _split_list_on_tag(
+            page.xpath("//div[@id='mememailwrap']/*"),
+                "emailclear"):
 
             try:
                 name, district, email = row
@@ -224,7 +224,7 @@ class NYLegislatorScraper(LegislatorScraper):
 
             # Try '' first, then digits.
             itertools.chain(iter(['']), iter(xrange(1, 5)))
-            ]
+        ]
 
         cols = col_generators.pop()
         while True:
@@ -432,5 +432,4 @@ party_dict = {
     'Davila, Maritza': 'Democratic',         'Pichardo, Victor': 'Democratic',
 
     'Palumbo, Anthony H.': 'Republican',
-    }
-
+}

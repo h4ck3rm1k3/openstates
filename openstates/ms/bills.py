@@ -7,6 +7,7 @@ import lxml.etree
 import os
 import re
 
+
 def _combine_lines(lines):
     newlines = []
     lastline = '.'
@@ -17,6 +18,7 @@ def _combine_lines(lines):
         else:
             lastline = newlines[-1] = newlines[-1] + ' ' + line
     return newlines
+
 
 class MSBillScraper(BillScraper):
     jurisdiction = 'ms'
@@ -43,7 +45,7 @@ class MSBillScraper(BillScraper):
     )
 
     def scrape(self, chamber, session):
-        self.save_errors=False
+        self.save_errors = False
         if int(session[0:4]) < 2008:
             raise NoDataForPeriod(session)
         self.scrape_bills(chamber, session)
@@ -60,7 +62,7 @@ class MSBillScraper(BillScraper):
             else:
                 chamber = "lower"
 
-            bill_type = {'B':'bill', 'C': 'concurrent resolution',
+            bill_type = {'B': 'bill', 'C': 'concurrent resolution',
                          'R': 'resolution', 'N': 'nomination'}[bill_id[1]]
 
             # just skip past bills that are of the wrong chamber
@@ -84,68 +86,80 @@ class MSBillScraper(BillScraper):
             bill = Bill(session, chamber, bill_id, title,
                         type=bill_type, summary=longtitle)
 
-            #sponsors
+            # sponsors
             main_sponsor = details_root.xpath('string(//P_NAME)').split()
             if main_sponsor:
                 main_sponsor = main_sponsor[0]
-                main_sponsor_link = details_root.xpath('string(//P_LINK)').replace(" ", "_")
-                main_sponsor_url =  'http://billstatus.ls.state.ms.us/%s/pdf/House_authors/%s.xml' % (session, main_sponsor_link)
+                main_sponsor_link = details_root.xpath(
+                    'string(//P_LINK)').replace(" ", "_")
+                main_sponsor_url = 'http://billstatus.ls.state.ms.us/%s/pdf/House_authors/%s.xml' % (
+                    session, main_sponsor_link)
                 type = "primary"
-                bill.add_sponsor(type, main_sponsor, main_sponsor_url = main_sponsor_url)
+                bill.add_sponsor(type, main_sponsor,
+                                 main_sponsor_url=main_sponsor_url)
             for author in details_root.xpath('//AUTHORS/ADDITIONAL'):
                 leg = author.xpath('string(CO_NAME)').replace(" ", "_")
                 if leg:
-                    leg_url = 'http://billstatus.ls.state.ms.us/%s/pdf/House_authors/%s.xml' % (session, leg)
+                    leg_url = 'http://billstatus.ls.state.ms.us/%s/pdf/House_authors/%s.xml' % (
+                        session, leg)
                     type = "cosponsor"
                     bill.add_sponsor(type, leg, leg_url=leg_url)
 
-            #Versions 
-            curr_version = details_root.xpath('string(//CURRENT_OTHER)').replace("../../../../", "")
+            # Versions
+            curr_version = details_root.xpath(
+                'string(//CURRENT_OTHER)').replace("../../../../", "")
             if curr_version != "":
                 curr_version_url = "http://billstatus.ls.state.ms.us/" \
-                        + curr_version
+                    + curr_version
                 bill.add_version("Current version", curr_version_url,
                                  on_duplicate='use_new',
                                  mimetype='text/html')
 
-            intro_version = details_root.xpath('string(//INTRO_OTHER)').replace("../../../../", "")
+            intro_version = details_root.xpath(
+                'string(//INTRO_OTHER)').replace("../../../../", "")
             if intro_version != "":
                 intro_version_url = "http://billstatus.ls.state.ms.us/"\
-                        + intro_version
+                    + intro_version
                 bill.add_version("As Introduced", intro_version_url,
                                  on_duplicate='use_new',
                                  mimetype='text/html')
 
-            comm_version = details_root.xpath('string(//CMTESUB_OTHER)').replace("../../../../", "")
+            comm_version = details_root.xpath(
+                'string(//CMTESUB_OTHER)').replace("../../../../", "")
             if comm_version.find("documents") != -1:
-                comm_version_url = "http://billstatus.ls.state.ms.us/" + comm_version
+                comm_version_url = "http://billstatus.ls.state.ms.us/" + \
+                    comm_version
                 bill.add_version("Committee Substitute", comm_version_url,
                                  on_duplicate='use_new',
                                  mimetype='text/html')
-            passed_version = details_root.xpath('string(//PASSED_OTHER)').replace("../../../../", "")
+            passed_version = details_root.xpath(
+                'string(//PASSED_OTHER)').replace("../../../../", "")
             if passed_version.find("documents") != -1:
-                passed_version_url = "http://billstatus.ls.state.ms.us/" + passed_version
+                passed_version_url = "http://billstatus.ls.state.ms.us/" + \
+                    passed_version
                 title = "As Passed the " + chamber
                 bill.add_version(title, passed_version_url,
                                  on_duplicate='use_new',
                                  mimetype='text/html')
 
-            asg_version = details_root.xpath('string(//ASG_OTHER)').replace("../../../../", "")
+            asg_version = details_root.xpath(
+                'string(//ASG_OTHER)').replace("../../../../", "")
             if asg_version.find("documents") != -1:
-                asg_version_url = "http://billstatus.ls.state.ms.us/" + asg_version
+                asg_version_url = "http://billstatus.ls.state.ms.us/" + \
+                    asg_version
                 bill.add_version("Approved by the Governor", asg_version_url,
                                  on_duplicate='use_new',
                                  mimetype='text/html')
 
-
             # avoid duplicate votes
             seen_votes = set()
 
-            #Actions
+            # Actions
             for action in details_root.xpath('//HISTORY/ACTION'):
-                action_num  = action.xpath('string(ACT_NUMBER)').strip()
+                action_num = action.xpath('string(ACT_NUMBER)').strip()
                 action_num = int(action_num)
-                act_vote = action.xpath('string(ACT_VOTE)').replace("../../../..", "")
+                act_vote = action.xpath(
+                    'string(ACT_VOTE)').replace("../../../..", "")
                 action_desc = action.xpath('string(ACT_DESC)')
                 date, action_desc = action_desc.split(" ", 1)
                 date = date + "/" + session[0:4]
@@ -164,8 +178,9 @@ class MSBillScraper(BillScraper):
                 if action.find("Veto") != -1:
                     version_path = details_root.xpath("string(//VETO_OTHER)")
                     version_path = version_path.replace("../../../../", "")
-                    version_url = "http://billstatus.ls.state.ms.us/" + version_path
-                    bill.add_document("Veto", version_url) 
+                    version_url = "http://billstatus.ls.state.ms.us/" + \
+                        version_path
+                    bill.add_document("Veto", version_url)
 
                 atype = 'other'
                 for prefix, prefix_type in self._action_types:

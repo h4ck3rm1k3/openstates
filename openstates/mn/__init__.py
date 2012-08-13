@@ -12,7 +12,7 @@ metadata = dict(
     capitol_timezone='America/Chicago',
     legislature_name='Minnesota State Legislature',
     legislature_url='http://www.leg.state.mn.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -23,13 +23,13 @@ metadata = dict(
          'start_year': 2009,
          'end_year': 2010,
          'biennium': '86',
-        },
+         },
         {'name': '2011-2012',
          'sessions': ['2011-2012', '2011s1', '2012s1'],
          'start_year': 2011,
          'end_year': 2012,
          'biennium': '87',
-        },
+         },
         {
             'name': '2013-2014',
             'sessions': ['2013-2014', '2013s1'],
@@ -40,24 +40,24 @@ metadata = dict(
     ],
     session_details={
         '2009-2010': {
-            'site_id': '0862009', 'type':'primary',
+            'site_id': '0862009', 'type': 'primary',
             'votes_url': 'http://www.house.leg.state.mn.us/votes/getVotesls86.asp',
             'display_name': '2009-2010 Regular Session',
             '_scraped_name': '86th Legislature, 2009-2010',
         },
         '2010 1st Special Session': {
-            'site_id': '1862010', 'type':'special',
+            'site_id': '1862010', 'type': 'special',
             'votes_url': 'http://www.house.leg.state.mn.us/votes/getVotesls8620101.asp',
             'display_name': '2010, 1st Special Session',
             '_scraped_name': '86th Legislature, 2010 1st Special Session',
         },
         '2010 2nd Special Session': {
-            'site_id': '2862010', 'type':'special',
+            'site_id': '2862010', 'type': 'special',
             'display_name': '2010, 2nd Special Session',
             '_scraped_name': '86th Legislature, 2010 2nd Special Session',
         },
         '2011-2012': {
-            'site_id': '0872011', 'type':'primary',
+            'site_id': '0872011', 'type': 'primary',
             'votes_url': 'http://www.house.leg.state.mn.us/votes/getVotesls87.asp',
             'display_name': '2011-2012 Regular Session',
             '_scraped_name': '87th Legislature, 2011-2012',
@@ -116,6 +116,7 @@ def session_list():
     return url_xpath('https://www.revisor.mn.gov/revisor/pages/search_status/'
                      'status_search.php?body=House',
                      '//select[@name="session"]/option/text()')
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

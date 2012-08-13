@@ -21,7 +21,7 @@ class MOCommitteeScraper(CommitteeScraper):
             self.scrape_reps_committees(term_name, chamber)
 
     def scrape_senate_committees(self, term_name, chamber):
-        years = [ t[2:] for t in term_name.split('-') ]
+        years = [t[2:] for t in term_name.split('-')]
 
         for year in years:
             if int(year) > int(str(dt.datetime.now().year)[2:]):
@@ -30,7 +30,7 @@ class MOCommitteeScraper(CommitteeScraper):
                 ))
                 continue
             url = '{base}{year}info/com-standing.htm'.format(
-                                            base=self.senate_url_base, year=year)
+                base=self.senate_url_base, year=year)
             page_string = self.urlopen(url)
             page = lxml.html.fromstring(page_string)
             ps = page.xpath('id("mainContent")/table/*[3]/p')
@@ -50,7 +50,7 @@ class MOCommitteeScraper(CommitteeScraper):
                 committee = Committee(c, committee_name)
                 committee_page_string = self.urlopen(committee_url)
                 committee_page = lxml.html.fromstring(
-                                                    committee_page_string)
+                    committee_page_string)
                 lis = committee_page.xpath(
                     "//div[@id='mainContent']/ul/ul[1]/li")
                 if len(lis) == 0:
@@ -68,7 +68,6 @@ class MOCommitteeScraper(CommitteeScraper):
                 committee.add_source(committee_url)
                 self.save_committee(committee)
 
-
     def scrape_reps_committees(self, term_name, chamber):
         url = '{base}ActiveCommittees.aspx'.format(base=self.reps_url_base)
         page_string = self.urlopen(url)
@@ -78,7 +77,7 @@ class MOCommitteeScraper(CommitteeScraper):
         trs = table.xpath('tr')[:-1]
         for tr in trs:
             committee_parts = [part.strip()
-                                for part in tr.text_content().split(',')]
+                               for part in tr.text_content().split(',')]
             committee_name = committee_parts[0].title().strip()
             if len(committee_parts) > 0:
                 status = committee_parts[1].strip()
@@ -89,10 +88,11 @@ class MOCommitteeScraper(CommitteeScraper):
             if 'joint' in committee_name.lower():
                 actual_chamber = 'joint'
 
-            committee = Committee(actual_chamber, committee_name, status=status)
+            committee = Committee(
+                actual_chamber, committee_name, status=status)
             committee_page_string = self.urlopen(committee_url)
             committee_page = lxml.html.fromstring(
-                                committee_page_string)
+                committee_page_string)
             # First tr has the title (sigh)
             mem_trs = committee_page.xpath('id("memGroup")/tr')[1:]
             for mem_tr in mem_trs:
@@ -115,7 +115,7 @@ class MOCommitteeScraper(CommitteeScraper):
                     mem_role = ', '.join(
                         [p.strip() for p in mem_parts[2:]]).lower()
                 committee.add_member(mem_name, role=mem_role,
-                                    _code=mem_code)
+                                     _code=mem_code)
             committee.add_source(url)
             committee.add_source(committee_url)
             self.save_committee(committee)

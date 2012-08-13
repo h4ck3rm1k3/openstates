@@ -29,6 +29,7 @@ feed_db = conn.newsblogs
 
 
 class _CachedAttr(object):
+
     '''Computes attr value and caches it in the instance.'''
 
     def __init__(self, method, name=None):
@@ -77,6 +78,7 @@ class Trie(dict):
 
 
 class PseudoMatch(object):
+
     '''A fake match object that provides the same basic interface
     as _sre.SRE_Match.'''
 
@@ -127,8 +129,8 @@ def trie_add(trie, seq_value_2tuples, terminus=0):
 
 
 def trie_scan(trie, s,
-         _match=PseudoMatch,
-         second=itemgetter(1)):
+              _match=PseudoMatch,
+              second=itemgetter(1)):
     '''
     Finds all matches for `s` in `trie`.
     '''
@@ -221,8 +223,8 @@ def trie_scan(trie, s,
 #                     pseudo_match = _match(group=''.join(map(second, match)),
 #                                           start=start, end=end)
 
-#                     # Don't yeild a match if this match is contained in a
-#                     # larger match.
+# Don't yeild a match if this match is contained in a
+# larger match.
 #                     _break = False
 #                     for _start, _end in spans:
 #                         if (_start <= start) and (end <= _end):
@@ -281,6 +283,7 @@ def clean_html(html):
 
 # ---------------------------------------------------------------------------
 class BogusEntry(Exception):
+
     '''Raised when an entry lacks a required attribute, like 'link'.'''
 
 
@@ -313,7 +316,7 @@ class Extractor(object):
                  u'Council member', u'Councilman', u'Councilwoman',
                  u'Councilperson'],
                 [u' {legislator[last_name]}', u' {legislator[full_name]}']
-                ) + full_name,
+            ) + full_name,
 
             'lower': cartcat([
                 u'Assemblymember',
@@ -333,14 +336,14 @@ class Extractor(object):
                 u'Council member', u'Councilman',
                 u'Councilwoman', u'Councilperson'],
                 [u' {legislator[last_name]}', u' {legislator[full_name]}']
-                ) + full_name,
-                },
+            ) + full_name,
+        },
 
         'bills': [
             ('bill_id', lambda s: s.upper().replace('.', ''))
-            ]
+        ]
 
-        }
+    }
 
     def __init__(self, abbr):
         self.entrycount = 0
@@ -580,7 +583,8 @@ class Extractor(object):
                 else:
                     source = entry['links'][-1].get('href')
                     if source:
-                        host = urlparse.urlparse(entry['links'][0]['href']).netloc
+                        host = urlparse.urlparse(
+                            entry['links'][0]['href']).netloc
                         entry['source'] = source
                         entry['host'] = host
                     else:

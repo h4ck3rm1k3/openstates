@@ -8,6 +8,7 @@ import scrapelib
 
 PHONE_RE = re.compile('\(?\d{3}\)?\s?-?\d{3}-?\d{4}')
 
+
 class PRLegislatorScraper(LegislatorScraper):
     jurisdiction = 'pr'
 
@@ -20,7 +21,7 @@ class PRLegislatorScraper(LegislatorScraper):
             self.scrape_house(term)
 
     def scrape_senate(self, term):
-        urls = { 
+        urls = {
             'At-Large': 'http://www.senadopr.us/Pages/SenadoresporAcumulacion.aspx',
             'I': 'http://www.senadopr.us/Pages/Senadores%20Distrito%20I.aspx',
             'II': 'http://www.senadopr.us/Pages/Senadores%20Distrito%20II.aspx',
@@ -42,14 +43,18 @@ class PRLegislatorScraper(LegislatorScraper):
             for row in table.xpath('tr')[1:]:
                 tds = row.xpath('td')
 
-                name = tds[0].text_content().title().replace('Hon.','',1).strip()
+                name = tds[0].text_content().title().replace(
+                    'Hon.', '', 1).strip()
                 party = tds[1].text_content()
                 phone = tds[2].text_content()
                 email = tds[3].text_content()
 
-                #Code to guess the picture
-                namefixed = unicode(name.replace(".",". "))  #Those middle names abbreviations are sometimes weird.
-                namefixed = unicodedata.normalize('NFKD', namefixed).encode('ascii', 'ignore') #Remove the accents
+                # Code to guess the picture
+                # Those middle names abbreviations are sometimes weird.
+                namefixed = unicode(name.replace(".", ". "))
+                # Remove the accents
+                namefixed = unicodedata.normalize(
+                    'NFKD', namefixed).encode('ascii', 'ignore')
                 nameparts = namefixed.split()
                 if nameparts[1].endswith('.'):
                     lastname = nameparts[2]
@@ -57,16 +62,19 @@ class PRLegislatorScraper(LegislatorScraper):
                     lastname = nameparts[1]
 
                 # Construct the photo url
-                picture_filename = 'http://www.senadopr.us/Fotos%20Senadores/sen_' + (nameparts[0][0] + lastname).lower() + '.jpg'
+                picture_filename = 'http://www.senadopr.us/Fotos%20Senadores/sen_' + \
+                    (nameparts[0][0] + lastname).lower() + '.jpg'
 
                 try:
-                    picture_data = self.urlopen(picture_filename)  # Checking to see if the file is there
+                    # Checking to see if the file is there
+                    picture_data = self.urlopen(picture_filename)
                     leg = Legislator(term, 'upper', district, name,
                                      party=party,
                                      email=email, url=url,
                                      photo_url=picture_filename)
 
-                except scrapelib.HTTPError:         # If not, leave out the photo_url
+                # If not, leave out the photo_url
+                except scrapelib.HTTPError:
                     leg = Legislator(term, 'upper', district, name,
                                      party=party, phone=phone, email=email,
                                      url=url)
@@ -102,7 +110,7 @@ class PRLegislatorScraper(LegislatorScraper):
                     # district offices
                     district_office = tds[4]
                     district_addr = []
-                    district_phone  = None
+                    district_phone = None
                     district_fax = None
                     pieces = district_office.xpath('.//text()')
                     for piece in pieces:
@@ -137,7 +145,8 @@ class PRLegislatorScraper(LegislatorScraper):
 
                 # urls @ http://www.camaraderepresentantes.org/legs2.asp?r=BOKCADHRTZ
                 # where random chars are tr's id
-                leg_url = 'http://www.camaraderepresentantes.org/legs2.asp?r=' + tr.get('id')
+                leg_url = 'http://www.camaraderepresentantes.org/legs2.asp?r=' + \
+                    tr.get('id')
 
                 leg = Legislator(term, 'lower', district, name,
                                  party='unknown', email=email, url=url)

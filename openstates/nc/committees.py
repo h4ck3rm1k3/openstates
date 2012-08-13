@@ -2,6 +2,7 @@ from billy.scrape.committees import CommitteeScraper, Committee
 
 import lxml.html
 
+
 class NCCommitteeScraper(CommitteeScraper):
     jurisdiction = 'nc'
 
@@ -21,7 +22,6 @@ class NCCommitteeScraper(CommitteeScraper):
             else:
                 committee.add_member(members.text_content(), mtype.text)
 
-
     def scrape(self, term, chambers):
         base_url = 'http://www.ncga.state.nc.us/gascripts/Committees/Committees.asp?bPrintable=true&sAction=ViewCommitteeType&sActionDetails='
 
@@ -32,7 +32,7 @@ class NCCommitteeScraper(CommitteeScraper):
             for ctype in chamber_slugs[chamber]:
                 data = self.urlopen(base_url + ctype)
                 doc = lxml.html.fromstring(data)
-                doc.make_links_absolute(base_url+ctype)
+                doc.make_links_absolute(base_url + ctype)
                 for comm in doc.xpath('//ul/li/a'):
                     name = comm.text
                     # skip committee of whole Senate
@@ -46,4 +46,3 @@ class NCCommitteeScraper(CommitteeScraper):
                         self.warning('empty committee: %s', name)
                     else:
                         self.save_committee(committee)
-

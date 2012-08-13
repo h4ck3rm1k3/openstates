@@ -6,9 +6,11 @@ import functools
 
 
 class BadApiResponse(Exception):
+
     '''Raised if the service returns a service code higher than 400,
     other than 429. Makes the response object avaible as exc.resp
     '''
+
     def __init__(self, resp, *args):
         super(BadApiResponse, self).__init__(self, *args)
         self.resp = resp
@@ -34,6 +36,7 @@ def check_response(method):
 
 
 class ApiClient(object):
+
     '''
     docs: http://docs.api.iga.in.gov/
     '''
@@ -50,7 +53,7 @@ class ApiClient(object):
         legislators='/{session}/legislators',
         legislator='/{session}/legislators/{legislator_id}',
         chamber_legislators='/{session}/chambers/{chamber}/legislators',
-        )
+    )
 
     def __init__(self, scraper):
         self.scraper = scraper
@@ -126,5 +129,6 @@ class ApiClient(object):
         experience."
         '''
         seconds = int(resp.headers['retry-after'])
-        self.scraper.info('Got a 429: Sleeping %s seconds per retry-after header.' % seconds)
+        self.scraper.info(
+            'Got a 429: Sleeping %s seconds per retry-after header.' % seconds)
         time.sleep(seconds)

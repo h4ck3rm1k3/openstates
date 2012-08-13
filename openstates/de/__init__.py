@@ -26,10 +26,10 @@ metadata = dict(
     session_details={
         '146': {'display_name': '146th General Assembly (2011-2012)',
                 '_scraped_name': 'GA 146',
-               },
+                },
         '147': {'display_name': '147th General Assembly (2013-2014)',
                 '_scraped_name': 'GA 147',
-               },
+                },
     },
     feature_flags=['events', 'influenceexplorer'],
     _ignored_scraped_sessions=['GA 145', 'GA 144', 'GA 143', 'GA 142',
@@ -40,7 +40,7 @@ metadata = dict(
 def session_list():
     from billy.scrape.utils import url_xpath
     sessions = url_xpath('http://legis.delaware.gov/',
-        "//select[@name='gSession']/option/text()")
+                         "//select[@name='gSession']/option/text()")
     sessions = [session.strip() for session in sessions]
     sessions.remove("Session")
     return sessions

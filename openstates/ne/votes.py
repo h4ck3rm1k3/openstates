@@ -7,20 +7,22 @@ from billy.scrape.utils import convert_pdf
 
 BILL_RE = re.compile('^LEGISLATIVE (BILL|RESOLUTION) (\d+C?A?).')
 VETO_BILL_RE = re.compile('MOTION - Override (?:Line-Item )?Veto on (\w+)')
-DATE_RE = re.compile('(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER) (\d+), (\d{4})')
+DATE_RE = re.compile(
+    '(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER) (\d+), (\d{4})')
 QUESTION_RE = re.compile("(?:the question is, '|The question shall be, ')(.+)")
 QUESTION_MATCH_END = "' \""
 YES_RE = re.compile('Voting in the affirmative, (\d+)')
 NO_RE = re.compile('Voting in the negative, (\d+)')
-NOT_VOTING_RE = re.compile('(?:Present|Absent|Excused)?(?: and )?[Nn]ot voting, (\d+)')
+NOT_VOTING_RE = re.compile(
+    '(?:Present|Absent|Excused)?(?: and )?[Nn]ot voting, (\d+)')
 
 
 class NEVoteScraper(VoteScraper):
     jurisdiction = 'ne'
 
     def scrape(self, session, chambers):
-        urls = {'103': ['http://www.nebraskalegislature.gov/FloorDocs/Current/PDF/Journal/r1journal.pdf',]
-               }
+        urls = {'103': ['http://www.nebraskalegislature.gov/FloorDocs/Current/PDF/Journal/r1journal.pdf', ]
+                }
         for url in urls[session]:
             self.scrape_journal(session, url)
 
@@ -82,11 +84,11 @@ class NEVoteScraper(VoteScraper):
                     vote = None
                 elif line:
                     people = re.split('\s{3,}', line)
-                    #try:
+                    # try:
                     func = {'yes': vote.yes, 'no': vote.no,
                             'other': vote.other}[state]
-                    #except KeyError:
-                        #self.warning('line showed up in pre-yes state: %s',
+                    # except KeyError:
+                        # self.warning('line showed up in pre-yes state: %s',
                         #             line)
                     for p in people:
                         if p:
@@ -117,7 +119,7 @@ class NEVoteScraper(VoteScraper):
             # line just finished a question
             if state == 'question_quote' and QUESTION_MATCH_END in question:
                 question = re.sub('\s+', ' ',
-                              question.replace(QUESTION_MATCH_END, '').strip())
+                                  question.replace(QUESTION_MATCH_END, '').strip())
                 # save prior vote
                 vote = Vote(bill_id=bill_id, session=session,
                             bill_chamber='upper', chamber='upper',

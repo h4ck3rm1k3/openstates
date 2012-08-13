@@ -4,6 +4,7 @@ all bills that got a "109" session value were actually scraped from the
 '''
 from billy.core import db
 
+
 def main():
 
     # Select all votes that had awful 109 or "109" as session.

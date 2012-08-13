@@ -18,7 +18,7 @@ class DELegislatorScraper(LegislatorScraper):
         url = {
             'upper': 'http://legis.delaware.gov/legislature.nsf/sen?openview&nav=senate',
             'lower': 'http://legis.delaware.gov/legislature.nsf/Reps?openview&Count=75&nav=house&count=75',
-            }[chamber]
+        }[chamber]
 
         doc = lxml.html.fromstring(self.urlopen(url))
         doc.make_links_absolute(url)

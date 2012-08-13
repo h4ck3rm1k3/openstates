@@ -2,12 +2,14 @@ from billy.scrape.committees import CommitteeScraper, Committee
 import lxml.html
 
 
-_COMMITTEE_URL = 'http://legislature.idaho.gov/%s/committees.cfm' # house/senate
+# house/senate
+_COMMITTEE_URL = 'http://legislature.idaho.gov/%s/committees.cfm'
 _JOINT_URL = 'http://legislature.idaho.gov/about/jointcommittees.htm'
 
-_CHAMBERS = {'upper':'senate', 'lower':'house'}
-_REV_CHAMBERS = {'senate':'upper', 'house':'lower'}
-_TD_ONE = ('committee', 'description', 'office_hours', 'secretary', 'office_phone')
+_CHAMBERS = {'upper': 'senate', 'lower': 'house'}
+_REV_CHAMBERS = {'senate': 'upper', 'house': 'lower'}
+_TD_ONE = ('committee', 'description', 'office_hours',
+           'secretary', 'office_phone')
 _TD_TWO = ('committee', 'office_hours', 'secretary', 'office_phone')
 
 
@@ -16,6 +18,7 @@ def clean_name(name):
 
 
 class IDCommitteeScraper(CommitteeScraper):
+
     """Currently only committees from the latest regular session are
     available through html. Membership for prior terms are available via the
     committee minutes .pdf files at
@@ -59,8 +62,9 @@ class IDCommitteeScraper(CommitteeScraper):
                           .text_content().split('\r\n')
             for member in members:
                 if member.strip():
-                    committee.add_member(*member.replace(u'\xa0', ' ').split(','),
-                                     chamber=_REV_CHAMBERS[chamber.lower()])
+                    committee.add_member(
+                        *member.replace(u'\xa0', ' ').split(','),
+                        chamber=_REV_CHAMBERS[chamber.lower()])
         committee.add_source(url)
         self.save_committee(committee)
 
@@ -71,8 +75,8 @@ class IDCommitteeScraper(CommitteeScraper):
         committee = Committee('joint', name)
         table = html.xpath('//table')[2]
         for row in table.xpath('tbody/tr'):
-            senate, house = [ td.text.replace('\r\n', ' ').replace(u'\xa0', ' ') \
-                              for td in row.xpath('td') ]
+            senate, house = [td.text.replace('\r\n', ' ').replace(u'\xa0', ' ')
+                             for td in row.xpath('td')]
 
             sen_data = senate.strip('Sen.').strip().split(',')
             hou_data = house.strip('Rep.').strip().split(',')
@@ -135,10 +139,9 @@ class IDCommitteeScraper(CommitteeScraper):
                 committee = Committee('joint', name)
                 committee.add_source(url)
                 # no membership available
-                #self.save_committee(committee)
+                # self.save_committee(committee)
             else:
                 self.log('Unknown committee: %s %s' % (name, url))
-
 
     def scrape(self, chamber, term):
         """

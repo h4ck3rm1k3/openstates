@@ -49,7 +49,7 @@ committees = [
     u'Joint Budget Committee',
     u'Business, Labor, (?:and|&) Technology',
     u'State, Veterans, (?:and|&) Military Affairs'
-    ]
+]
 
 
 rules = (
@@ -72,7 +72,7 @@ rules = (
     Rule(u'(?i)\S+ Committee on (?P<committees>.+?) Refer (un)amended'),
     Rule(u'Second Reading Passed', [u'bill:reading:2']),
     Rule(u'Third Reading Passed', ['bill:reading:3', 'bill:passed'])
-    )
+)
 
 committees_rgx = '(%s)' % '|'.join(
     sorted(committees, key=len, reverse=True))

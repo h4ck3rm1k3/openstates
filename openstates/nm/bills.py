@@ -75,7 +75,8 @@ def convert_sv_line(line):
     # shift characters
     line = ''.join(convert_sv_char(c) for c in line)
     # clean up the remaining cruft
-    line = line.replace('B3', ' ').replace('oA', '').replace('o', '').replace('\x00', '')
+    line = line.replace('B3', ' ').replace(
+        'oA', '').replace('o', '').replace('\x00', '')
     return line
 
 
@@ -142,7 +143,7 @@ class NMBillScraper(BillScraper):
                          'JR': 'joint resolution',
                          'M': 'memorial',
                          'R': 'resolution',
-                        }
+                         }
 
         # used for faking sources
         session_year = session[2:]
@@ -555,7 +556,8 @@ class NMBillScraper(BillScraper):
         return vote
 
     # house totals
-    HOUSE_TOTAL_RE = re.compile('\s+Absent:\s+(\d+)\s+Yeas:\s+(\d+)\s+Nays:\s+(\d+)\s+Excused:\s+(\d+)')
+    HOUSE_TOTAL_RE = re.compile(
+        '\s+Absent:\s+(\d+)\s+Yeas:\s+(\d+)\s+Nays:\s+(\d+)\s+Excused:\s+(\d+)')
 
     def parse_house_vote(self, url):
         """ house votes are pdfs that can be converted to text, require some

@@ -8,8 +8,8 @@ from billy.scrape.bills import BillScraper, Bill
 from billy.scrape.votes import Vote
 
 CHAMBERS = {
-    'upper': ('SB','SJ'),
-    'lower': ('HB','HJ'),
+    'upper': ('SB', 'SJ'),
+    'lower': ('HB', 'HJ'),
 }
 
 classifiers = {
@@ -37,6 +37,7 @@ vote_classifiers = {
     r'fla|amend|amd': 'amendment',
 }
 
+
 def _classify_action(action):
     if not action:
         return None
@@ -47,8 +48,9 @@ def _classify_action(action):
         if re.match(regex, action):
             if 'committee:referred' in type:
                 ctty = re.sub(regex, "", action).strip()
-            return ( type, ctty )
-    return ( None, ctty )
+            return (type, ctty)
+    return (None, ctty)
+
 
 def _clean_sponsor(name):
     if name.startswith('Delegate') or name.startswith('Senator'):
@@ -80,7 +82,8 @@ class MDBillScraper(BillScraper):
                                  _clean_sponsor(elem.text.strip()))
         else:
             # single bill sponsor
-            sponsor = doc.xpath('//a[@name="Sponsors"]/../../dd')[0].text_content()
+            sponsor = doc.xpath(
+                '//a[@name="Sponsors"]/../../dd')[0].text_content()
             bill.add_sponsor('primary', _clean_sponsor(sponsor))
 
     def parse_bill_actions(self, doc, bill):
@@ -130,8 +133,6 @@ class MDBillScraper(BillScraper):
                             else:
                                 self.log('unknown action: %s' % act)
 
-
-
     def parse_bill_documents(self, doc, bill):
         bill_text_b = doc.xpath('//b[contains(text(), "Bill Text")]')[0]
         for sib in bill_text_b.itersiblings():
@@ -162,12 +163,11 @@ class MDBillScraper(BillScraper):
         for elem in elems:
             href = elem.get('href')
             if (href and "votes" in href and href.endswith('htm') and
-                href not in seen_votes):
+                    href not in seen_votes):
                 seen_votes.add(href)
                 vote = self.parse_vote_page(href)
                 vote.add_source(href)
                 bill.add_vote(vote)
-
 
     def parse_vote_page(self, vote_url):
         vote_html = self.urlopen(vote_url)
@@ -185,7 +185,7 @@ class MDBillScraper(BillScraper):
         date = datetime.datetime.strptime(date[18:], '%b %d, %Y')
 
         # motion
-        motion = ''.join(x.text_content() for x in \
+        motion = ''.join(x.text_content() for x in
                          doc.xpath('//td[@colspan="23"]'))
         if motion == '':
             motion = "No motion given"  # XXX: Double check this. See SJ 3.
@@ -225,7 +225,7 @@ class MDBillScraper(BillScraper):
     def scrape_bill_2012(self, chamber, session, bill_id, url):
         """ Creates a bill object """
         if len(session) == 4:
-            session_url = session+'rs'
+            session_url = session + 'rs'
         else:
             session_url = session
 
@@ -233,7 +233,8 @@ class MDBillScraper(BillScraper):
         doc = lxml.html.fromstring(html)
         doc.make_links_absolute(url)
         # find <a name="Title">, get parent dt, get parent dl, then dd n dl
-        title = doc.xpath('//a[@name="Title"][1]/../../dd[1]/text()')[0].strip()
+        title = doc.xpath(
+            '//a[@name="Title"][1]/../../dd[1]/text()')[0].strip()
 
         summary = doc.xpath('//font[@size="3"]/p/text()')[0].strip()
 
@@ -260,14 +261,14 @@ class MDBillScraper(BillScraper):
         # add bill to collection
         self.save_bill(bill)
 
-
     def scrape_vote(self, bill, action_text, url):
         doc = lxml.html.fromstring(self.urlopen(url))
 
         date = None
         yes_count = no_count = other_count = None
 
-        # process action_text - might look like "Vote - Senate Floor - Third Reading Passed (46-0) - 01/16/12"
+        # process action_text - might look like "Vote - Senate Floor - Third
+        # Reading Passed (46-0) - 01/16/12"
         if action_text.startswith('Vote - Senate Floor - '):
             action_text = action_text[22:]
             chamber = 'upper'
@@ -308,9 +309,11 @@ class MDBillScraper(BillScraper):
                 if vote['date']:
                     self.warning('two dates!, skipping rest of bill')
                     break
-                vote['date'] = datetime.datetime.strptime(text.split(': ', 1)[1], '%b %d, %Y %H:%M %p')
+                vote['date'] = datetime.datetime.strptime(
+                    text.split(': ', 1)[1], '%b %d, %Y %H:%M %p')
             elif 'Yeas' in text and 'Nays' in text and 'Not Voting' in text:
-                yeas, nays, nv, exc, absent = re.match('(\d+) Yeas\s+(\d+) Nays\s+(\d+) Not Voting\s+(\d+) Excused \(Absent\)\s+(\d+) Absent', text).groups()
+                yeas, nays, nv, exc, absent = re.match(
+                    '(\d+) Yeas\s+(\d+) Nays\s+(\d+) Not Voting\s+(\d+) Excused \(Absent\)\s+(\d+) Absent', text).groups()
                 vote['yes_count'] = int(yeas)
                 vote['no_count'] = int(nays)
                 vote['other_count'] = int(nv) + int(exc) + int(absent)
@@ -331,7 +334,6 @@ class MDBillScraper(BillScraper):
         vote.validate()
         vote.add_source(url)
         bill.add_vote(vote)
-
 
     def scrape_bill(self, chamber, session, bill_id, url):
         html = self.urlopen(url)
@@ -366,7 +368,7 @@ class MDBillScraper(BillScraper):
         # subjects
         subject_list = []
         for heading in ('Broad Subject(s):', 'Narrow Subject(s):'):
-            subjects =  _get_td(doc, heading).xpath('a/text()')
+            subjects = _get_td(doc, heading).xpath('a/text()')
             subject_list += [s.split(' -see also-')[0] for s in subjects if s]
         bill['subjects'] = subject_list
 
@@ -376,7 +378,6 @@ class MDBillScraper(BillScraper):
         self.scrape_actions(bill, url.replace('stab=01', 'stab=03'))
 
         self.save_bill(bill)
-
 
     def scrape_documents(self, bill, url):
         html = self.urlopen(url)
@@ -394,7 +395,7 @@ class MDBillScraper(BillScraper):
             elif a.text in ('Bond Bill Fact Sheet',
                             "Attorney General's Review Letter",
                             "Governor's Veto Letter",
-                           ):
+                            ):
                 bill.add_document(a.text, a.get('href'),
                                   mimetype='application/pdf')
             elif a.text in ('Amendments', 'Conference Committee Amendment',
@@ -416,14 +417,14 @@ class MDBillScraper(BillScraper):
             else:
                 raise ValueError('unknown document type: %s', a.text)
 
-
     def scrape_actions(self, bill, url):
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)
         doc.make_links_absolute(url)
 
         for row in doc.xpath('//table[@class="billgrid"]/tr')[1:]:
-            new_chamber, cal_date, leg_date, action, proceedings = row.xpath('td')
+            new_chamber, cal_date, leg_date, action, proceedings = row.xpath(
+                'td')
 
             if new_chamber.text == 'Senate':
                 chamber = 'upper'
@@ -436,20 +437,21 @@ class MDBillScraper(BillScraper):
 
             action = action.text
             if cal_date.text:
-                action_date = datetime.datetime.strptime(cal_date.text, '%m/%d/%Y')
+                action_date = datetime.datetime.strptime(
+                    cal_date.text, '%m/%d/%Y')
 
             atype, committee = _classify_action(action)
-            kwargs = { "type": atype }
+            kwargs = {"type": atype}
             if committee is not None:
                 kwargs['committees'] = committee
 
             bill.add_action(chamber, action, action_date, **kwargs)
 
-
     def scrape(self, chamber, session):
         session_slug = session if 's' in session else session + 'rs'
 
-        main_page = 'http://mgaleg.maryland.gov/webmga/frmLegislation.aspx?pid=legisnpage&tab=subject3&ys=' + session_slug
+        main_page = 'http://mgaleg.maryland.gov/webmga/frmLegislation.aspx?pid=legisnpage&tab=subject3&ys=' + \
+            session_slug
         chamber_prefix = 'S' if chamber == 'upper' else 'H'
         html = self.urlopen(main_page)
         doc = lxml.html.fromstring(html)
@@ -461,10 +463,12 @@ class MDBillScraper(BillScraper):
                 prefix, begin, end = match.groups()
                 if prefix[0] == chamber_prefix:
                     self.debug('scraping %ss %s-%s', prefix, begin, end)
-                    for number in range(int(begin), int(end)+1):
+                    for number in range(int(begin), int(end) + 1):
                         bill_id = prefix + str(number)
-                        url = 'http://mgaleg.maryland.gov/webmga/frmMain.aspx?id=%s&stab=01&pid=billpage&tab=subject3&ys=%s' % (bill_id, session_slug)
+                        url = 'http://mgaleg.maryland.gov/webmga/frmMain.aspx?id=%s&stab=01&pid=billpage&tab=subject3&ys=%s' % (
+                            bill_id, session_slug)
                         if session < '2013':
-                            self.scrape_bill_2012(chamber, session, bill_id, url)
+                            self.scrape_bill_2012(
+                                chamber, session, bill_id, url)
                         else:
                             self.scrape_bill(chamber, session, bill_id, url)

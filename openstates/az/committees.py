@@ -57,7 +57,8 @@ class AZCommitteeScraper(CommitteeScraper):
             c = Committee(chamber, name, session=session, az_committee_id=c_id)
 
             c.add_source(source_url)
-            #for some reason they don't always have any info on the committees'
+            # for some reason they don't always have any info on the
+            # committees'
             try:
                 self.scrape_com_info(session, session_id, c_id, c)
             except HTTPError:
@@ -71,14 +72,14 @@ class AZCommitteeScraper(CommitteeScraper):
 
     def scrape_com_info(self, session, session_id, committee_id, committee):
         url = base_url + 'CommitteeInfo.asp?Committee_ID=%s&Session_ID=%s' % (committee_id,
-                                                                    session_id)
+                                                                              session_id)
 
         page = self.urlopen(url)
         committee.add_source(url)
         root = lxml.html.fromstring(page)
         p = '//table/tr/td[1]/a/ancestor::tr[1]'
         rows = root.xpath(p)
-        #need to skip the first row cause its a link to the home page
+        # need to skip the first row cause its a link to the home page
         for row in rows[1:]:
             name = row[0].text_content().strip()
             role = row[1].text_content().strip()
@@ -86,7 +87,7 @@ class AZCommitteeScraper(CommitteeScraper):
 
     def scrape_index(self, chamber, session, session_id, committee_type):
         url = base_url + 'xml/committees.asp?session=%s&type=%s' % (session_id,
-                                                                 committee_type)
+                                                                    committee_type)
         page = self.urlopen(url)
         root = etree.fromstring(page.bytes, etree.XMLParser(recover=True))
 
@@ -104,4 +105,3 @@ class AZCommitteeScraper(CommitteeScraper):
             else:
                 msg = 'No members found: not saving {committee}.'
                 self.logger.warning(msg.format(**c))
-

@@ -11,9 +11,9 @@ class CTLegislatorScraper(LegislatorScraper):
 
     _committee_names = {}
 
-    #def __init__(self, *args, **kwargs):
+    # def __init__(self, *args, **kwargs):
         #super(CTLegislatorScraper, self).__init__(*args, **kwargs)
-        #self._scrape_committee_names()
+        # self._scrape_committee_names()
 
     def scrape(self, term, chambers):
         leg_url = "ftp://ftp.cga.ct.gov/pub/data/LegislatorDatabase.csv"

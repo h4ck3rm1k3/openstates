@@ -74,10 +74,12 @@ class MABillScraper(BillScraper):
             for act_row in doc.xpath('//tbody[@class="bgwht"]/tr'):
                 date = act_row.xpath('./td[@headers="bDate"]/text()')[0]
                 date = datetime.strptime(date, "%m/%d/%Y")
-                actor_txt = act_row.xpath('./td[@headers="bBranch"]')[0].text_content().strip()
+                actor_txt = act_row.xpath(
+                    './td[@headers="bBranch"]')[0].text_content().strip()
                 if actor_txt:
                     actor = chamber_map[actor_txt]
-                action = act_row.xpath('./td[@headers="bAction"]')[0].text_content().strip()
+                action = act_row.xpath(
+                    './td[@headers="bAction"]')[0].text_content().strip()
                 attrs = self.categorizer.categorize(action)
                 bill.add_action(actor, action, date, **attrs)
 
@@ -94,7 +96,8 @@ class MABillScraper(BillScraper):
                                doc.xpath('//div[@id="billSummary"]/p[1]/a'))
 
             if len(sponsors) == 0:
-                spons = doc.xpath('//p[@class="billReferral"]')[0].text_content()
+                spons = doc.xpath(
+                    '//p[@class="billReferral"]')[0].text_content()
                 spons = spons.strip()
                 spons = spons.split("\n")
                 cspons = []

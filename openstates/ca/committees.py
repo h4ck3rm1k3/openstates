@@ -36,7 +36,6 @@ class CACommitteeScraper(CommitteeScraper):
         elif chamber == 'upper':
             self.scrape_upper(chamber, term)
 
-
     def scrape_lower(self, chamber, term):
         url = self.urls[chamber]
         html = self.urlopen(url)
@@ -57,15 +56,17 @@ class CACommitteeScraper(CommitteeScraper):
                 '//div[contains(@class, "view-view-%sCommittee")]' % type_,
                 '//div[contains(@id, "block-views-view_StandingCommittee-block_1")]',
                 '//div[contains(@class, "views-field-title")]',
-                ]:
+            ]:
                 div = doc.xpath(xpath)
                 if div:
                     break
 
             div = div[0]
-            committees = div.xpath('descendant::span[@class="field-content"]/a/text()')
+            committees = div.xpath(
+                'descendant::span[@class="field-content"]/a/text()')
             committees = map(strip, committees)
-            urls = div.xpath('descendant::span[@class="field-content"]/a/@href')
+            urls = div.xpath(
+                'descendant::span[@class="field-content"]/a/@href')
 
             for c, _url in zip(committees, urls):
 
@@ -87,13 +88,13 @@ class CACommitteeScraper(CommitteeScraper):
                 c.add_source(_url)
                 c.add_source(url)
                 for member, role, kw in self.scrape_membernames(c, _url,
-                        chamber, term):
+                                                                chamber, term):
                     c.add_member(member, role, **kw)
 
                 _found = False
                 if len(c['members']) == 0:
                     for member, role, kw in self.scrape_membernames(c,
-                            _url + '/membersstaff', chamber, term):
+                                                                    _url + '/membersstaff', chamber, term):
                         _found = True
                         c.add_member(member, role, **kw)
                     if _found:
@@ -126,13 +127,13 @@ class CACommitteeScraper(CommitteeScraper):
                 c.add_source(url)
 
                 for member, role, kw in self.scrape_membernames(c, _url,
-                        chamber, term):
+                                                                chamber, term):
                     c.add_member(member, role, **kw)
 
                 _found = False
                 if len(c['members']) == 0:
                     for member, role, kw in self.scrape_membernames(c,
-                            _url + '/membersstaff', chamber, term):
+                                                                    _url + '/membersstaff', chamber, term):
                         _found = True
                         c.add_member(member, role, **kw)
                     if _found:
@@ -163,19 +164,19 @@ class CACommitteeScraper(CommitteeScraper):
         # Many of the urls don't actually display members. Swap them for ones
         # that do.
         corrected_urls = (('http://autism.senate.ca.gov',
-                 'http://autism.senate.ca.gov/committeemembers1'),
+                           'http://autism.senate.ca.gov/committeemembers1'),
 
-                ('Sub Committee on Sustainable School Facilities',
-                 'http://sedn.senate.ca.gov/substainableschoolfacilities'),
+                          ('Sub Committee on Sustainable School Facilities',
+                           'http://sedn.senate.ca.gov/substainableschoolfacilities'),
 
-                ('Sustainable School Facilities',
-                 'http://sedn.senate.ca.gov/substainableschoolfacilities'),
+                          ('Sustainable School Facilities',
+                           'http://sedn.senate.ca.gov/substainableschoolfacilities'),
 
-                ('Sub Committee on Education Policy Research',
-                 'http://sedn.senate.ca.gov/policyresearch'),
+                          ('Sub Committee on Education Policy Research',
+                           'http://sedn.senate.ca.gov/policyresearch'),
 
-                ('Education Policy Research',
-                 'http://sedn.senate.ca.gov/policyresearch'))
+                          ('Education Policy Research',
+                           'http://sedn.senate.ca.gov/policyresearch'))
 
         corrected_urls = dict(corrected_urls)
 
@@ -183,7 +184,7 @@ class CACommitteeScraper(CommitteeScraper):
         for key in url, cname:
             if key in corrected_urls:
                 url = corrected_urls[key]
-                #committee['sources'].pop()
+                # committee['sources'].pop()
                 committee.add_source(url)
                 break
 
@@ -237,6 +238,7 @@ class CACommitteeScraper(CommitteeScraper):
             for senate_committee in committee_type:
                 comm = senate_committee.get_committee_obj()
                 self.save_committee(comm)
+
 
 class Membernames(object):
 
@@ -313,6 +315,7 @@ class Membernames(object):
 # Senate classes.
 # -----------------------------------------------------------------------------
 class SenateCommitteePage(object):
+
     '''The senate re-did their committee page in 2014. This class is an
     iterator over each group of committees (Standing, Select, Sub, etc.)
     '''
@@ -328,8 +331,10 @@ class SenateCommitteePage(object):
 
 
 class SenateCommitteeGroup(object):
+
     '''An iterator of the committees within this group.
     '''
+
     def __init__(self, urls, div):
         self.urls = urls
         self.div = div
@@ -350,8 +355,10 @@ class SenateCommitteeGroup(object):
 
 
 class SenateCommittee(object):
+
     '''Helper to get info about a given committee.
     '''
+
     def __init__(self, urls, type_, li):
         self.urls = urls
         self.type_ = type_
@@ -375,7 +382,7 @@ class SenateCommittee(object):
         '''
         parent = self.li.xpath("../../h3/text()")
         if parent:
-           return 'Standing Committee on ' + parent[0]
+            return 'Standing Committee on ' + parent[0]
 
     def get_committee_obj(self):
         name = self.get_name()
@@ -435,4 +442,3 @@ class SenateMembers(object):
     def __iter__(self):
         for a in self.get_a_list():
             yield self.get_name_role(a.text_content())
-

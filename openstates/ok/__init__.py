@@ -12,7 +12,7 @@ metadata = dict(
     legislature_name='Oklahoma Legislature',
     legislature_url='http://www.oklegislature.gov/',
     capitol_timezone='America/Chicago',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -21,37 +21,37 @@ metadata = dict(
          'start_year': 2011,
          'end_year': 2012,
          'sessions': ['2011-2012', '2012SS1']},
-         {'name': '2013-2014',
-          'start_year': 2013,
-          'end_year': 2014,
-          'sessions': ['2013-2014', '2013SS1']},
-        ],
+        {'name': '2013-2014',
+         'start_year': 2013,
+         'end_year': 2014,
+         'sessions': ['2013-2014', '2013SS1']},
+    ],
     session_details={
         # On the Oklahoma website they list 2011/2012 as separate sessions, but
         # bill numbering does not restart in even year sessions so we treat
         # them as the same session.  This means the session_id/_scraped_name
         # will change in even years and we'll need to ignore odd years
         '2011-2012':
-            {'display_name': '2011-2012 Regular Session',
-             'session_id': '1200',
-             '_scraped_name': '2012 Regular Session'
-            },
+        {'display_name': '2011-2012 Regular Session',
+         'session_id': '1200',
+         '_scraped_name': '2012 Regular Session'
+         },
         '2012SS1':
-            {'display_name': '2012 Special Session',
-             'session_id': '121X',
-             '_scraped_name': '2012 Special Session'
-            },
+        {'display_name': '2012 Special Session',
+         'session_id': '121X',
+         '_scraped_name': '2012 Special Session'
+         },
         '2013SS1': {
             'display_name': '2013 Special Session',
             'session_id': '131X',
             '_scraped_name': '2013 Special Session',
         },
-         '2013-2014':
-             {'display_name': '2013-2014 Regular Session',
-              'session_id': '1400',
-              '_scraped_name': '2014 Regular Session',
-             },
-        },
+        '2013-2014':
+        {'display_name': '2013-2014 Regular Session',
+         'session_id': '1400',
+         '_scraped_name': '2014 Regular Session',
+         },
+    },
     feature_flags=['subjects', 'influenceexplorer'],
     _ignored_scraped_sessions=[
         '2013 Regular Session',
@@ -71,12 +71,13 @@ metadata = dict(
         '1994 Second Special Session',
         '1994 First Special Session',
         '1994 Regular Session', '1993 Regular Session']
-    )
+)
 
 
 def session_list():
     from billy.scrape.utils import url_xpath
-    return url_xpath('http://webserver1.lsb.state.ok.us/WebApplication2/WebForm1.aspx',
+    return url_xpath(
+        'http://webserver1.lsb.state.ok.us/WebApplication2/WebForm1.aspx',
         "//select[@name='cbxSession']/option/text()")
 
 

@@ -27,4 +27,5 @@ def parse(lexer_class, parser_class, parser_state, string):
     parser.parse()
     result = parser.state['loc'].finalize()
     pprint.pprint(result)
-    import pdb;pdb.set_trace()
+    import pdb
+    pdb.set_trace()

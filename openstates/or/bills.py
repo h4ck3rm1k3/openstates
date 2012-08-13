@@ -11,11 +11,10 @@ import lxml.html
 import scrapelib
 
 
-
 class ORBillScraper(BillScraper):
     jurisdiction = 'or'
 
-    baseFtpUrl    = 'ftp://landru.leg.state.or.us'
+    baseFtpUrl = 'ftp://landru.leg.state.or.us'
 
     bill_types = {'B': 'bill',
                   'M': 'memorial',
@@ -26,7 +25,7 @@ class ORBillScraper(BillScraper):
 
     action_classifiers = (
         ('.*Introduction and first reading.*',
-             ['bill:introduced', 'bill:reading:1']),
+         ['bill:introduced', 'bill:reading:1']),
 
         ('.*First reading.*', ['bill:introduced', 'bill:reading:1']),
         ('.*Second reading.*', ['bill:reading:2']),
@@ -113,11 +112,12 @@ class ORBillScraper(BillScraper):
                 bill.add_version(name=name, url=link,
                                  mimetype='application/pdf')
 
-
-            history = self.create_url('Measures/Overview/GetHistory/{bill}', bid)
+            history = self.create_url(
+                'Measures/Overview/GetHistory/{bill}', bid)
             history = self.lxmlize(history).xpath("//table/tr")
             for entry in history:
-                wwhere, action = [c(x.text_content()) for x in entry.xpath("*")]
+                wwhere, action = [c(x.text_content())
+                                  for x in entry.xpath("*")]
                 wwhere = re.match(
                     "(?P<when>.*) \((?P<where>.*)\)", wwhere).groupdict()
 
@@ -134,7 +134,7 @@ class ORBillScraper(BillScraper):
                 if types == []:
                     types = ['other']
 
-                #if types == ['other']:
+                # if types == ['other']:
                 #    print(action)
 
                 # actor, action, date, type, committees, legislators
@@ -166,7 +166,6 @@ class ORBillScraper(BillScraper):
             bill.add_source(overview)
             self.save_bill(bill)
 
-
     def parse_bill(self, session, chamber, line):
         found = False
         found_thing = None
@@ -188,7 +187,7 @@ class ORBillScraper(BillScraper):
 
         (type, combined_id, number, title, relating_to) = info
         if ((type[0] == 'H' and chamber == 'lower') or
-            (type[0] == 'S' and chamber == 'upper')):
+                (type[0] == 'S' and chamber == 'upper')):
 
             # basic bill info
             bill_id = "%s %s" % (type, number)
@@ -203,7 +202,7 @@ class ORBillScraper(BillScraper):
                 return
 
             self.all_bills[bill_id] = Bill(session, chamber, bill_id, title,
-                                            type=bill_type)
+                                           type=bill_type)
 
     def _resolve_ftp_path(self, sessionYear, filename):
         currentYear = dt.datetime.today().year

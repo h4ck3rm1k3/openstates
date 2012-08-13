@@ -7,7 +7,8 @@ from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
 
 import settings
-import ipdb;ipdb.set_trace()
+import ipdb
+ipdb.set_trace()
 
 # Check https://developers.google.com/drive/scopes for all available scopes
 OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
@@ -34,9 +35,9 @@ drive_service = build('drive', 'v2', http=http)
 # Insert a file
 media_body = MediaFileUpload(FILENAME, mimetype='text/plain', resumable=True)
 body = {
-  'title': 'My document',
-  'description': 'A test document',
-  'mimeType': 'text/plain'
+    'title': 'My document',
+    'description': 'A test document',
+    'mimeType': 'text/plain'
 }
 
 file = drive_service.files().insert(body=body, media_body=media_body).execute()

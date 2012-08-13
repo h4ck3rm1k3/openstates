@@ -36,11 +36,13 @@ class MAVoteScraper(VoteScraper):
     jurisdiction = 'ma'
 
     class EndOfHouseVotes(Exception):
+
         '''Raise when there are no more house votes to scrape.
         '''
         pass
 
     class MiscellaneousVote(Exception):
+
         '''Sometimes the chamber will vote on something that isn't
         related to a bill, like whether to suspend the rules in order
         to continue to meet late in the night.
@@ -168,8 +170,8 @@ class MAVoteScraper(VoteScraper):
         other = int(counts.get('N-V', 0))
 
         vote = BillyVote('lower', date, motion, (yes > no),
-                    yes, no, other, session=session, bill_id=bill_id,
-                    bill_chamber=bill_chamber)
+                         yes, no, other, session=session, bill_id=bill_id,
+                         bill_chamber=bill_chamber)
 
         return vote
 

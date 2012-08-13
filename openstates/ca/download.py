@@ -63,7 +63,8 @@ def db_drop():
     logger.info('dropping capublic...')
 
     try:
-        connection = MySQLdb.connect(user=MYSQL_USER, passwd=MYSQL_PASSWORD, db='capublic')
+        connection = MySQLdb.connect(
+            user=MYSQL_USER, passwd=MYSQL_PASSWORD, db='capublic')
     except _mysql_exceptions.OperationalError:
         # The database doesn't exist.
         logger.info('...no such database. Bailing.')
@@ -78,7 +79,6 @@ def db_drop():
     logger.info('...done.')
 
 
-
 # ---------------------------------------------------------------------------
 # Functions for updating the data.
 def load_bill_versions(connection):
@@ -89,12 +89,12 @@ def load_bill_versions(connection):
     but doesn't fail mysteriously.
     '''
     DatRow = namedtuple('DatRow', [
-                      'bill_version_id', 'bill_id', 'version_num',
-                      'bill_version_action_date', 'bill_version_action',
-                      'request_num', 'subject', 'vote_required',
-                      'appropriation', 'fiscal_committee', 'local_program',
-                      'substantive_changes', 'urgency', 'taxlevy',
-                      'bill_xml', 'active_flg', 'trans_uid', 'trans_update'])
+        'bill_version_id', 'bill_id', 'version_num',
+        'bill_version_action_date', 'bill_version_action',
+        'request_num', 'subject', 'vote_required',
+        'appropriation', 'fiscal_committee', 'local_program',
+        'substantive_changes', 'urgency', 'taxlevy',
+        'bill_xml', 'active_flg', 'trans_uid', 'trans_update'])
 
     def dat_row_2_tuple(row):
         '''Convert a row in the bill_version_tbl.dat file into a
@@ -216,18 +216,18 @@ def delete_session(session_year):
             'bill_tbl',
             'committee_hearing_tbl',
             'daily_file_tbl'
-            ],
+        ],
 
         'bill_version_id': [
             'bill_version_authors_tbl',
             'bill_version_tbl'
-            ],
+        ],
 
         'session_year': [
             'legislator_tbl',
             'location_code_tbl'
-            ]
-        }
+        ]
+    }
 
     logger.info('Deleting all data for session year %s...' % session_year)
 
@@ -282,7 +282,8 @@ def db_create():
 def get_contents():
     resp = {}
     for line in urllib.urlopen(BASE_URL).read().splitlines()[1:]:
-        date, filename = re.match('[drwx-]{10}\s+\d\s+\d{3}\s+\d{3}\s+\d+ (\w+\s+\d+\s+\d+:?\d*) (\w+.\w+)', line).groups()
+        date, filename = re.match(
+            '[drwx-]{10}\s+\d\s+\d{3}\s+\d{3}\s+\d+ (\w+\s+\d+\s+\d+:?\d*) (\w+.\w+)', line).groups()
         date = date.replace('  ', ' ')
         try:
             date = datetime.strptime(date, '%b %d %Y')
@@ -292,9 +293,11 @@ def get_contents():
         resp[filename] = date
     return resp
 
+
 def _check_call(*args):
     logging.info('calling ' + ' '.join(args))
     subprocess.check_call(args)
+
 
 def get_zip(filename):
     dirname = filename.replace('.zip', '')
@@ -303,6 +306,7 @@ def get_zip(filename):
     _check_call('unzip', filename, '-d', dirname)
     _check_call('rm', '-rf', filename)
     return dirname
+
 
 def get_current_year(contents):
     newest_file = '2000'
@@ -319,8 +323,9 @@ def get_current_year(contents):
     files_to_get.append(newest_file)
 
     # get files for days since last update
-    days = ('pubinfo_Mon.zip', 'pubinfo_Tue.zip', 'pubinfo_Wed.zip', 'pubinfo_Thu.zip',
-            'pubinfo_Fri.zip', 'pubinfo_Sat.zip')
+    days = (
+        'pubinfo_Mon.zip', 'pubinfo_Tue.zip', 'pubinfo_Wed.zip', 'pubinfo_Thu.zip',
+        'pubinfo_Fri.zip', 'pubinfo_Sat.zip')
     for dayfile in days:
         if contents[dayfile] > newest_file_date:
             files_to_get.append(dayfile)

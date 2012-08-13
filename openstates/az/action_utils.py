@@ -1,74 +1,77 @@
-###########################################################
+#
 # committee actions
-###########################################################
+#
 
 committee_actions = {
     ("REREF GOVOP", "REREF JUD",
-     "REREF WM","DISC/S/C")          : "committee:referred",
-    ("FAILED",)                      : "committee:failed",
+     "REREF WM", "DISC/S/C"): "committee:referred",
+    ("FAILED",): "committee:failed",
     ("PASSED", "C&P", "PFC",
-     "PFC W/FL")                     : "committee:passed",
+     "PFC W/FL"): "committee:passed",
     ("C&P AS AM BY AP",
      "C&P AS AM BY EN", "C&P AS AM BY APPROP",
      "C&P AS AM BY GO", "C&P AS AM BY HE",
      "C&P AS AM BY JU", "C&P AS AM BY TR",
-     "C&P AS AM BY WM", "C&P AS AM BY GOVOP") : "committee:passed", # "committee:amended"],
+     "C&P AS AM BY WM", "C&P AS AM BY GOVOP"): "committee:passed",  # "committee:amended"],
     ("AMEND C&P", "AM C&P ON RECON",
      "AM C&P ON REREF", "PFCA W/FL",
-     "PFCA")                         : "committee:passed", # "committee:amended"
+     "PFCA"): "committee:passed",  # "committee:amended"
     ("DP", "DP ON RECON",
      "DP ON REREFER", "DP W/MIN RPT",
      "DP/PFC", "DPA/PFC W/FL",
-     "DP/PFCA")                      : "committee:passed:favorable",
+     "DP/PFCA"): "committee:passed:favorable",
     ("DPA", "DPA CORRECTED",
      "DPA ON RECON", "DPA ON REREFER",
      "DPA/PFC", "DPA/PFC W/FL",
-     "DPA/PFCA", "DPA/PFCA W/FL"): "committee:passed:favorable", # "committee:amended"],
-    ("DNP",)                         : "committee:passed:unfavorable",
+     "DPA/PFCA", "DPA/PFCA W/FL"): "committee:passed:favorable",  # "committee:amended"],
+    ("DNP",): "committee:passed:unfavorable",
     ("DPA/SE", "DPA/SE ON RECON",
-     "DPA/SE ON REREF")              : ["committee:passed:favorable",
-                                        "bill:substituted"],
+     "DPA/SE ON REREF"): ["committee:passed:favorable",
+                          "bill:substituted"],
     ("DISC/HELD", "HELD ON RECON",
      "HELD", "HELD 1 WK",
-     "HELD INDEF")                   : "other", # "committee:held"]
+     "HELD INDEF"): "other",  # "committee:held"]
 }
-###########################################################
+#
 # Generic actions hopefully classified correctly
-###########################################################
+#
 
-generic_actions= {
-    ("introduced",)                 : "bill:introduced",
-    ("PASSED",)                     : "bill:passed",
-    #there are several different fail motions so if the action contains 'FAILED'
-    ("FAILED",)                     : "bill:failed",
+generic_actions = {
+    ("introduced",): "bill:introduced",
+    ("PASSED",): "bill:passed",
+    # there are several different fail motions so if the action contains
+    # 'FAILED'
+    ("FAILED",): "bill:failed",
 
-    ("VETO OVERRIDE: PASSED",)      : "bill_veto_override:passed",
-    ("VETO OVERRIDE: FAILED",)      : "bill_veto_override:failed",
+    ("VETO OVERRIDE: PASSED",): "bill_veto_override:passed",
+    ("VETO OVERRIDE: FAILED",): "bill_veto_override:failed",
 
-    ("TRANSMITTED TO: GOVERNOR")    : "governor:received",
-    ("SIGNED",)                     : "governor:signed",
-    ("VETOED",)                     : "governor:vetoed",
+    ("TRANSMITTED TO: GOVERNOR"): "governor:received",
+    ("SIGNED",): "governor:signed",
+    ("VETOED",): "governor:vetoed",
 
-    ("AMENDMENT: INTRODUCED",)      : "amendment:introduced",
-    ("AMENDMENT: PASSED",)          : "amendment:passed",
-    ("AMENDMENT", "FAILED")         : "amendment:failed",
-    ("FURTHER AMENDED")             : "amendment:amended",
-#    ("AMENDMENT", "WITHDRAWN")       : "amendement:withdrawn",
+    ("AMENDMENT: INTRODUCED",): "amendment:introduced",
+    ("AMENDMENT: PASSED",): "amendment:passed",
+    ("AMENDMENT", "FAILED"): "amendment:failed",
+    ("FURTHER AMENDED"): "amendment:amended",
+    #    ("AMENDMENT", "WITHDRAWN")       : "amendement:withdrawn",
     ("REREF GOVOP", "REREF JUD",
      "REREF WM", "DISC/S/C",
      "REC REREF TO COM",
-     "RECOMMIT TO COM")             : "committee:referred",
+     "RECOMMIT TO COM"): "committee:referred",
     # THIRD READ AND FINAL READ
-    ("THIRD READ:",)                : "bill:reading:3",
+    ("THIRD READ:",): "bill:reading:3",
     ("DPA/SE", "DPA/SE ON RECON",
-     "DPA/SE ON REREF")              : "bill:substituted",
+     "DPA/SE ON REREF"): "bill:substituted",
     ("HOUSE FINAL READ:",
-     "SENATE FINAL READ:")          : "other",
+     "SENATE FINAL READ:"): "other",
 }
 
-###########################################################
+#
 # get_action_type()
-###########################################################
+#
+
+
 def get_action_type(abbrv, group=None):
     """
     best attempt at classifying committee actions
@@ -83,9 +86,11 @@ def get_action_type(abbrv, group=None):
             return actions[key]
     return 'other'
 
-###########################################################
+#
 # get_action
-###########################################################
+#
+
+
 def get_verbose_action(abbr):
     """
     get_action('PFCA W/FL') -->
@@ -96,9 +101,9 @@ def get_verbose_action(abbr):
     except KeyError:
         return abbr
 
-###########################################################
+#
 # annottated abbreviations
-###########################################################
+#
 
 common_abbrv = {
     # amended
@@ -159,8 +164,10 @@ common_abbrv = {
     'DPA/SE ON REREF': 'do pass amended/strike everything on rereferral',
     # failed #
     'FAILED': 'failed to pass',
-    'FAILED BY S/V 0': 'failed by standing vote', # does this mean there is no vote?
-    'FAILED ON RECON': 'failed on reconsideration', # after a succesful motion to reconsider
+    # does this mean there is no vote?
+    'FAILED BY S/V 0': 'failed by standing vote',
+    # after a succesful motion to reconsider
+    'FAILED ON RECON': 'failed on reconsideration',
     # in the house a bill is first read and assigned to committee #
     'FIRST': 'First Reading',
     # amendment amended??? or just another amendment? #

@@ -86,7 +86,6 @@ class WIBillScraper(BillScraper):
             if last_subject_div:
                 last_subject = last_subject_div[0]
 
-
     def scrape(self, chamber, session):
         # get year
         for t in self.metadata['terms']:
@@ -153,14 +152,14 @@ class WIBillScraper(BillScraper):
                   'Redistricting Attachment' in a.text or
                   'Budget Index Report' in a.text or
                   'Veto Message' in a.text
-                 ):
+                  ):
                 bill.add_document(a.text, a.get('href'))
             elif ('Bill Text' in a.text or
                   'Resolution Text' in a.text or
                   'Enrolled Joint Resolution' in a.text or
                   'Engrossed Resolution' in a.text or
                   'Text as Enrolled' in a.text
-                 ):
+                  ):
                 bill.add_version(a.text, a.get('href'), mimetype="text/html")
 
                 pdf = a.xpath('following-sibling::span/a/@href')[0]
@@ -239,7 +238,7 @@ class WIBillScraper(BillScraper):
                     # Nothing to do here :)
                     continue
 
-                type  = "Introduced"
+                type = "Introduced"
                 title, names = match.groups()
                 raise Exception("Foo")
             else:
@@ -292,7 +291,6 @@ class WIBillScraper(BillScraper):
         v['other_count'] = len(v['other_votes'])
         v.validate()
         bill.add_vote(v)
-
 
     def add_senate_votes(self, vote, url):
         html = self.urlopen(url)

@@ -52,13 +52,13 @@ committees = [
     u'CONSERVATION COMMITTEE',
     u'INDIAN and CULTURAL AFFAIRS COMMITTEE',
     u'SENATE RULES COMMITTEE',
-    ]
+]
 
 committees_rgx = '(%s)' % '|'.join(sorted(committees, key=len, reverse=True))
 
 
 rules = (
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

@@ -6,6 +6,7 @@ from billy.scrape import NoDataForPeriod
 from billy.scrape.votes import VoteScraper, Vote
 import lxml.html
 
+
 class MNVoteScraper(VoteScraper):
     jurisdiction = 'mn'
 
@@ -59,7 +60,7 @@ class MNVoteScraper(VoteScraper):
         date = self.date_re.match(paragraphs[1].text_content()).groups()[0]
         date = datetime.datetime.strptime(date, '%m/%d/%Y')
 
-        vote = Vote('lower', date, motion, yeas>nays, yeas, nays, 0,
+        vote = Vote('lower', date, motion, yeas > nays, yeas, nays, 0,
                     session=session, bill_id=bill_id, bill_chamber=chamber)
         vote.add_source(vote_url)
 

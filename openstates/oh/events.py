@@ -7,8 +7,9 @@ import pytz
 import lxml.html
 
 pages = {
-    "lower" : "http://www.legislature.state.oh.us/house_committee_schedule.cfm"
+    "lower": "http://www.legislature.state.oh.us/house_committee_schedule.cfm"
 }
+
 
 class OHEventScraper(EventScraper):
     jurisdiction = 'oh'
@@ -52,7 +53,7 @@ class OHEventScraper(EventScraper):
             bills = []
             room = None
 
-            blocks = [ x.strip() for x in block.split("\n") ]
+            blocks = [x.strip() for x in block.split("\n")]
 
             hour = re.sub("\(.*\)", "", blocks[1])
             bills = blocks[2]
@@ -70,7 +71,7 @@ class OHEventScraper(EventScraper):
                 hour = inf[0]
 
             # "and"
-            hour = [ x.strip() for x in hour.split('and') ]
+            hour = [x.strip() for x in hour.split('and')]
 
             # We'll pass over this twice.
             single_bill = re.search("(H|S)(C?)(B|R) \d+", bills)
@@ -99,8 +100,8 @@ class OHEventScraper(EventScraper):
                     bill_array = [_c(x) for x in bill_array]
                     type = type.replace("s", "")
                     bill_array = [
-                        { "bill_id": "%s %s" % ( type, x ),
-                          "description": bills } for x in bill_array ]
+                        {"bill_id": "%s %s" % (type, x),
+                         "description": bills} for x in bill_array]
                     bills = bill_array
 
                 else:
@@ -119,7 +120,7 @@ class OHEventScraper(EventScraper):
                     continue
 
                 for hour in hours:
-                    datetime = "%s %s" % ( dates[i], hour )
+                    datetime = "%s %s" % (dates[i], hour)
                     datetime = datetime.encode("ascii", "ignore")
 
                     # DAY_OF_WEEK MONTH/DAY/YY %I:%M %p"

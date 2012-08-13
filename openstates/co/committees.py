@@ -4,8 +4,8 @@ import lxml.html
 from billy.scrape.committees import CommitteeScraper, Committee
 
 COMMITTEE_URL = ("http://www.colorado.gov/cs/Satellite?c=Page&"
-    "childpagename=CGA-LegislativeCouncil%2FCLCLayout&"
-    "cid=1245677985421&pagename=CLCWrapper")
+                 "childpagename=CGA-LegislativeCouncil%2FCLCLayout&"
+                 "cid=1245677985421&pagename=CLCWrapper")
 
 
 class COCommitteeScraper(CommitteeScraper):

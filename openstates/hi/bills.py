@@ -11,22 +11,24 @@ from billy.scrape.votes import Vote
 HI_URL_BASE = "http://capitol.hawaii.gov"
 SHORT_CODES = "%s/committees/committees.aspx?chamber=all" % (HI_URL_BASE)
 
-def create_bill_report_url( chamber, year, bill_type ):
-    cname = { "upper" : "s", "lower" : "h" }[chamber]
+
+def create_bill_report_url(chamber, year, bill_type):
+    cname = {"upper": "s", "lower": "h"}[chamber]
     bill_slug = {
-        "bill" : "intro%sb" % ( cname ),
-        "cr"   : "%sCR" % ( cname.upper() ),
-        "r"    : "%sR"  % ( cname.upper() )
+        "bill": "intro%sb" % (cname),
+        "cr": "%sCR" % (cname.upper()),
+        "r": "%sR" % (cname.upper())
     }
 
     return HI_URL_BASE + "/report.aspx?type=" + bill_slug[bill_type] + \
         "&year=" + year
 
+
 def categorize_action(action):
     classifiers = (
         ('Pass(ed)? First Reading', 'bill:reading:1'),
         ('Introduced and Pass(ed)? First Reading',
-             ['bill:introduced', 'bill:reading:1']),
+         ['bill:introduced', 'bill:reading:1']),
         ('Introduced', 'bill:introduced'),
         #('The committee\(s\) recommends that the measure be deferred', ?
         ('Re(-re)?ferred to ', 'committee:referred'),
@@ -53,6 +55,7 @@ def categorize_action(action):
     # return other by default
     return ('other', ctty)
 
+
 def split_specific_votes(voters):
     if voters is None or voters.startswith('none'):
         return []
@@ -62,22 +65,23 @@ def split_specific_votes(voters):
         voters = voters.replace('Representative(s)', '')
     return voters.split(', ')
 
+
 class HIBillScraper(BillScraper):
 
     jurisdiction = 'hi'
 
-    def parse_bill_metainf_table( self, metainf_table ):
+    def parse_bill_metainf_table(self, metainf_table):
         def _sponsor_interceptor(line):
-            return [ guy.strip() for guy in line.split(",") ]
+            return [guy.strip() for guy in line.split(",")]
 
         interceptors = {
-            "Introducer(s)" : _sponsor_interceptor
+            "Introducer(s)": _sponsor_interceptor
         }
 
         ret = {}
         for tr in metainf_table:
-            row = tr.xpath( "td" )
-            key   = row[0].text_content().strip()
+            row = tr.xpath("td")
+            key = row[0].text_content().strip()
             value = row[1].text_content().strip()
             if key[-1:] == ":":
                 key = key[:-1]
@@ -88,16 +92,16 @@ class HIBillScraper(BillScraper):
 
     def parse_bill_actions_table(self, bill, action_table):
         for action in action_table.xpath('*')[1:]:
-            date   = action[0].text_content()
-            date   = dt.datetime.strptime(date, "%m/%d/%Y")
-            actor  = action[1].text_content()
+            date = action[0].text_content()
+            date = dt.datetime.strptime(date, "%m/%d/%Y")
+            actor = action[1].text_content()
             string = action[2].text_content()
             actor = {
-                "S" : "upper",
-                "H" : "lower",
-                "D" : "Data Systems",
-                "$" : "Appropriation measure",
-                "ConAm" : "Constitutional Amendment"
+                "S": "upper",
+                "H": "lower",
+                "D": "Data Systems",
+                "$": "Appropriation measure",
+                "ConAm": "Constitutional Amendment"
             }[actor]
             act_type, committees = categorize_action(string)
             # XXX: Translate short-code to full committee name for the
@@ -120,11 +124,11 @@ class HIBillScraper(BillScraper):
             if vote:
                 v, motion = vote
                 vote = Vote(actor, date, motion, 'passed' in string.lower(),
-                    int( v['n_yes'] or 0 ),
-                    int( v['n_no'] or 0 ),
-                    int( v['n_excused'] or 0))
+                            int(v['n_yes'] or 0),
+                            int(v['n_no'] or 0),
+                            int(v['n_excused'] or 0))
 
-                def _add_votes( attrib, v, vote ):
+                def _add_votes(attrib, v, vote):
                     for voter in split_specific_votes(v):
                         getattr(vote, attrib)(voter)
 
@@ -148,10 +152,10 @@ class HIBillScraper(BillScraper):
             http_href = tds[0].xpath("./a")
             name = http_href[0].text_content().strip()
             # category  = tds[1].text_content().strip()
-            pdf_href  = tds[1].xpath("./a")
+            pdf_href = tds[1].xpath("./a")
 
             http_link = http_href[0].attrib['href']
-            pdf_link  = pdf_href[0].attrib['href']
+            pdf_link = pdf_href[0].attrib['href']
 
             bill.add_version(name, http_link, mimetype="text/html")
             bill.add_version(name, pdf_link, mimetype="application/pdf")
@@ -162,15 +166,18 @@ class HIBillScraper(BillScraper):
         scraped_bill_id = bill_page.xpath(
             "//a[contains(@id, 'LinkButtonMeasure')]")[0].text_content()
         bill_id = scraped_bill_id.split(' ')[0]
-        versions = bill_page.xpath( "//table[contains(@id, 'GridViewVersions')]" )[0]
+        versions = bill_page.xpath(
+            "//table[contains(@id, 'GridViewVersions')]")[0]
 
         tables = bill_page.xpath("//table")
-        metainf_table = bill_page.xpath('//div[contains(@id, "itemPlaceholder")]//table[1]')[0]
-        action_table  = bill_page.xpath('//div[contains(@id, "UpdatePanel1")]//table[1]')[0]
+        metainf_table = bill_page.xpath(
+            '//div[contains(@id, "itemPlaceholder")]//table[1]')[0]
+        action_table = bill_page.xpath(
+            '//div[contains(@id, "UpdatePanel1")]//table[1]')[0]
 
-        meta  = self.parse_bill_metainf_table(metainf_table)
+        meta = self.parse_bill_metainf_table(metainf_table)
 
-        subs = [ s.strip() for s in meta['Report Title'].split(";") ]
+        subs = [s.strip() for s in meta['Report Title'].split(";")]
         if "" in subs:
             subs.remove("")
 
@@ -188,7 +195,7 @@ class HIBillScraper(BillScraper):
         for sponsor in meta['Introducer(s)']:
             b.add_sponsor(type='primary', name=sponsor)
 
-        actions  = self.parse_bill_actions_table(b, action_table)
+        actions = self.parse_bill_actions_table(b, action_table)
         versions = self.parse_bill_versions_table(b, versions)
 
         self.save_bill(b)
@@ -212,9 +219,9 @@ class HIBillScraper(BillScraper):
         report_page_url = create_bill_report_url(chamber, session_urlslug,
                                                  billtype)
         billy_billtype = {
-            "bill" : "bill",
-            "cr"   : "concurrent resolution",
-            "r"    : "resolution"
+            "bill": "bill",
+            "cr": "concurrent resolution",
+            "r": "resolution"
         }[billtype]
 
         list_html = self.urlopen(report_page_url)
@@ -222,7 +229,6 @@ class HIBillScraper(BillScraper):
         for bill_url in list_page.xpath("//a[@class='report']"):
             bill_url = HI_URL_BASE + bill_url.attrib['href']
             self.scrape_bill(session, chamber, billy_billtype, bill_url)
-
 
     def scrape(self, session, chamber):
         get_short_codes(self)

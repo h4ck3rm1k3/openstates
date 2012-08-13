@@ -64,7 +64,8 @@ class IAEventScraper(InvalidHTTPSScraper, EventScraper):
                 )
             else:
                 try:
-                    when = datetime.datetime.strptime(when, "%m/%d/%Y %I:%M %p")
+                    when = datetime.datetime.strptime(
+                        when, "%m/%d/%Y %I:%M %p")
                 except ValueError:
                     when = datetime.datetime.strptime(when, "%m/%d/%Y %I %p")
 

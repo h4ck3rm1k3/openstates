@@ -75,15 +75,17 @@ _categorizer_rules = (
     Rule([u'CR; Do not pass (?P<committees>.+)'], [u'committee:failed']),
     Rule([u'rereferred to (?P<committees>.+)'], [u'committee:referred']),
     Rule([u'Referred to (?P<committees>.+?)'], [u'committee:referred']),
-    Rule([u'Reported Do Pass, amended by committee substitute (?P<committees>.+?);'],
-         [u'committee:passed']),
+    Rule(
+        [u'Reported Do Pass, amended by committee substitute (?P<committees>.+?);'],
+        [u'committee:passed']),
     Rule([u'^(?i)Reported Do Pass'], [u'committee:passed']),
     Rule([u'Do pass, amended by committee substitute (?P<committees>)'],
          [u'committee:passed']),
     Rule([u'Sent to Governor'], [u'governor:received'], actor='governor'),
-    Rule([u'^(Signed|Approved) by Governor'], [u'governor:signed'], actor='governor'),
+    Rule([u'^(Signed|Approved) by Governor'],
+         [u'governor:signed'], actor='governor'),
     Rule([u'^Vetoed'], [u'governor:vetoed'], actor='governor'),
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

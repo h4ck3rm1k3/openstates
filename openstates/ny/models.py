@@ -18,9 +18,10 @@ from .utils import Urls, CachedAttr
 class BasePageyThing(object):
     metadata = metadata('ny')
     chamber_name = None
+
     def __init__(self, scraper, session, chamber, details):
         (senate_url, assembly_url, bill_chamber, bill_type, bill_id,
-          title, bill_id_parts) = details
+         title, bill_id_parts) = details
 
         self.scraper = scraper
         self.session = session
@@ -57,6 +58,7 @@ class BasePageyThing(object):
 
 
 class AssemblyBillPage(BasePageyThing):
+
     '''Get the actions, sponsors, sponsors memo and summary
     and assembly floor votes from the assembly page.
     '''
@@ -146,7 +148,7 @@ class AssemblyBillPage(BasePageyThing):
                             sponsor_type, 'cosponsor')
 
                         self.bill.add_sponsor(_sponsor_type, sponsor.strip(),
-                                         official_type=sponsor_type)
+                                              official_type=sponsor_type)
 
     def build_actions(self):
         _, actions = self.chunks
@@ -157,7 +159,8 @@ class AssemblyBillPage(BasePageyThing):
             date = datetime.datetime.strptime(date, r'%m/%d/%Y')
             act_chamber = ('upper' if action.isupper() else 'lower')
             types, attrs = categorizer.categorize(action)
-            self.bill.add_action(act_chamber, action, date, type=types, **attrs)
+            self.bill.add_action(
+                act_chamber, action, date, type=types, **attrs)
             # Bail if the bill has been substituted by another.
             if 'substituted by' in action:
                 return
@@ -220,11 +223,12 @@ class AssemblyBillPage(BasePageyThing):
 
 
 class SenateBillPage(object):
+
     '''Used for categories, senate votes, events.'''
 
     def __init__(self, scraper, session, chamber, bill, details):
         (senate_url, assembly_url, bill_chamber, bill_type, bill_id,
-          title, (letter, number, is_amd)) = details
+         title, (letter, number, is_amd)) = details
 
     def build_subjects(self):
         subjects = []
@@ -262,7 +266,7 @@ class SenateBillPage(object):
                     elif (text.startswith('Excused') or
                           text.startswith('Abstain') or
                           text.startswith('Absent')
-                         ):
+                          ):
                         vtype = 'other'
                         other_count += int(re.search(
                             r'\((\d+)\):', text).group(1))
@@ -318,7 +322,7 @@ class SenateBillPage(object):
                     elif (text.startswith('Excused') or
                           text.startswith('Abstain') or
                           text.startswith('Absent')
-                         ):
+                          ):
                         vtype = 'other'
                         other_count += int(re.search(
                             r'\((\d+)\):', text).group(1))

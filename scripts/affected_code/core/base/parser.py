@@ -97,6 +97,7 @@ class Stream(object):
 class Parser(object):
 
     class SequenceMismatch(ParseError):
+
         '''Raised if expected sequence differs from
         actual sequence found.
         '''
@@ -187,7 +188,7 @@ class Parser(object):
         return dict(self._parser_state)
 
     def _take_tokentype_sequence(self, sequence, repeat=False,
-            flat=False, ignore=None):
+                                 flat=False, ignore=None):
         '''Return tokens from the stream if they match the given sequence.
         '''
         result = []
@@ -271,7 +272,7 @@ class Parser(object):
     #     try:
     #         yield self._take_tokentype_sequence(tokentypes, **kwargs)
     #     except self.SequenceMismatch:
-    #         # Reset the stream position.
+    # Reset the stream position.
     #         self.stream.i = i
     #         yield
 

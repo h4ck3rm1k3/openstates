@@ -9,6 +9,7 @@ import pytz
 
 url = "http://www.leg.state.mn.us/calendarday.aspx?jday=all"
 
+
 class MNEventScraper(EventScraper):
     jurisdiction = 'mn'
     date_formats = (
@@ -66,7 +67,7 @@ class MNEventScraper(EventScraper):
                 #    def __init__(self, session, when, type,
                 #                 description, location, end=None, **kwargs)
                 event = Event(self.session, when, 'committee:meeting',
-                        description, location, **kwargs)
+                              description, location, **kwargs)
                 event.add_source(url)
                 self.save_event(event)
 
@@ -178,4 +179,3 @@ class MNEventScraper(EventScraper):
                         return tail
                     break
         return
-

@@ -8,7 +8,7 @@ import lxml
 
 HOMEPAGE_URLS = {
     "lower": ("http://www.house.ga.gov/Representatives/en-US/"
-             "member.aspx?Member={code}&Session={sid}"),
+              "member.aspx?Member={code}&Session={sid}"),
     "upper": ("http://www.senate.ga.gov/SENATORS/en-US/"
               "member.aspx?Member={code}&Session={sid}")
 }
@@ -100,7 +100,6 @@ class GALegislatorScraper(LegislatorScraper):
                 raise Exception("Something very bad is going on with the "
                                 "Legislative service")
 
-
             legislator = Legislator(
                 term,
                 chamber,
@@ -122,7 +121,7 @@ class GALegislatorScraper(LegislatorScraper):
 
             capital_address = (" ".join(
                 addr_component for addr_component
-                    in capital_address if addr_component
+                in capital_address if addr_component
             )).strip()
 
             capital_contact_info = self.clean_list([
@@ -143,7 +142,7 @@ class GALegislatorScraper(LegislatorScraper):
             # if we have more than 2 chars (eg state)
             # or a phone/fax/email address record the info
             if len(capital_address) > 2 or not capital_contact_info.count(None) == 3:
-                if (capital_contact_info[0] \
+                if (capital_contact_info[0]
                         and 'quickrxdrugs@yahoo.com' in capital_contact_info[0]):
                     self.warning("XXX: GA SITE WAS HACKED.")
                     capital_contact_info[1] = None
@@ -177,11 +176,11 @@ class GALegislatorScraper(LegislatorScraper):
             district_address = (
                 " ".join(
                     addr_component for addr_component
-                        in district_address if addr_component
+                    in district_address if addr_component
                 )).strip()
 
             if len(capital_address) > 2 or not capital_contact_info.count(None) == 3:
-                if (district_contact_info[1] and \
+                if (district_contact_info[1] and
                         'quickrxdrugs@yahoo.com' in district_contact_info[1]):
                     self.warning("XXX: GA SITE WAS HACKED.")
                     district_contact_info[1] = None

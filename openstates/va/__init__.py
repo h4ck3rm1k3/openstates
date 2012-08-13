@@ -27,19 +27,19 @@ metadata = {
         '2010': {'start_date': datetime.date(2010, 1, 13), 'site_id': '101',
                  'display_name': '2010 Regular Session',
                  '_scraped_name': '2010 Session',
-                },
+                 },
         '2011': {'start_date': datetime.date(2011, 1, 12), 'site_id': '111',
                  'display_name': '2011 Regular Session',
                  '_scraped_name': '2011 Session',
-                },
+                 },
         '2011specialI': {'site_id': '112',
-                 'display_name': '2011, 1st Special Session',
-                 '_scraped_name': '2011 Special Session I',
-                },
+                         'display_name': '2011, 1st Special Session',
+                         '_scraped_name': '2011 Special Session I',
+                         },
         '2012': {'start_date': datetime.date(2012, 1, 11), 'site_id': '121',
                  'display_name': '2012 Regular Session',
                  '_scraped_name': '2012 Session',
-                },
+                 },
         '2012specialI': {'start_date': datetime.date(2012, 3, 11),
                          'site_id': '122',
                          'display_name': '2012, 1st Special Session',
@@ -47,14 +47,14 @@ metadata = {
         '2013': {'start_date': datetime.date(2013, 1, 9), 'site_id': '131',
                  'display_name': '2013 Regular Session',
                  '_scraped_name': '2013 Session',
-                },
+                 },
         '2013specialI': {'site_id': '132',
                          'display_name': '2013, 1st Special Session',
                          '_scraped_name': '2013 Special Session I', },
         '2014': {'start_date': datetime.date(2014, 1, 9), 'site_id': '141',
                  'display_name': '2014 Regular Session',
                  '_scraped_name': '2014 Session',
-                },
+                 },
     },
     'feature_flags': ['subjects', 'influenceexplorer'],
     '_ignored_scraped_sessions': ['2009 Session',
@@ -75,10 +75,11 @@ metadata = {
 
 }
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
-    sessions = url_xpath( 'http://lis.virginia.gov/',
-        "//div[@id='sLink']//select/option/text()")
+    sessions = url_xpath('http://lis.virginia.gov/',
+                         "//div[@id='sLink']//select/option/text()")
     return [s.strip() for s in sessions if 'Session' in s]
 
 

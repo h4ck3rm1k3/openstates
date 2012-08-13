@@ -11,7 +11,7 @@ class NJEventScraper(EventScraper, MDBMixin):
     _tz = pytz.timezone('US/Eastern')
 
     def initialize_committees(self, year_abr):
-        chamber = {'A':'Assembly', 'S': 'Senate', '':''}
+        chamber = {'A': 'Assembly', 'S': 'Senate', '': ''}
 
         com_csv = self.access_to_csv('Committee')
 
@@ -59,7 +59,7 @@ class NJEventScraper(EventScraper, MDBMixin):
 
             for bill in re.findall("(A|S)(-)?(\d{4})", description):
                 related_bills.append({
-                    "bill_id" : "%s %s" % ( bill[0], bill[2] ),
+                    "bill_id": "%s %s" % (bill[0], bill[2]),
                     "descr": description
                 })
 
@@ -71,18 +71,18 @@ class NJEventScraper(EventScraper, MDBMixin):
                 session,
                 date_time,
                 'committee:meeting',
-                "Meeting of the %s" % ( hr_name ),
+                "Meeting of the %s" % (hr_name),
                 location=record['Location'] or "Statehouse",
             )
             for bill in related_bills:
                 event.add_related_bill(bill['bill_id'],
-                                      description=bill['descr'],
-                                      type='consideration')
+                                       description=bill['descr'],
+                                       type='consideration')
             try:
                 chamber = {
-                    "a" : "lower",
-                    "s" : "upper",
-                    "j" : "joint"
+                    "a": "lower",
+                    "s": "upper",
+                    "j": "joint"
                 }[record['CommHouse'][0].lower()]
             except KeyError:
                 chamber = "joint"

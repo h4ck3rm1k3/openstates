@@ -27,11 +27,11 @@ metadata = {
         '2011': {'display_name': '2011 Regular Session',
                  'years': [2011, 2012],
                  '_scraped_name': '2011 Regular Session',
-                },
+                 },
         '2013': {'display_name': '2013 Regular Session',
                  'years': [2013, 2014],
                  '_scraped_name': '2013 Regular Session',
-                },
+                 },
     },
     'feature_flags': ['influenceexplorer'],
     '_ignored_scraped_sessions': [
@@ -52,7 +52,7 @@ metadata = {
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://leg.mt.gov/css/bills/Default.asp',
-        "//td[@id='cont']/ul/li/a/text()")
+                     "//td[@id='cont']/ul/li/a/text()")
 
 
 def extract_text(doc, data):

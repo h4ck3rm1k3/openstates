@@ -12,28 +12,28 @@ metadata = dict(
     legislature_name='Wyoming State Legislature',
     legislature_url='http://legisweb.state.wy.us/',
     capitol_timezone='America/Denver',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
     terms=[
         {'name': '2011-2012',
-         'sessions': ['2011','2012'],
-         'start_year': 2011, 'end_year': 2012,},
+         'sessions': ['2011', '2012'],
+         'start_year': 2011, 'end_year': 2012, },
         {'name': '2013-2014',
          'sessions': ['2013'],
-         'start_year': 2013, 'end_year': 2014,},
+         'start_year': 2013, 'end_year': 2014, },
     ],
     session_details={
         '2011': {'type': 'primary', 'display_name': '2011 General Session',
                  '_scraped_name': '2011 General Session'
-                },
+                 },
         '2012': {'type': 'special', 'display_name': '2012 Budget Session',
                  '_scraped_name': '2012 Budget Session'
-                },
+                 },
         '2013': {'type': 'primary', 'display_name': '2013 General Session',
                  '_scraped_name': '2013 General Session'
-                },
+                 },
     },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=['2010 Budget Session', '2009 General Session',
@@ -44,10 +44,11 @@ metadata = dict(
 
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://legisweb.state.wy.us/LSOWeb/SessionArchives.aspx',
-        "//div[@id='divLegContent']/a/p/text()" )
+                     "//div[@id='divLegContent']/a/p/text()")
 
 
 def extract_text(doc, data):

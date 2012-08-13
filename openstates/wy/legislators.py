@@ -39,7 +39,8 @@ class WYLegislatorScraper(LegislatorScraper):
                 "//img[contains(@src, 'LegislatorSummary/photos')]")[0]
             photo_url = img.attrib['src']
 
-            office_tds = leg_page.xpath('//table[@id="ctl00_cphContent_tblContact"]/tr/td/text()')
+            office_tds = leg_page.xpath(
+                '//table[@id="ctl00_cphContent_tblContact"]/tr/td/text()')
             address = []
             phone = None
             fax = None

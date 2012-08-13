@@ -9,6 +9,7 @@ import re
 fin_re = r"(?i).*(?P<bill_id>(S|H|J)(B|R|M) \d+).*(?P<passfail>(passed|lost)).*"
 date_re = r".*(?P<date>(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY), .*\d{1,2},\s\d{4}).*"
 
+
 class NDVoteScraper(VoteScraper):
     jurisdiction = 'nd'
 
@@ -17,7 +18,6 @@ class NDVoteScraper(VoteScraper):
         page = lxml.html.fromstring(page)
         page.make_links_absolute(url)
         return page
-
 
     def scrape(self, chamber, session):
         chamber_name = 'senate' if chamber == 'lower' else 'house'
@@ -47,7 +47,8 @@ class NDVoteScraper(VoteScraper):
                 date = re.findall(date_re, line)
                 if date != [] and not cur_date:
                     date = date[0][0]
-                    cur_date = datetime.datetime.strptime(date, "%A, %B %d, %Y")
+                    cur_date = datetime.datetime.strptime(
+                        date, "%A, %B %d, %Y")
 
                 if line.strip() == "":
                     in_motion = False
@@ -84,7 +85,7 @@ class NDVoteScraper(VoteScraper):
                     # results
                     results = {}
                     yes, no, other = len(res['yes']), len(res['no']), \
-                                        len(res['other'])
+                        len(res['other'])
                     chambers = {
                         "H": "lower",
                         "S": "upper",
@@ -119,7 +120,6 @@ class NDVoteScraper(VoteScraper):
                             obj(person)
 
                     self.save_vote(vote)
-
 
                     bill_id = None
                     results = {}

@@ -12,6 +12,7 @@ base_url = "http://www.legis.nd.gov/assembly/%s-%s/subject-index/major-topic.htm
 
 
 class NDBillScraper(BillScraper):
+
     """
     Scrapes available legislative information from the website of the North
     Dakota legislature and stores it in the openstates  backend.
@@ -82,7 +83,6 @@ class NDBillScraper(BillScraper):
                 ]:
                     bill.add_sponsor('primary',
                                      sponsor)
-
 
         dt = None
         oldchamber = 'other'

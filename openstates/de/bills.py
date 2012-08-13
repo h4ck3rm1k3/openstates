@@ -18,6 +18,7 @@ import actions
 
 
 class BillIdParseError(ScrapeError):
+
     '''
     Raised when function `parse_bill_id` returns a string that
     doesn't remotely resmble a valid bill_id.
@@ -26,6 +27,7 @@ class BillIdParseError(ScrapeError):
 
 
 class WeirdDataError(ScrapeError):
+
     '''Raised when unexpected format is encountered, probably due to
     manual entry.
     '''
@@ -55,8 +57,9 @@ def slugify(s):
 
 
 def parse_votestring(v, strptime=datetime.strptime,
-    re_date=re.compile('\d{,2}/\d{,2}/\d{,4} [\d:]{,8} [AP]M'),
-    chambers={'House': 'lower', 'Senate': 'upper'}):
+                     re_date=re.compile(
+                         '\d{,2}/\d{,2}/\d{,4} [\d:]{,8} [AP]M'),
+                     chambers={'House': 'lower', 'Senate': 'upper'}):
     '''
     Parse contents of the string on the main bill detail page
     describing a vote.
@@ -80,7 +83,7 @@ def parse_votestring(v, strptime=datetime.strptime,
 def extract_bill_id(bill_id, fns=(
     partial(re.compile(r'( w/.A \d{1,3}.{,200},?)+$', re.I).sub, ''),
     partial(re.compile(r'^.{,20}for ', re.I).sub, '')),
-    is_valid=re.compile(r'[A-Z]{2,4} \d{1,6}$').match):
+        is_valid=re.compile(r'[A-Z]{2,4} \d{1,6}$').match):
     '''
     Given a bill id string from the website's index pages, removes
     characters indicating amendments and substitutions, e.g.:
@@ -104,6 +107,7 @@ def extract_bill_id(bill_id, fns=(
 
 
 class DEBillScraper(BillScraper):
+
     '''
     Scrapes bills for the current session. Delware's website
     (http://legis.delaware.gov/) lists archival data separately and
@@ -125,7 +129,7 @@ class DEBillScraper(BillScraper):
         'Senate Joint Resolution': 'joint resolution',
         'Senate Resolution': 'resolution',
         'Senate Nominations': 'nomination',
-        }
+    }
 
     def _url_2_lxml(self, url, base_url='{0.scheme}://{0.netloc}'.format):
         '''
@@ -139,28 +143,29 @@ class DEBillScraper(BillScraper):
 
     def _cleanup_sponsors(self, string, chamber,
 
-        # Splits at ampersands and commas.
-        re_amp=re.compile(r'[,&]'),
+                          # Splits at ampersands and commas.
+                          re_amp=re.compile(r'[,&]'),
 
-        # Changes "Sen. Jones" into "Jones"
-        re_title=re.compile(r'(Sen|Rep)s?[.;]\s?'),
+                          # Changes "Sen. Jones" into "Jones"
+                          re_title=re.compile(r'(Sen|Rep)s?[.;]\s?'),
 
-        # Map to clean up sponsor name data.
-        name_map={
+                          # Map to clean up sponsor name data.
+                          name_map={
             '{ NONE...}': '',
-            },
+                          },
 
-        # Mapping of member designations to related chamber type.
-        chamber_map={
+                          # Mapping of member designations to related chamber
+                          # type.
+                          chamber_map={
             'Sen': 'upper',
             'Rep': 'lower',
-            },
+                          },
 
-        chain=itertools.chain.from_iterable,
-        replace=methodcaller('replace', '&nbsp', ''),
-        strip=methodcaller('strip'),
+                          chain=itertools.chain.from_iterable,
+                          replace=methodcaller('replace', '&nbsp', ''),
+                          strip=methodcaller('strip'),
 
-        splitter=re.compile('(?:[,;] NewLine|(?<!Reps); |on behalf of all \w+)')):
+            splitter=re.compile('(?:[,;] NewLine|(?<!Reps); |on behalf of all \w+)')):
         '''
         Sponsor names are sometimes joined with an ampersand,
         are '{ NONE...}', or contain '&nbsp'. This helper removes
@@ -269,7 +274,8 @@ class DEBillScraper(BillScraper):
         doc = _url_2_lxml(url)
         _get_text = partial(get_text, doc, 0)
 
-        # Get session number--needed for fetching related documents (see below).
+        # Get session number--needed for fetching related documents (see
+        # below).
         xpath = '//font[contains(., "General Assembly") and @face="Arial"]'
         session_num = doc.xpath(xpath)[0].text_content()
         session_num = re_digits.match(session_num).group()
@@ -285,7 +291,8 @@ class DEBillScraper(BillScraper):
 
         xpath = '//font[contains(., "Sponsor") and @color="#008080"]'
         headings = doc.xpath(xpath + '/text()')
-        sponsors = doc.xpath(xpath + '/../../following-sibling::td/font/text()')
+        sponsors = doc.xpath(
+            xpath + '/../../following-sibling::td/font/text()')
 
         for h, s in zip(headings, sponsors):
 
@@ -305,10 +312,10 @@ class DEBillScraper(BillScraper):
             '{moniker}/$file/{filename}{format_}?open'])
 
         documents = self.scrape_documents(source=url,
-                                     docname="introduced",
-                                     filename="Legis",
-                                     tmp=tmp,
-                                     session_num=session_num)
+                                          docname="introduced",
+                                          filename="Legis",
+                                          tmp=tmp,
+                                          session_num=session_num)
 
         for d in documents:
             bill.add_version(**d)
@@ -317,7 +324,7 @@ class DEBillScraper(BillScraper):
         names = doc.xpath('//*[contains(text(), "Substituted '
                           'Legislation for Bill:")]/text()')
         urls = doc.xpath('//*[contains(text(), "Substituted '
-                          'Legislation for Bill:")]'
+                         'Legislation for Bill:")]'
                          '/following-sibling::a/@href')
 
         for name, url in zip(names, urls):
@@ -507,7 +514,8 @@ class DEBillScraper(BillScraper):
             self.warning('Found an unusual votes page at url: "%s"' % url)
             totals = re_totals.findall(doc.text_content())
             if len(totals) == 4:
-                self.warning('...was able to parse vote tallies from "%s"' % url)
+                self.warning('...was able to parse vote tallies from "%s"' %
+                             url)
 
         else:
             totals = re_digit.findall(totals)
@@ -533,7 +541,7 @@ class DEBillScraper(BillScraper):
             ('yes_count', 'Yes:'),
             ('no_count', 'No:'),
             ('absent_count', 'Absent:'),
-            ('not_voting', 'Not Voting:')]:
+                ('not_voting', 'Not Voting:')]:
             try:
                 counts[key] = int(font_text[font_text.index(string) + 2])
             except ValueError:
@@ -549,7 +557,7 @@ class DEBillScraper(BillScraper):
         for xpath in (
             'string(//td/b/text())',
             'string(//td/b/font/text())',
-            'string(//form/b/font/text())'):
+                'string(//form/b/font/text())'):
             motion = doc.xpath(xpath)
             if motion:
                 break
@@ -595,7 +603,7 @@ class DEBillScraper(BillScraper):
         vote_map = {
             'Y': 'yes',
             'N': 'no',
-            }
+        }
 
         while True:
 
@@ -658,11 +666,12 @@ class DEBillScraper(BillScraper):
             '.html': 'text/html',
             '.pdf': 'application/pdf',
             '.docx': 'application/msword'
-            }
+        }
 
         for format_ in formats:
 
-            el =_doc.xpath('//font[contains(., "%s%s")]' % (filename, format_))
+            el = _doc.xpath('//font[contains(., "%s%s")]' %
+                            (filename, format_))
 
             if not el:
                 continue

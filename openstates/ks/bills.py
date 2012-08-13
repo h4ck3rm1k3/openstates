@@ -9,10 +9,12 @@ import scrapelib
 
 from billy.scrape.bills import BillScraper, Bill
 from billy.scrape.votes import Vote
-from billy.scrape import NoDataForPeriod
-
-
+import logging
+_log = logging.getLogger('billy')
 import ksapi
+from billy.scrape import ScrapeError
+LI = 'http://www.kslegislature.org/li'
+
 
 class KSBillScraper(BillScraper):
     jurisdiction = 'ks'
@@ -23,15 +25,33 @@ class KSBillScraper(BillScraper):
         if os.system('which abiword') != 0:
             raise ScrapeError('abiword is required for KS scraping')
 
-        chamber_name = 'Senate' if chamber == 'upper' else 'House'
-        chamber_letter = chamber_name[0]
         # perhaps we should save this data so we can make one request for both?
         bill_request = self.urlopen(ksapi.url + 'bill_status/')
-        bill_request_json = json.loads(bill_request)
+        return self._scrape_data(chamber, session, bill_request)
+
+    def _scrape_data(self, chamber, session, jsons):
+        chamber_name = 'Senate' if chamber == 'upper' else 'House'
+        chamber_letter = chamber_name[0]
+        bill_request_json = json.loads(jsons)
         bills = bill_request_json['content']
         for bill_data in bills:
-
             bill_id = bill_data['BILLNO']
+            if not(self.get_filter_bill_id() is False):
+                if not bill_id == self.get_filter_bill_id():
+                    _log.debug("Skipping bill_id %s != %s" % (
+                        bill_id, self.get_filter_bill_id()))
+                    continue
+                else:
+                    _log.debug(
+                        "Matched bill_id %s == %s" % (
+                            bill_id,
+                            self.get_filter_bill_id()))
+            else:
+                _log.debug(
+                    "no check bill_id %s and %s" % (
+                        bill_id,
+                        self.get_filter_bill_id())
+                )
 
             # filter other chambers
             if not bill_id.startswith(chamber_letter):
@@ -51,8 +71,9 @@ class KSBillScraper(BillScraper):
                         type=btype, status=bill_data['STATUS'])
             bill.add_source(ksapi.url + 'bill_status/' + bill_id.lower())
 
-            if (bill_data['LONGTITLE'] and
-                bill_data['LONGTITLE'] != bill['title']):
+            if (
+                    bill_data['LONGTITLE'] and
+                    bill_data['LONGTITLE'] != bill['title']):
                 bill.add_title(bill_data['LONGTITLE'])
 
             for sponsor in bill_data['SPONSOR_NAMES']:
@@ -66,7 +87,9 @@ class KSBillScraper(BillScraper):
                 actor = ('upper' if event['chamber'] == 'Senate'
                          else 'lower')
 
-                date = datetime.datetime.strptime(event['occurred_datetime'], "%Y-%m-%dT%H:%M:%S")
+                date = datetime.datetime.strptime(
+                    event['occurred_datetime'],
+                    "%Y-%m-%dT%H:%M:%S")
                 # append committee names if present
                 if 'committee_names' in event:
                     action = (event['status'] + ' ' +
@@ -86,19 +109,31 @@ class KSBillScraper(BillScraper):
             try:
                 self.scrape_html(bill)
             except scrapelib.HTTPError as e:
+                self.debug(e)
+                self.debug(bill)
                 self.warning('unable to fetch HTML for bill {0}'.format(
                     bill['bill_id']))
             self.save_bill(bill)
 
     def scrape_html(self, bill):
-        slug = {'2013-2014': 'b2013_14'}[bill['session']]
+        _log.debug(bill)
+        _log.debug(bill['session'])
+        slug = {
+            '2012': '2012',
+            '2013-2014': 'b2013_14'
+        }[bill['session']]
         # we have to go to the HTML for the versions & votes
-        base_url = 'http://www.kslegislature.org/li/%s/measures/' % slug
+        base_url = '%s/%s/measures/' % (LI, slug)
         if 'resolution' in bill['type']:
-            base_url = 'http://www.kslegislature.org/li/%s/year1/measures/' % slug
+            base_url = '%s/%s/year1/measures/' % (LI, slug)
 
         url = base_url + bill['bill_id'].lower() + '/'
-        doc = lxml.html.fromstring(self.urlopen(url))
+        data = self.urlopen(url)
+        if len(data) < 1:
+            raise Exception("No data from bill id: %s on url %s" % (
+                bill['bill_id'], url))
+
+        doc = lxml.html.fromstring(data)
         doc.make_links_absolute(url)
 
         bill.add_source(url)
@@ -117,10 +152,9 @@ class KSBillScraper(BillScraper):
                 if sn_url:
                     bill.add_document(title + ' - Supplementary Note', sn_url)
             if len(tds) > 3:
-                fn_url = get_doc_link(tds[3])
+                # UNUSED fn_url = get_doc_link(tds[3])
                 if sn_url:
                     bill.add_document(title + ' - Fiscal Note', sn_url)
-
 
         history_rows = doc.xpath('//tbody[starts-with(@id, "history-tab")]/tr')
         for row in history_rows:
@@ -146,7 +180,6 @@ class KSBillScraper(BillScraper):
                     amendment_name = row_text.strip()
                 bill.add_document(amendment_name, amendment)
 
-
     def parse_vote(self, bill, vote_date, vote_chamber, vote_status, vote_url):
         vote_chamber = 'upper' if vote_chamber == 'Senate' else 'lower'
         formats = ['%a %d %b %Y', '%b. %d, %Y, %H:%M %p',
@@ -161,12 +194,13 @@ class KSBillScraper(BillScraper):
         else:
             raise ValueError("couldn't parse date: " + vote_date)
 
-
         vote_doc, resp = self.urlretrieve(vote_url)
 
         try:
-            subprocess.check_call('timeout 10 abiword --to=ksvote.txt %s' % vote_doc,
-                                  shell=True, cwd='/tmp/')
+            subprocess.check_call(
+                'timeout 10 abiword --to=ksvote.txt %s' %
+                vote_doc,
+                shell=True, cwd='/tmp/')
         except subprocess.CalledProcessError:
             # timeout failed, some documents hang abiword
             self.error('abiword hung for longer than 10s on conversion')
@@ -181,8 +215,13 @@ class KSBillScraper(BillScraper):
         vote = None
         passed = True
         for line in vote_lines:
-            totals = re.findall('Yeas (\d+)[;,] Nays (\d+)[;,] (?:Present but not voting|Present and Passing):? (\d+)[;,] (?:Absent or not voting|Absent or Not Voting):? (\d+)',
-                                line)
+            totals = re.findall(
+                'Yeas (\d+)[;,] '
+                'Nays (\d+)[;,] '
+                '(?:Present but not voting|Present and Passing):? '
+                '(\d+)[;,] '
+                '(?:Absent or not voting|Absent or Not Voting):? (\d+)',
+                line)
             line = line.strip()
             if totals:
                 totals = totals[0]
@@ -192,7 +231,7 @@ class KSBillScraper(BillScraper):
                 absent = int(totals[3])
                 # default passed to true
                 vote = Vote(vote_chamber, vote_date, vote_status.strip(),
-                            True, yeas, nays, nv+absent)
+                            True, yeas, nays, nv + absent)
             elif vote and line.startswith('Yeas:'):
                 line = line.split(':', 1)[1].strip()
                 for member in comma_or_and.split(line):

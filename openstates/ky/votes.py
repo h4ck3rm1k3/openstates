@@ -6,7 +6,7 @@ from billy.scrape.votes import VoteScraper, Vote
 #import ImageChops
 
 
-#def crop(image, threshold=0.99):
+# def crop(image, threshold=0.99):
 #    """
 #    Crop the leftmost/topmost rows/cols with percentage of white pixel
 #    less than threshold.
@@ -34,7 +34,7 @@ from billy.scrape.votes import VoteScraper, Vote
 #    return image.crop(bbox)
 
 
-#def get_rect_color(image, rect):
+# def get_rect_color(image, rect):
 #    box = image.crop(rect)
 #    colors = box.getcolors()
 
@@ -44,12 +44,12 @@ from billy.scrape.votes import VoteScraper, Vote
 #    return colors[0][1]
 
 
-#def parse_votes(filename):
+# def parse_votes(filename):
 #    "Extract votes from roll call images from the KY Senate."
 #    image = Image.open(filename)
 
-#    # The vote pages have a variable amount of whitespace around the
-#    # top and left that we want to strip
+# The vote pages have a variable amount of whitespace around the
+# top and left that we want to strip
 #    image = crop(image)
 
 #    votes = []
@@ -58,7 +58,7 @@ from billy.scrape.votes import VoteScraper, Vote
 #    for col_x in cols:
 #        for row in xrange(0, 13):
 #            if col_x == 1410 and row == 12:
-#                # Thrid column only has 11 entries
+# Thrid column only has 11 entries
 #                continue
 
 #            y = 395 + 50 * row

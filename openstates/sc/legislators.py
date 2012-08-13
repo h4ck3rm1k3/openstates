@@ -31,7 +31,8 @@ class SCLegislatorScraper(LegislatorScraper):
                 self.info('Resigned')
                 continue
 
-            party, district, _ = leg_doc.xpath('//p[@style="font-size: 17px; margin: 0 0 0 0; padding: 0;"]/text()')
+            party, district, _ = leg_doc.xpath(
+                '//p[@style="font-size: 17px; margin: 0 0 0 0; padding: 0;"]/text()')
             if 'Republican' in party:
                 party = 'Republican'
             elif 'Democrat' in party:
@@ -40,18 +41,21 @@ class SCLegislatorScraper(LegislatorScraper):
             # District # - County - Map
             district = district.split()[1]
 
-            photo_url = leg_doc.xpath('//img[contains(@src,"/members/")]/@src')[0]
-
+            photo_url = leg_doc.xpath(
+                '//img[contains(@src,"/members/")]/@src')[0]
 
             legislator = Legislator(term, chamber, district, full_name,
                                     party=party, photo_url=photo_url,
                                     url=leg_url)
             # office address / phone
             try:
-                addr_div = leg_doc.xpath('//div[@style="float: left; width: 225px; margin: 10px 5px 0 20px; padding: 0;"]')[0]
-                addr = addr_div.xpath('p[@style="font-size: 13px; margin: 0 0 10px 0; padding: 0;"]')[0].text_content()
+                addr_div = leg_doc.xpath(
+                    '//div[@style="float: left; width: 225px; margin: 10px 5px 0 20px; padding: 0;"]')[0]
+                addr = addr_div.xpath(
+                    'p[@style="font-size: 13px; margin: 0 0 10px 0; padding: 0;"]')[0].text_content()
 
-                phone = addr_div.xpath('p[@style="font-size: 13px; margin: 0 0 0 0; padding: 0;"]/text()')[0]
+                phone = addr_div.xpath(
+                    'p[@style="font-size: 13px; margin: 0 0 0 0; padding: 0;"]/text()')[0]
                 phone = phone.strip()
                 legislator.add_office('capitol', 'Columbia Address',
                                       address=addr, phone=phone)
@@ -61,11 +65,10 @@ class SCLegislatorScraper(LegislatorScraper):
             legislator.add_source(leg_url)
             legislator.add_source(url)
 
-
             # committees (skip first link)
             for com in leg_doc.xpath('//a[contains(@href, "committee.php")]')[1:]:
                 if com.text.endswith(', '):
-                    committee, role = com.text_content().rsplit(', ',1)
+                    committee, role = com.text_content().rsplit(', ', 1)
                     # known roles
                     role = {'Treas.': 'treasurer',
                             'Secy.': 'secretary',

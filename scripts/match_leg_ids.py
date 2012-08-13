@@ -20,6 +20,7 @@ logger.addHandler(ch)
 
 
 class UnicodeWriter:
+
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -108,7 +109,7 @@ class State(object):
 
         logger.debug('Getting all legislator names')
         for legislator in self.metadata.legislators(
-                        {'active': True, 'chamber': self.chamber}):
+                {'active': True, 'chamber': self.chamber}):
             _id = legislator['leg_id']
             name_to_ids[legislator['full_name'].lower()].add(_id)
             name_to_ids[legislator['last_name'].lower()].add(_id)
@@ -147,9 +148,11 @@ class State(object):
             if 1 < len(ids):
                 msg = 'There were %d possible ids for %r'
                 logger.warning(msg % (len(ids), namestring))
-                legs = db.legislators.find({'active': True, '_id': {'$in': list(ids)}})
+                legs = db.legislators.find(
+                    {'active': True, '_id': {'$in': list(ids)}})
                 for leg in legs:
-                    logger.warning('  -- %r %r' % (leg['_scraped_name'], leg['_id']))
+                    logger.warning('  -- %r %r' %
+                                   (leg['_scraped_name'], leg['_id']))
                 skip = True
 
             if skip:
@@ -182,5 +185,3 @@ if __name__ == '__main__':
         cutoff = 0.6
     state = State(abbr, chamber)
     print state.csv_rows()
-    
-

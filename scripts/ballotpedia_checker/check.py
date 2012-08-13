@@ -26,16 +26,15 @@ request_defaults = {
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'en-us,en;q=0.5',
         'Connection': 'keep-alive',
-        },
+    },
     'follow_robots': False,
-    }
+}
 
 session = scrapelib.Scraper(**request_defaults)
 
 
 def strip_accents(s):
-   return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
-
+    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
 
 
 def clean_html(html):
@@ -274,14 +273,8 @@ def main():
         else:
             logger.critical('%r FAILED. No dice.' % row['state'].upper())
 
-        import pdb;pdb.set_trace()
-
-
-
-
-
-
-
+        import pdb
+        pdb.set_trace()
 
 
 if __name__ == '__main__':

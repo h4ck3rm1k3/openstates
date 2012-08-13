@@ -2,6 +2,7 @@ from billy.scrape.committees import CommitteeScraper, Committee
 
 import lxml.html
 
+
 class ILCommitteeScraper(CommitteeScraper):
     jurisdiction = 'il'
 
@@ -15,11 +16,10 @@ class ILCommitteeScraper(CommitteeScraper):
             tds = row.xpath('td')
 
             # remove colon and lowercase role
-            role = tds[0].text_content().replace(':','').strip().lower()
+            role = tds[0].text_content().replace(':', '').strip().lower()
 
             name = tds[1].text_content().strip()
             com.add_member(name, role)
-
 
     def scrape(self, chamber, term):
         chamber_name = 'senate' if chamber == 'upper' else 'house'

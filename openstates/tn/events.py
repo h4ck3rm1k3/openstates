@@ -8,10 +8,11 @@ import pytz
 
 cal_weekly_events = "http://wapp.capitol.tn.gov/apps/schedule/WeeklyView.aspx"
 cal_chamber_text = {
-    "upper" : "Senate",
-    "lower" : "House",
-    "other" : "Joint"
+    "upper": "Senate",
+    "lower": "House",
+    "other": "Joint"
 }
+
 
 class TNEventScraper(EventScraper):
     jurisdiction = 'tn'
@@ -112,7 +113,8 @@ class TNEventScraper(EventScraper):
                     when = dt.datetime.strptime(datetime_string, dtfmt)
                 event = Event(session, when, 'committee:meeting',
                               description, location=location)
-                event.add_participant("host", description, 'committee', chamber=chamber)
+                event.add_participant(
+                    "host", description, 'committee', chamber=chamber)
                 event.add_source(cal_weekly_events)
 
                 agenda = metainf['agenda'].xpath(".//a")

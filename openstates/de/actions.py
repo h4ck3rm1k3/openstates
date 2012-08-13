@@ -6,7 +6,8 @@ rules = (
     Rule(r'(?P<yes_votes>\d+)\s+YES\s+(?P<no_votes>\d+)'
          r'\s+NO\s+(?P<not_voting>.+?)\s+NOT VOTING\s+(?P<absent>.+?)\s+'
          r'ABSENT\s+(?P<vacant>.+?) VACANT'),
-    Rule([u'Amendment (?P<bills>.+?) -\s+Laid On Table'], ['amendment:tabled']),
+    Rule([u'Amendment (?P<bills>.+?) -\s+Laid On Table'],
+         ['amendment:tabled']),
     Rule([u'Favorable'], ['committee:passed:favorable']),
     Rule([u'(?i)Amendment (?P<bills>.+?) defeated'], ['amendment:failed']),
     Rule([u'(?i)introduced and adopted in lieu of (?P<bills>.+)'],
@@ -26,12 +27,14 @@ rules = (
     Rule([u'(?i)Amendment (?P<bills>.+?)\s+-\s+Introduced'],
          ['amendment:introduced']),
     Rule([u'(?i)Amendment (?P<bills>[\w\s]+?) Passed'], ['amendment:passed']),
-    Rule([u'Amendment (?P<bills>.+?) -  Defeated by House of .+?\. Votes: Defeated'],
-         ['amendment:failed']),
+    Rule(
+        [u'Amendment (?P<bills>.+?) -  Defeated by House of .+?\. Votes: Defeated'],
+        ['amendment:failed']),
     Rule([u'^Introduced'], ['bill:introduced']),
-    Rule([u'Amendment (?P<bills>.+?) -  Defeated in House'], ['amendment:failed']),
+    Rule([u'Amendment (?P<bills>.+?) -  Defeated in House'],
+         ['amendment:failed']),
     Rule([u'^Passed in House'], ['bill:passed'])
-    )
+)
 
 
 class Categorizer(BaseCategorizer):
@@ -60,7 +63,7 @@ def get_actor(action_text, chamber, rgxs=(
         (re.compile(r'(in|by) senate', re.I), 'upper'),
         (re.compile(r'(in|by) house', re.I), 'lower'),
         (re.compile(r'by governor', re.I), 'governor'),
-        )):
+)):
     '''Guess the actor for a particular action.
     '''
     for r, actor in rgxs:

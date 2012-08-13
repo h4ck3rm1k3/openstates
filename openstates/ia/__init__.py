@@ -15,7 +15,7 @@ metadata = dict(
     capitol_timezone='America/Chicago',
     legislature_name='Iowa General Assembly',
     legislature_url='https://www.legis.iowa.gov/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -39,7 +39,7 @@ metadata = dict(
                       'number': '84',
                       'start_date': datetime.date(2011, 1, 10),
                       'end_date': datetime.date(2013, 1, 13),
-                     },
+                      },
         '2013-2014': {'display_name': '2013-2014 Regular Session',
                       '_scraped_name': 'General Assembly: 85',
                       'number': '85', },
@@ -68,6 +68,7 @@ def session_list():
         for session in sessions
     ])]
     return sessions
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

@@ -9,6 +9,7 @@ logger = logbook.Logger('bathawk.actions')
 
 
 class Actions(object):
+
     '''From this object, you can reference:
       * unmatched
       * matched
@@ -56,4 +57,3 @@ class Actions(object):
                 action_ids[action_text].append(bill['_id'])
                 yield action_text
         self.action_ids = action_ids
-

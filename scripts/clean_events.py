@@ -6,7 +6,7 @@ from billy.core import db
 #state = sys.argv[1]
 
 events = db.events.find({
-#    "state": state
+    #    "state": state
 })
 
 for event in events:

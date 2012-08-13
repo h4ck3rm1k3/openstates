@@ -83,14 +83,14 @@ class CALegislatorScraper(LegislatorScraper):
             'full_name': [('feedbackurl-value', '/a/text()')],
             'address':   [('feedbackurl-value', '/p/text()'),
                           ('feedbackurl-value', '/p/font/text()')]
-            }
+        }
 
         titles = {'upper': 'senator', 'lower': 'member'}
 
         funcs = {
             'full_name': lambda s: s.replace('Contact Senator', '').strip(),
             'address': parse_address,
-            }
+        }
 
         rubberstamp = lambda _: _
         tr_xpath = tr.xpath

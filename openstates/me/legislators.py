@@ -103,7 +103,8 @@ class MELegislatorScraper(LegislatorScraper):
                     pass
                 else:
                     if party_website_html.response.status_code == 200:
-                        party_website = lxml.html.fromstring(party_website_html)
+                        party_website = lxml.html.fromstring(
+                            party_website_html)
                         photo_url = party_website.xpath('//img/@src')[1]
 
             self.scrape_lower_offices(leg, page, leg_url)
@@ -170,8 +171,8 @@ class MELegislatorScraper(LegislatorScraper):
             name='House Democratic Office',
             type='capitol',
             address='\n'.join(['Room 333, State House',
-                     '2 State House Station',
-                     'Augusta, Maine 04333-0002']),
+                               '2 State House Station',
+                               'Augusta, Maine 04333-0002']),
             fax=None, email=None,
             phone='(207) 287-1430')
         legislator.add_office(**office)
@@ -225,8 +226,8 @@ class MELegislatorScraper(LegislatorScraper):
             name='House GOP Office',
             type='capitol',
             address='\n'.join(['Room 332, State House',
-                     '2 State House Station',
-                     'Augusta, Maine 04333-0002']),
+                               '2 State House Station',
+                               'Augusta, Maine 04333-0002']),
             fax=None, email=None,
             phone='(207) 287-1440')
         legislator.add_office(**office)

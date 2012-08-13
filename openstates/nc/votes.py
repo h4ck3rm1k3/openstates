@@ -4,6 +4,7 @@ from zipfile import ZipFile
 
 from billy.scrape.votes import VoteScraper, Vote
 
+
 class NCVoteScraper(VoteScraper):
     jurisdiction = 'nc'
 
@@ -29,7 +30,8 @@ class NCVoteScraper(VoteScraper):
         # 2: member name
         # 3-5: county, district, party
         # 6: mmUserId
-        member_file = zf.open(naming_scheme.format(file_label='Members', session=session))
+        member_file = zf.open(
+            naming_scheme.format(file_label='Members', session=session))
         members = {}
         for line in member_file.readlines():
             data = line.split(delimiter)
@@ -53,8 +55,9 @@ class NCVoteScraper(VoteScraper):
         # 13: info
         # 20: PASSED/FAILED
         # 21: legislative day
-        vote_file = zf.open(naming_scheme.format(file_label='Votes', session=session))
-        bill_chambers = {'H':'lower', 'S':'upper'}
+        vote_file = zf.open(
+            naming_scheme.format(file_label='Votes', session=session))
+        bill_chambers = {'H': 'lower', 'S': 'upper'}
         votes = {}
         for line in vote_file.readlines():
             data = line.split(delimiter)
@@ -73,11 +76,13 @@ class NCVoteScraper(VoteScraper):
                                       'PASS' in data[20],
                                       int(data[5]),
                                       int(data[6]),
-                                      int(data[7])+int(data[8])+int(data[9]),
+                                      int(data[7]) + int(data[8]) +
+                                      int(data[9]),
                                       bill_chamber=bill_chambers[data[3][0]],
-                                      bill_id=data[3]+data[4], session=session)
+                                      bill_id=data[3] + data[4], session=session)
 
-        member_vote_file = zf.open(naming_scheme.format(file_label='MemberVotes', session=session))
+        member_vote_file = zf.open(
+            naming_scheme.format(file_label='MemberVotes', session=session))
         # 0: member id
         # 1: chamber (S/H)
         # 2: vote id
@@ -113,7 +118,8 @@ class NCVoteScraper(VoteScraper):
                     # for some reason other_count is high for paired votes
                     if data[5]:
                         vote['other_count'] -= 1
-                    # is either E: excused, X: no vote, or paired (doesn't count)
+                    # is either E: excused, X: no vote, or paired (doesn't
+                    # count)
                     vote.other(member_voting)
 
         for vote in votes.itervalues():

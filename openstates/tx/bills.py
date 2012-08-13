@@ -58,7 +58,7 @@ class TXBillScraper(BillScraper):
                              bill_num)
 
     def scrape_bill(self, chamber, session, history_url, history_group_url,
-                   billno):
+                    billno):
         """Scrapes the information for a single bill."""
         history_xml = self.urlopen(history_url)
         if "Bill does not exist." in history_xml:
@@ -83,7 +83,7 @@ class TXBillScraper(BillScraper):
             version_urls.setdefault(bill_num, []).append(url)
 
         if billno in version_urls:
-            version_urls = version_urls[billno] #  Sorry :(
+            version_urls = version_urls[billno]  # Sorry :(
             # We need to get the versions from inside here because some bills
             # have XML saying just "no such bill", so we hit an ftp error
             # because there are no bill versions where we expect them.
@@ -133,7 +133,7 @@ class TXBillScraper(BillScraper):
 
         for action in root.findall('actions/action'):
             act_date = datetime.datetime.strptime(action.findtext('date'),
-                                            "%m/%d/%Y").date()
+                                                  "%m/%d/%Y").date()
 
             extra = {}
             extra['action_number'] = action.find('actionNumber').text
@@ -217,13 +217,15 @@ class TXBillScraper(BillScraper):
                 bill.add_sponsor('primary', author, official_type='author')
         for coauthor in root.findtext('coauthors').split(' | '):
             if coauthor != "":
-                bill.add_sponsor('cosponsor', coauthor, official_type='coauthor')
+                bill.add_sponsor('cosponsor', coauthor,
+                                 official_type='coauthor')
         for sponsor in root.findtext('sponsors').split(' | '):
             if sponsor != "":
                 bill.add_sponsor('primary', sponsor, official_type='sponsor')
         for cosponsor in root.findtext('cosponsors').split(' | '):
             if cosponsor != "":
-                bill.add_sponsor('cosponsor', cosponsor, official_type='cosponsor')
+                bill.add_sponsor('cosponsor', cosponsor,
+                                 official_type='cosponsor')
 
         bill['subjects'] = []
         for subject in root.iterfind('subjects/subject'):

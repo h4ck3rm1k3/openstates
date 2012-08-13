@@ -5,6 +5,7 @@ from billy.scrape.events import Event, EventScraper
 import pytz
 import lxml.html
 
+
 class VTEventScraper(EventScraper):
     jurisdiction = 'vt'
 

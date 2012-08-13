@@ -3,6 +3,7 @@ from collections import defaultdict
 
 
 class DefaultdictNode(defaultdict):
+
     '''A default dict that allows setattr, since
     it needs a `parent` attribute.
     '''
@@ -10,6 +11,7 @@ class DefaultdictNode(defaultdict):
 
 
 class LocationSpec(defaultdict):
+
     '''Basically a recursive defaultdict with helper methods.'''
 
     def __init__(self, *args, **kwargs):

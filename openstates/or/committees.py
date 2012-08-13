@@ -25,9 +25,10 @@ class ORCommitteeScraper(CommitteeScraper):
     def scrape(self, term, chambers):
         cdict = {"upper": "SenateCommittees_search",
                  "lower": "HouseCommittees_search",
-                 "joint": "JointCommittees_search",}
+                 "joint": "JointCommittees_search", }
 
-        page = self.lxmlize("https://olis.leg.state.or.us/liz/Committees/list/")
+        page = self.lxmlize(
+            "https://olis.leg.state.or.us/liz/Committees/list/")
         for chamber, id_ in cdict.items():
             for committee in page.xpath("//ul[@id='%s']//li/a" % (id_)):
                 self.scrape_committee(committee.attrib['href'],

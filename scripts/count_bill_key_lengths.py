@@ -9,6 +9,7 @@ KEYS = 'versions actions documents votes sponsors'.split()
 
 
 class SaneReprList(list):
+
     def __repr__(self):
         return '<SaneReprList: %d elements>' % len(self)
 

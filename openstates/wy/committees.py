@@ -4,13 +4,14 @@ from billy.scrape.committees import CommitteeScraper, Committee
 import lxml.html
 import re
 
+
 class WYCommitteeScraper(CommitteeScraper):
     jurisdiction = "wy"
 
     members = {}
     urls = {
-            "list": "http://legisweb.state.wy.us/LegbyYear/CommitteeList.aspx?Year=%s",
-            "detail": "http://legisweb.state.wy.us/LegbyYear/%s"
+        "list": "http://legisweb.state.wy.us/LegbyYear/CommitteeList.aspx?Year=%s",
+        "detail": "http://legisweb.state.wy.us/LegbyYear/%s"
     }
 
     def scrape(self, chamber, term):
@@ -31,7 +32,6 @@ class WYCommitteeScraper(CommitteeScraper):
 
         if not year:
             raise NoDataForPeriod(term)
-
 
         list_url = self.urls["list"] % (year, )
         committees = {}
@@ -55,7 +55,8 @@ class WYCommitteeScraper(CommitteeScraper):
                 for row in rows[1:]:
                     tds = row.xpath('.//td')
                     name = tds[0].text_content().strip()
-                    role = 'chairman' if tds[3].text_content().strip() == 'Chairman' else 'member'
+                    role = 'chairman' if tds[
+                        3].text_content().strip() == 'Chairman' else 'member'
                     comm.add_member(name, role, chamber=chamber)
 
             comm.add_source(detail_url)

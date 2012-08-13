@@ -9,7 +9,7 @@ metadata = dict(
     legislature_name='Mississippi Legislature',
     legislature_url='http://www.legislature.ms.gov/',
     capitol_timezone='America/Chicago',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -20,55 +20,55 @@ metadata = dict(
          'start_year': 2008, 'end_year': 2011},
 
         {'name': '2012-2015', 'sessions': ['2012', '2013', '20131E', '20132E',
-                                           '2014',],
+                                           '2014', ],
          'start_year': 2012, 'end_year': 2015},
     ],
     session_details={
         '2008': {'display_name': '2008 Regular Session',
                  '_scraped_name': '2008 Regular Session',
-                },
+                 },
         '2009': {'display_name': '2009 Regular Session',
                  '_scraped_name': '2009 Regular Session',
-                },
+                 },
         '20091E': {'display_name': '2009, 1st Extraordinary Session',
                    '_scraped_name': '2009 First Extraordinary Session',
-                  },
+                   },
         '20092E': {'display_name': '2009, 2nd Extraordinary Session',
                    '_scraped_name': '2009 Second Extraordinary Session',
-                  },
+                   },
         '20093E': {'display_name': '2009, 3rd Extraordinary Session',
                    '_scraped_name': '2009 Third Extraordinary Session',
-                  },
+                   },
         '20101E': {'display_name': '2010, 1st Extraordinary Session',
                    '_scraped_name': '2010 First Extraordinary Session',
-                  },
+                   },
         '20102E': {'display_name': '2010, 2nd Extraordinary Session',
                    '_scraped_name': '2010 Second Extraordinary Session',
-                  },
+                   },
         '2010': {'display_name': '2010 Regular Session',
                  '_scraped_name': '2010 Regular Session',
-                },
+                 },
         '2011': {'display_name': '2011 Regular Session',
                  '_scraped_name': '2011 Regular Session',
-                },
+                 },
         '20111E': {'display_name': '2011, 1st Extraordinary Session',
                    '_scraped_name': '2011 First Extraordinary Session',
-                  },
+                   },
         '2012': {'display_name': '2012 Regular Session',
                  '_scraped_name': '2012 Regular Session',
-                },
+                 },
         '2013': {'display_name': '2013 Regular Session',
                  '_scraped_name': '2013 Regular Session',
-                },
+                 },
         '20131E': {'display_name': '2013 First Extraordinary Session',
                    '_scraped_name': '2013 First Extraordinary Session'
-                  },
+                   },
         '20132E': {'display_name': '2013 Second Extraordinary Session',
                    '_scraped_name': '2013 Second Extraordinary Session'
-                  },
+                   },
         '2014': {'display_name': '2014 Regular Session',
-                   '_scraped_name': '2014 Regular Session'
-                  },
+                 '_scraped_name': '2014 Regular Session'
+                 },
     },
     feature_flags=['subjects', 'influenceexplorer'],
     _ignored_scraped_sessions=['2008 First Extraordinary Session',
@@ -104,10 +104,12 @@ metadata = dict(
                                '1997 Regular Session']
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://billstatus.ls.state.ms.us/sessions.htm',
                      '//a/text()')
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

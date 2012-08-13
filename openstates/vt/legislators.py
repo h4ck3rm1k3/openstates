@@ -42,7 +42,7 @@ class VTLegislatorScraper(LegislatorScraper):
 
             if middle_name:
                 full_name = "%s %s. %s" % (first_name, middle_name,
-                                          last_name)
+                                           last_name)
             else:
                 full_name = "%s %s" % (first_name, last_name)
 
@@ -69,9 +69,10 @@ class VTLegislatorScraper(LegislatorScraper):
                              last_name=last_name,
                              party=party,
                              email=email,
-            # closest thing we have to a page for legislators, not ideal
-            url='http://www.leg.state.vt.us/legdir/LegDirMain.cfm'
-                            )
+                             # closest thing we have to a page for legislators,
+                             # not ideal
+                             url='http://www.leg.state.vt.us/legdir/LegDirMain.cfm'
+                             )
             leg['roles'][0]['other_parties'] = parties
             leg.add_source(url)
 
@@ -91,6 +92,6 @@ class VTLegislatorScraper(LegislatorScraper):
             home_email = tr.xpath('string(td[22])') or None
             home_phone = tr.xpath('string(td[23])') or None
             leg.add_office('district', 'Home Address', address=home,
-                            email=home_email, phone=home_phone)
+                           email=home_email, phone=home_phone)
 
             self.save_legislator(leg)

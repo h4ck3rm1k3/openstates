@@ -13,12 +13,12 @@ metadata = dict(
     abbreviation='ak',
     legislature_name='Alaska State Legislature',
     legislature_url='http://w3.legis.state.ak.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
     terms=[
-        #dict(name='26', sessions=['26'],
+        # dict(name='26', sessions=['26'],
         #     start_year=2009, end_year=2010),
         dict(name='27', sessions=['27'],
              start_year=2011, end_year=2012),
@@ -45,10 +45,12 @@ metadata = dict(
     feature_flags=['subjects', 'influenceexplorer'],
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://www.legis.state.ak.us/basis/start.asp',
                      "//div[@id='rightnav']//a[contains(@href, 'start.asp?session=')]//nobr/text()")
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

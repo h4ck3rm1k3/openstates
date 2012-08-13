@@ -69,7 +69,7 @@ class SDBillScraper(BillScraper):
         use_row = False
         self.debug(bill_id)
         for row in page.xpath(
-            "//table[contains(@id, 'BillActions')]/tr"):
+                "//table[contains(@id, 'BillActions')]/tr"):
 
             if 'Date' in row.text_content() and 'Action' in row.text_content():
                 use_row = True

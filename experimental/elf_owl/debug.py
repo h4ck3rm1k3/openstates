@@ -32,6 +32,7 @@ logger = logbook.Logger('elf-owl')
 
 
 class RecursiveDotDict(dict):
+
     def __getattr__(self, name):
         attr = self[name]
         if isinstance(attr, dict):
@@ -70,11 +71,11 @@ class BaseDetectorThingy(object):
         'committee:passed',
         'committee:passed:favorable',
         'committee:passed:unfavorable',
-        ])
+    ])
     reported_inferred_types = set([
         'reading:2:passed'
         'bill:passed',
-        ])
+    ])
 
     def __init__(self, bill):
         action_cls = type('Action', (Action,), dict(bill=bill))
@@ -103,9 +104,9 @@ class BaseDetectorThingy(object):
             while v:
                 x = v.pop()
                 if x in done:
-                    import pdb;pdb.set_trace()
+                    import pdb
+                    pdb.set_trace()
                 done.append(x)
-
 
     def get_referrals(self):
         referred_types = self.referred_types
@@ -116,7 +117,8 @@ class BaseDetectorThingy(object):
             # self.check()
 
             if action.types & (reported_types | reported_inferred_types):
-                logger.debug('REPORTED %r %r' % (action['date'], action['action']))
+                logger.debug('REPORTED %r %r' %
+                             (action['date'], action['action']))
 
                 # Close the most recent one.
                 if self.referrals:
@@ -136,7 +138,8 @@ class BaseDetectorThingy(object):
                     logger.warning('No referral: %r' % action['action'])
 
             if action.types & referred_types:
-                logger.debug('REFERRED %r, %r' % (action['date'], action['action']))
+                logger.debug('REFERRED %r, %r' %
+                             (action['date'], action['action']))
 
                 # Is the committee unambigiuously identified in this action?
                 committee_ids = [obj['id'] for obj in action.related_entities
@@ -173,7 +176,7 @@ def main(abbr, *args):
         'state': abbr,
         'actions.type': 'committee:refereed',
         'actions.type': 'committee:passed'
-        })
+    })
 
     for bb in bills:
         print '\n\n-------', bb['bill_id'], '------\n\n'
@@ -182,11 +185,12 @@ def main(abbr, *args):
 
         tags = ['committee:referred', 'committee:passed'
                 'committee:passed:favorable',
-                'committee:passed:unfavorable',]
+                'committee:passed:unfavorable', ]
         acs = filter(lambda a: set(tags) & set(a['type']), bb['actions'])
         for ac in acs:
             print 'text: %(action)s, tags: %(type)r' % ac
-        import pdb;pdb.set_trace()
+        import pdb
+        pdb.set_trace()
 
 
 if __name__ == '__main__':

@@ -19,7 +19,8 @@ def main(abbr, session=None):
                 print 'trying', url
                 resp = requests.get(url)
             except KeyboardInterrupt:
-                import pdb;pdb.set_trace()
+                import pdb
+                pdb.set_trace()
             except Exception as e:
                 print 'failed with', e
                 pass

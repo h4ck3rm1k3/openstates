@@ -36,7 +36,7 @@ packages = {
 
     # The packages are required for use of lxml and git.
     'core': []
-    }
+}
 
 
 # ---------------------------------------------------------------------------
@@ -61,7 +61,7 @@ def package_install(package, update=False):
     return None
 
 
-def package_ensure(package):	
+def package_ensure(package):
     """Tests if the given package is installed, and installes it in
     case it's not already there. Loosely stolen from cuisine."""
     return True
@@ -76,7 +76,7 @@ def create_virtualenv(ENV):
          '/virtualenv-1.7.tar.gz#md5=dcc105e5a3907a9dcaa978f813a4f526'),
         'tar -zxvf virtualenv-1.7.tar.gz ',
         'python virtualenv-1.7/virtualenv.py %s' % ENV,
-        )
+    )
 
 
 def gitclone(repo, setup_arg='install'):

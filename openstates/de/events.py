@@ -6,15 +6,16 @@ import pytz
 import lxml.html
 
 chamber_urls = {
-    "other" : [],
-    "lower" : [ "http://legis.delaware.gov/LIS/lis146.nsf/House+Meeting+Notice/?openview&count=2000" ],
-    "upper" : [ "http://legis.delaware.gov/LIS/lis146.nsf/Senate+Meeting+Notice/?openview&count=2000" ]
+    "other": [],
+    "lower": ["http://legis.delaware.gov/LIS/lis146.nsf/House+Meeting+Notice/?openview&count=2000"],
+    "upper": ["http://legis.delaware.gov/LIS/lis146.nsf/Senate+Meeting+Notice/?openview&count=2000"]
 }
 chambers = {
-    "Senate" : "upper",
-    "House"  : "lower",
-    "Joint"  : "joint"
+    "Senate": "upper",
+    "House": "lower",
+    "Joint": "joint"
 }
+
 
 class DEEventScraper(EventScraper):
     jurisdiction = 'de'
@@ -42,7 +43,7 @@ class DEEventScraper(EventScraper):
         # 04/25/2012 03:00:00 PM
         fmt = "%m/%d/%Y %I:%M:%S %p"
         metainf[date_time_lbl] = dt.datetime.strptime(metainf[date_time_lbl],
-                                                     fmt)
+                                                      fmt)
         event = Event(session,
                       metainf[date_time_lbl],
                       "committee:meeting",
@@ -55,14 +56,14 @@ class DEEventScraper(EventScraper):
         event.add_source(url)
 
         agenda = page.xpath("//td[@width='96%']//font[@face='Arial']")
-        agenda = [ a.text_content().strip() for a in agenda ]
+        agenda = [a.text_content().strip() for a in agenda]
         if "" in agenda:
             agenda.remove("")
         for item in agenda:
             string = item.split()
             string = string[:2]
             fChar = string[0][0]
-            watch = [ "H", "S" ]
+            watch = ["H", "S"]
             if fChar in watch:
                 try:
                     bNo = int(string[1])
@@ -70,7 +71,7 @@ class DEEventScraper(EventScraper):
                     continue
                 except IndexError:
                     continue
-                bill_id = "%s %s" % ( string[0], string[1] )
+                bill_id = "%s %s" % (string[0], string[1])
                 event.add_related_bill(
                     bill_id,
                     description=item,

@@ -24,6 +24,8 @@ word_key = (
 )
 
 # borrowed from django.contrib.humanize.templatetags
+
+
 def ordinal(value):
     """
     Converts an integer to its ordinal as a string. 1 is '1st', 2 is '2nd',
@@ -34,9 +36,10 @@ def ordinal(value):
     except (TypeError, ValueError):
         return value
     t = ('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th')
-    if value % 100 in (11, 12, 13): # special case
+    if value % 100 in (11, 12, 13):  # special case
         return u"%d%s" % (value, t[0])
     return u'%d%s' % (value, t[value % 10])
+
 
 def get_session_name(leg):
     l = leg.lower().replace('-', ' ').split()
@@ -53,12 +56,14 @@ def get_session_name(leg):
     except IndexError:
         return None
 
+
 def get_date(d):
     if d:
         d = datetime.datetime.strptime(d, '%Y-%m-%dT%H:%M:%S').date()
         return '%d, %d, %d' % (d.year, d.month, d.day)
     else:
         return ''
+
 
 class AZTermScraper(Scraper):
     state = 'az'
@@ -90,11 +95,12 @@ class AZTermScraper(Scraper):
                      'end_date': datetime.date(%s)},\n"""
         sessions = root.xpath('//session')
         sessions = sorted(sessions, key=lambda x: x.get('Sine_Die_Date') or
-                                        "%s" % datetime.datetime.today())
+                          "%s" % datetime.datetime.today())
         terms_text = ""
         details_text = ""
         for session in sessions:
-            session_type = 'primary' if re.search('Regular', session.get('Session_Full_Name')) else 'special'
+            session_type = 'primary' if re.search(
+                'Regular', session.get('Session_Full_Name')) else 'special'
             start_date = get_date(session.get('Session_Start_Date', None))
             end_date = get_date(session.get('Sine_Die_Date', None))
             session_name = get_session_name(session.get('Session_Full_Name'))
@@ -109,7 +115,8 @@ class AZTermScraper(Scraper):
             except TypeError:
                 s_name = 'misc'
             if s_name in term_list:
-                term_list[s_name]['sessions'] += "                '%s',\n" % session_name
+                term_list[s_name][
+                    'sessions'] += "                '%s',\n" % session_name
                 if end_date[0:4] > term_list[s_name]['end_date']:
                     term_list[s_name]['end_date'] = end_date[0:4]
                 if start_date[0:4] < term_list[s_name]['start_date']:
@@ -122,10 +129,10 @@ class AZTermScraper(Scraper):
 
         for key in sorted(term_list.keys()):
             session_file.write(terms % (
-                    key, term_list[key]['sessions'],
-                    term_list[key]['start_date'],
-                    term_list[key]['end_date']
-                ))
+                key, term_list[key]['sessions'],
+                term_list[key]['start_date'],
+                term_list[key]['end_date']
+            ))
         session_file.write(details_text)
         session_file.close()
 

@@ -53,7 +53,8 @@ class INBillScraper(BillScraper):
     categorizer = Categorizer()
     _tz = pytz.timezone('US/Eastern')
 
-    # Can turn this on or off. There are thousands of subjects and it takes hours.
+    # Can turn this on or off. There are thousands of subjects and it takes
+    # hours.
     SCRAPE_SUBJECTS = True
 
     def scrape(self, term, chambers):
@@ -132,7 +133,7 @@ class INBillScraper(BillScraper):
             'co-author': 'cosponsor',
             'sponsor': 'cosponsor',
             'co-sponsor': 'cosponsor',
-            }
+        }
         for div in doc.xpath('//div[contains(@class, "bill-author-info")]'):
             name = div.xpath('string(b)').strip()
             sp_type = sponsor_map[div.xpath('string(p)').strip().lower()]
@@ -145,11 +146,13 @@ class INBillScraper(BillScraper):
             chamber_str = li.xpath('string(strong)').strip()
             action_chamber = dict(H='lower', S='upper')[chamber_str]
             action_date = li.xpath('string(span[@class="document-date"])')
-            action_date = datetime.datetime.strptime(action_date.strip(), '%m/%d/%Y')
+            action_date = datetime.datetime.strptime(
+                action_date.strip(), '%m/%d/%Y')
             action_text = li.xpath('string(span[2])').strip()
             if not action_text.strip():
                 continue
-            kwargs = dict(date=action_date, actor=action_chamber, action=action_text)
+            kwargs = dict(date=action_date, actor=action_chamber,
+                          action=action_text)
             kwargs.update(**self.categorizer.categorize(action_text))
             bill.add_action(**kwargs)
 
@@ -160,7 +163,8 @@ class INBillScraper(BillScraper):
                     doc_meta.title or doc_meta.text, url=doc_meta.url,
                     mimetype='application/pdf')
             elif doc_type == 'document':
-                bill.add_document(doc_meta.title or doc_meta.text, url=doc_meta.url,
+                bill.add_document(
+                    doc_meta.title or doc_meta.text, url=doc_meta.url,
                     mimetype='application/pdf')
             elif doc_type == 'rollcall':
                 self.add_rollcall(chamber, bill, doc_meta)
@@ -241,4 +245,3 @@ class INBillScraper(BillScraper):
     #     check_vote_counts(vote)
 
     #     bill.add_vote(vote)
-

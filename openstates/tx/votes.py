@@ -37,7 +37,7 @@ def clean_journal(root):
 
     for el in root.xpath("//p[contains(text(), 'JOURNAL')]"):
         if (("HOUSE JOURNAL" in el.text or "SENATE JOURNAL" in el.text) and
-            "Day" in el.text):
+                "Day" in el.text):
 
             parent = el.getparent()
             parent.remove(el)
@@ -283,7 +283,7 @@ class TXVoteScraper(VoteScraper):
         else:
             fname = os.path.split(urlparse.urlparse(url).path)[-1]
             date_str = re.match(r'%sSJ(\d\d-\d\d).*\.htm' % session,
-                            fname).group(1) + " %s" % year
+                                fname).group(1) + " %s" % year
             date = datetime.datetime.strptime(date_str,
                                               "%m-%d %Y").date()
 

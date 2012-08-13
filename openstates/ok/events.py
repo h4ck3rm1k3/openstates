@@ -33,7 +33,8 @@ class OKEventScraper(EventScraper):
             time_ = re.search(r'^\s*TIME:\s+(.+?)\s+\x96', data, re.M).group(1)
             time_ = time_.replace('a.m.', 'AM').replace('p.m.', 'PM')
             time_ = time.strptime(time_, '%I:%M %p')
-            when += datetime.timedelta(hours=time_.tm_hour, minutes=time_.tm_min)
+            when += datetime.timedelta(hours=time_.tm_hour,
+                                       minutes=time_.tm_min)
 
             title = lines[0]
 

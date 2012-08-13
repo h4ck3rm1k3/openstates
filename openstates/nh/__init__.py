@@ -22,32 +22,34 @@ metadata = {
         '2011': {'display_name': '2011 Regular Session',
                  'zip_url': 'http://gencourt.state.nh.us/downloads/2011%20Session%20Bill%20Status%20Tables.zip',
                  '_scraped_name': '2011 Session',
-                },
+                 },
         '2012': {'display_name': '2012 Regular Session',
                  'zip_url': 'http://gencourt.state.nh.us/downloads/2012%20Session%20Bill%20Status%20Tables.zip',
                  '_scraped_name': '2012 Session',
-                },
+                 },
         '2013': {'display_name': '2013 Regular Session',
                  'zip_url': 'http://gencourt.state.nh.us/downloads/2013%20Session%20Bill%20Status%20Tables.zip',
                  # Their dump filename changed, probably just a hiccup.
                  '_scraped_name': '2013',
                  # '_scraped_name': '2013 Session',
-                },
+                 },
         '2014': {'display_name': '2014 Regular Session',
                  'zip_url': 'http://gencourt.state.nh.us/downloads/2014%20Session%20Bill%20Status%20Tables.zip',
                  '_scraped_name': '2014 Session',
-                },
+                 },
     },
     'feature_flags': ['influenceexplorer'],
 
     '_ignored_scraped_sessions': ['2013 Session'],
 }
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     zips = url_xpath('http://gencourt.state.nh.us/downloads/',
                      '//a[contains(@href, "Bill%20Status")]/text()')
     return [zip.replace(' Bill Status Tables.zip', '') for zip in zips]
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

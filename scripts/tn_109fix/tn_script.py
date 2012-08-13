@@ -3,6 +3,7 @@ import sys
 import pymongo
 from billy.core import db
 
+
 def main(state):
 
     spec = dict(state=state)
@@ -24,9 +25,9 @@ def main(state):
 
             # First get the 108th session bill.
             spec = dict(spec,
-                session='108',
-                chamber=bill_109th['chamber'],
-                bill_id=bill_109th['bill_id'])
+                        session='108',
+                        chamber=bill_109th['chamber'],
+                        bill_id=bill_109th['bill_id'])
             bill_108th = db.bills.find_one(spec)
 
             # Add the 109th id to its _all_ids.
@@ -40,12 +41,12 @@ def main(state):
 
     # print('adding legislators')
     # for obj in db.legislators.find(spec):
-    #     # Remove 108 and 109 from old roles. 108 are the current roles,
-    #     # 109 are bogus.
+    # Remove 108 and 109 from old roles. 108 are the current roles,
+    # 109 are bogus.
     #     obj.get('old_roles', {}).pop('108', None)
     #     obj.get('old_roles', {}).pop('109', None)
 
-    #     # Remove roles with term: 109.
+    # Remove roles with term: 109.
     #     roles = obj.get('roles', [])
     #     for role in list(roles):
     #         if role['term'] == '109':
@@ -56,11 +57,3 @@ def main(state):
 
 if __name__ == "__main__":
     main('tn')
-
-
-
-
-
-
-
-

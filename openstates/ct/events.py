@@ -10,6 +10,7 @@ import lxml.html
 
 from .utils import open_csv
 
+
 class CTEventScraper(EventScraper):
     jurisdiction = 'ct'
 

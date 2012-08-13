@@ -141,7 +141,7 @@ class NYCommitteeScraper(CommitteeScraper):
             next_elem = link.getnext()
             if (next_elem is not None and
                 next_elem.tag == 'a' and
-                next_elem.attrib['href'] == link.attrib['href']):
+                    next_elem.attrib['href'] == link.attrib['href']):
                 # Sometimes NY is cool and splits names across a
                 # couple links
                 member = "%s %s" % (member, next_elem.text.strip())

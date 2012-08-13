@@ -10,9 +10,11 @@ import lxml.html
 
 url = 'http://utahlegislature.granicus.com/ViewPublisherRSS.php?view_id=2&mode=agendas'
 
+
 class UTEventScraper(EventScraper):
     jurisdiction = 'ut'
     _tz = pytz.timezone('US/Mountain')
+
     def lxmlize(self, url):
         page = self.urlopen(url)
         page = lxml.html.fromstring(page)
@@ -61,7 +63,7 @@ class UTEventScraper(EventScraper):
             time.strip()
         )
         datetime = re.sub("AGENDA", "", datetime).strip()
-        datetime = [ x.strip() for x in datetime.split("\r\n") ]
+        datetime = [x.strip() for x in datetime.split("\r\n")]
 
         if "" in datetime:
             datetime.remove("")

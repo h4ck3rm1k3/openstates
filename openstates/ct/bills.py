@@ -99,7 +99,6 @@ class CTBillScraper(BillScraper):
                                      official_type='introducer')
                 spon_type = 'cosponsor'
 
-
         for link in page.xpath("//a[contains(@href, '/FN/')]"):
             bill.add_document(link.text.strip(), link.attrib['href'])
 
@@ -180,7 +179,6 @@ class CTBillScraper(BillScraper):
 
         bill.add_vote(vote)
 
-
     def scrape_subjects(self, session):
         for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             url = ('http://www.cga.ct.gov/asp/cgasubjectsearch/'
@@ -194,7 +192,6 @@ class CTBillScraper(BillScraper):
                 subj_html = self.urlopen(subj.get('href'))
                 for bill_id in doc.xpath('//a[contains(@href, "CGABillStatus")]/text()'):
                     self._subjects[bill_id].append(subj.text)
-
 
     def scrape_bill_history(self):
         history_url = "ftp://ftp.cga.ct.gov/pub/data/bill_history.csv"
@@ -246,7 +243,7 @@ class CTBillScraper(BillScraper):
                                   match.group(1)))
 
                 if (re.match(r'^ADOPTED, (HOUSE|SENATE)', action) or
-                    re.match(r'^(HOUSE|SENATE) PASSED', action)):
+                        re.match(r'^(HOUSE|SENATE) PASSED', action)):
                     act_type.append('bill:passed')
 
                 match = re.match(r'^Joint ((Un)?[Ff]avorable)', action)
@@ -264,7 +261,7 @@ class CTBillScraper(BillScraper):
                     act_chamber = 'lower'
 
                 if ('TRANSMITTED TO SENATE' in action or
-                    action == 'HOUSE PASSED'):
+                        action == 'HOUSE PASSED'):
                     act_chamber = 'upper'
 
     def scrape_versions(self, chamber, session):

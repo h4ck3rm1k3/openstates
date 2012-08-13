@@ -13,7 +13,7 @@ _action_re = (
     ('Amendment (?:.*)adopted', 'amendment:passed'),
     ('Amendment lost', 'amendment:failed'),
     ('Read for the first time and referred to',
-       ['bill:reading:1', 'committee:referred']),
+     ['bill:reading:1', 'committee:referred']),
     ('(r|R)eferred to', 'committee:referred'),
     ('Read for the second time', 'bill:reading:2'),
     ('(S|s)ubstitute adopted', 'bill:substituted'),
@@ -32,11 +32,13 @@ _action_re = (
     ('Favorable from', 'committee:passed:favorable'),
 )
 
+
 def _categorize_action(action):
     for pattern, types in _action_re:
         if re.findall(pattern, action):
             return types
     return 'other'
+
 
 class ALBillScraper(BillScraper):
 
@@ -48,7 +50,8 @@ class ALBillScraper(BillScraper):
         html = self.urlopen(url)
 
     def scrape(self, chamber, session):
-        self.session_id = self.metadata['session_details'][session]['internal_id']
+        self.session_id = self.metadata[
+            'session_details'][session]['internal_id']
         self.base_doc_url = 'http://alisondb.legislature.state.al.us/acas/searchableinstruments/%s/PrintFiles/' % session
 
         chamber_piece = {'upper': 'Senate',
@@ -63,7 +66,6 @@ class ALBillScraper(BillScraper):
                     'electedMatterTransResults.asp?TransCodes={All}'
                     '&LegDay={All}&WhichBills=%s') % chamber_piece
         self.scrape_for_bill_type(chamber, session, bill_url)
-
 
     def scrape_for_bill_type(self, chamber, session, url):
 
@@ -106,9 +108,11 @@ class ALBillScraper(BillScraper):
                document.write(status + "','OFF','SB1-int.pdf,,','SB1-int.pdf,,')\">");
             """
 
-            oid, bill_id, fnotes = re.findall(r"instrumentSelected\(this,'(\d+)','(\w+)','ON','ON','(ON|OFF)'",
-                                              script_text)[0]
-            second_piece = re.findall(r"status \+ \"','(ON|OFF)','([^,]*),([^,]*),([^,]*)\'", script_text)
+            oid, bill_id, fnotes = re.findall(
+                r"instrumentSelected\(this,'(\d+)','(\w+)','ON','ON','(ON|OFF)'",
+                script_text)[0]
+            second_piece = re.findall(
+                r"status \+ \"','(ON|OFF)','([^,]*),([^,]*),([^,]*)\'", script_text)
             if second_piece:
                 amend, intver, engver, enrver = second_piece[0]
             else:
@@ -138,8 +142,9 @@ class ALBillScraper(BillScraper):
                 bill['subjects'] = [subject]
 
             if fnotes == 'ON':
-                bill.add_document('fiscal notes', 'http://alisondb.legislature.state.al.us/acas/ACTIONFiscalNotesFrameMac.asp?OID=%s&LABEL=%s' %
-                                  (oid, bill_id))
+                bill.add_document(
+                    'fiscal notes', 'http://alisondb.legislature.state.al.us/acas/ACTIONFiscalNotesFrameMac.asp?OID=%s&LABEL=%s' %
+                    (oid, bill_id))
 
             self.get_sponsors(bill, oid)
             self.get_actions(bill, oid)
@@ -157,9 +162,9 @@ class ALBillScraper(BillScraper):
 
             self.save_bill(bill)
 
-
     def get_actions(self, bill, oid):
-        url = 'http://alisondb.legislature.state.al.us/acas/ACTIONHistoryResultsMac.asp?OID=%s&LABEL=%s' % (oid, bill['bill_id'])
+        url = 'http://alisondb.legislature.state.al.us/acas/ACTIONHistoryResultsMac.asp?OID=%s&LABEL=%s' % (
+            oid, bill['bill_id'])
 
         bill.add_source(url)
 
@@ -201,14 +206,14 @@ class ALBillScraper(BillScraper):
             vote_button = tds[-1].xpath('input')
             if vote_button:
                 vote_js = vote_button[0].get('onclick')
-                moid, vote, body, inst = re.match(".*\('(\d+)','(\d+)','(\d+)','(\w+)'", vote_js).groups()
+                moid, vote, body, inst = re.match(
+                    ".*\('(\d+)','(\d+)','(\d+)','(\w+)'", vote_js).groups()
                 self.scrape_vote(bill, moid, vote, body, inst, action,
                                  action_chamber)
 
-
-
     def get_sponsors(self, bill, oid):
-        url = "http://alisondb.legislature.state.al.us/acas/ACTIONSponsorsResultsMac.asp?OID=%s&LABEL=%s" % (oid, bill['bill_id'])
+        url = "http://alisondb.legislature.state.al.us/acas/ACTIONSponsorsResultsMac.asp?OID=%s&LABEL=%s" % (
+            oid, bill['bill_id'])
 
         bill.add_source(url)
 
@@ -222,7 +227,6 @@ class ALBillScraper(BillScraper):
         for cs in doc.xpath('//table[2]/tr/td[2]/table/tr/td/text()'):
             if cs:
                 bill.add_sponsor('cosponsor', cs)
-
 
     def scrape_vote(self, bill, moid, vote_id, body, inst, motion, chamber):
         url = "http://alisondb.legislature.state.al.us/acas/GetRollCallVoteResults.asp?MOID=%s&VOTE=%s&BODY=%s&INST=%s&SESS=%s" % (

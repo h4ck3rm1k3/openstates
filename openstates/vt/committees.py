@@ -15,8 +15,9 @@ class VTCommitteeScraper(CommitteeScraper):
 
         chamber_abbr = {'upper': 'S', 'lower': 'H'}[chamber]
 
-        url = ('http://www.leg.state.vt.us/legdir/comms.cfm?Body=%s&Session=2014' %
-               chamber_abbr)
+        url = (
+            'http://www.leg.state.vt.us/legdir/comms.cfm?Body=%s&Session=2014' %
+            chamber_abbr)
         html = self.urlopen(url)
         page = lxml.html.fromstring(html)
         comm = None
@@ -52,7 +53,6 @@ class VTCommitteeScraper(CommitteeScraper):
 
         # And save the last committee.
         self.save_committee(comm)
-
 
     def parse_committee_name(self, td, chamber):
         # Strip the room number from the committee name

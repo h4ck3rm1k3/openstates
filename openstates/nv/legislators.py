@@ -7,6 +7,7 @@ from .utils import clean_committee_name
 import lxml.html
 import scrapelib
 
+
 class NVLegislatorScraper(LegislatorScraper):
     jurisdiction = 'nv'
 
@@ -22,8 +23,10 @@ class NVLegislatorScraper(LegislatorScraper):
         elif chamber == 'lower':
             chamber_slug = 'Assembly'
 
-        leg_base_url = 'http://www.leg.state.nv.us/App/Legislator/A/%s/%s/' % (chamber_slug, slug)
-        leg_json_url = 'http://www.leg.state.nv.us/App/Legislator/A/api/%s/Legislator?house=%s' % (slug, chamber_slug)
+        leg_base_url = 'http://www.leg.state.nv.us/App/Legislator/A/%s/%s/' % (
+            chamber_slug, slug)
+        leg_json_url = 'http://www.leg.state.nv.us/App/Legislator/A/api/%s/Legislator?house=%s' % (
+            slug, chamber_slug)
 
         resp = json.loads(self.urlopen(leg_json_url))
 
@@ -42,15 +45,20 @@ class NVLegislatorScraper(LegislatorScraper):
                 if not doc.xpath('//div'):
                     self.warning('invalid page, maybe a weird PDF?')
                 else:
-                    address = doc.xpath('//div[@class="contactAddress"]')[0].text_content()
+                    address = doc.xpath(
+                        '//div[@class="contactAddress"]')[0].text_content()
                     address2 = doc.xpath('//div[@class="contactAddress2"]')
                     if address2:
                         address += ' ' + address2[0].text_content()
-                    address += '\n' + doc.xpath('//div[@class="contactCityStateZip"]')[0].text_content()
-                    phone = doc.xpath('//div[@class="contactPhone"]')[0].text_content()
+                    address += '\n' + \
+                        doc.xpath(
+                            '//div[@class="contactCityStateZip"]')[0].text_content()
+                    phone = doc.xpath(
+                        '//div[@class="contactPhone"]')[0].text_content()
 
-                    leg.add_office('district', 'District Address', address=address,
-                                   phone=phone)
+                    leg.add_office(
+                        'district', 'District Address', address=address,
+                        phone=phone)
             except scrapelib.HTTPError:
                 self.warning('could not fetch %s' % leg_url)
                 pass

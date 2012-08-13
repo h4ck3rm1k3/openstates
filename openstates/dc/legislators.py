@@ -1,6 +1,7 @@
 from billy.scrape.legislators import LegislatorScraper, Legislator
 import lxml.html
 
+
 def get_field(doc, key):
     # get text_content of parent of the element containing the key
     elem = doc.xpath('//div[@id="member-info"]/p/strong[text()="%s"]/..' % key)
@@ -19,7 +20,8 @@ class DCLegislatorScraper(LegislatorScraper):
         doc = lxml.html.fromstring(data)
         doc.make_links_absolute(council_url)
         # page should have 13 unique council URLs
-        urls = set(doc.xpath('//a[contains(@href, "dccouncil.us/council/")]/@href'))
+        urls = set(
+            doc.xpath('//a[contains(@href, "dccouncil.us/council/")]/@href'))
         print '\n'.join(urls)
         assert len(urls) <= 13, "should have 13 unique councilmember URLs"
 
@@ -59,7 +61,8 @@ class DCLegislatorScraper(LegislatorScraper):
             else:
                 phone, fax = phone.split(' | Fax: ')
 
-            email = doc.xpath('//a[starts-with(text(), "Send an email")]/@href')[0].split(':')[1]
+            email = doc.xpath(
+                '//a[starts-with(text(), "Send an email")]/@href')[0].split(':')[1]
 
             legislator = Legislator(term, 'upper', district, name,
                                     party=party, url=url, email=email,

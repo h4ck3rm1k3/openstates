@@ -45,15 +45,16 @@ def _request_defaults(kwargs):
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'en-us,en;q=0.5',
             'Connection': 'keep-alive',
-            },
+        },
         'user_agent': USER_AGENT,
         'follow_robots': False,
-        }
+    }
     request_defaults.update(kwargs)
     return request_defaults
 
 
 class Feed(object):
+
     '''This model handles fetching the rss feed and recording any errors
     that occur for post-mortem reporting. It also has an instance-level
     report dictionary that gets augmented each time one of the feed's
@@ -80,11 +81,11 @@ class Feed(object):
                 'new': 0,
                 'old': 0,
                 'relevant': 0,
-                },
+            },
             'entities': {
-                'count' : 0,
-                }
+                'count': 0,
             }
+        }
         self.report = {
             'url': url,
 
@@ -92,8 +93,7 @@ class Feed(object):
             # to avoid over-writing data for feeds with national scope that
             # are scanned for multiple jursidictions.
             jurisdiction: self.default_report
-            }
-
+        }
 
         # Make sure this feed has a mongo id.
         self._initial_save()
@@ -164,7 +164,7 @@ class Feed(object):
         last_fetch = {
             'succeeded': self.succeeded,
             'datetime': datetime.datetime.utcnow()
-            }
+        }
         if not self.succeeded:
             last_fetch['traceback'] = self.traceback
         self.report[self.jurisdiction].update(last_fetch=last_fetch)
@@ -200,6 +200,7 @@ class Feed(object):
 
 
 class Entry(object):
+
     '''Wrap a parsed feed entry dictionary thingy from feedparser.
     '''
     request_defaults = dict(
@@ -215,9 +216,9 @@ class Entry(object):
         self.feed = feed
         self.report = {
             'entities': {
-                'count' : 0,
-                }
+                'count': 0,
             }
+        }
 
         # Whether a fetch of the full text was tried and succeeded.
         self.tried = False
@@ -291,13 +292,13 @@ class Entry(object):
         report = {
             'url': self.url,
             'entity_count': len(self['entity_ids'])
-            }
+        }
 
         if self.tried:
             last_fetch = {
                 'succeeded': self.succeeded,
                 'datetime': datetime.datetime.utcnow()
-                }
+            }
             if not self.succeeded:
                 last_fetch['traceback'] = self.traceback
             report.update(last_fetch=last_fetch)

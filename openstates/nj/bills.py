@@ -8,6 +8,7 @@ import zipfile
 import csv
 import os
 
+
 class NJBillScraper(BillScraper, MDBMixin):
     jurisdiction = 'nj'
 
@@ -125,7 +126,7 @@ class NJBillScraper(BillScraper, MDBMixin):
     _version_types = ('I', 'R', 'RS', 'ACS', 'AS', 'SCS', 'SS')
 
     def initialize_committees(self, year_abr):
-        chamber = {'A':'Assembly', 'S': 'Senate', '':''}
+        chamber = {'A': 'Assembly', 'S': 'Senate', '': ''}
 
         com_csv = self.access_to_csv('Committee')
 
@@ -160,7 +161,7 @@ class NJBillScraper(BillScraper, MDBMixin):
         self.scrape_bills(session, year_abr)
 
     def scrape_bills(self, session, year_abr):
-        #Main Bill information
+        # Main Bill information
         main_bill_csv = self.access_to_csv('MainBill')
 
         # keep a dictionary of bills (mapping bill_id to Bill obj)
@@ -187,7 +188,7 @@ class NJBillScraper(BillScraper, MDBMixin):
             # TODO: last session info is in there too
             bill_dict[bill_id] = bill
 
-        #Sponsors
+        # Sponsors
         bill_sponsors_csv = self.access_to_csv('BillSpon')
 
         for rec in bill_sponsors_csv:
@@ -203,8 +204,7 @@ class NJBillScraper(BillScraper, MDBMixin):
                 sponsor_type = "cosponsor"
             bill.add_sponsor(sponsor_type, name)
 
-
-        #Documents
+        # Documents
         bill_document_csv = self.access_to_csv('BillWP')
 
         for rec in bill_document_csv:
@@ -222,7 +222,7 @@ class NJBillScraper(BillScraper, MDBMixin):
 
             #doc_url = "ftp://www.njleg.state.nj.us/%s/%s" % (year, document)
             htm_url = 'http://www.njleg.state.nj.us/%s/Bills/%s' % (year_abr,
-                document.replace('.DOC', '.HTM'))
+                                                                    document.replace('.DOC', '.HTM'))
 
             # name document based _doctype
             try:
@@ -243,14 +243,14 @@ class NJBillScraper(BillScraper, MDBMixin):
                 bill.add_document(doc_name, htm_url)
 
         # Votes
-        next_year = int(year_abr)+1
+        next_year = int(year_abr) + 1
         vote_info_list = ['A%s' % year_abr,
                           'A%s' % next_year,
                           'S%s' % year_abr,
                           'S%s' % next_year,
                           'CA%s-%s' % (year_abr, next_year),
                           'CS%s-%s' % (year_abr, next_year),
-                         ]
+                          ]
 
         for filename in vote_info_list:
             s_vote_url = 'ftp://www.njleg.state.nj.us/votes/%s.zip' % filename
@@ -294,7 +294,8 @@ class NJBillScraper(BillScraper, MDBMixin):
                         action = rec["Action"]
                         leg_vote = rec["Legislator_Vote"]
                     else:
-                        bill_id = '%s%s' % (rec['Bill_Type'], rec['Bill_Number'])
+                        bill_id = '%s%s' % (
+                            rec['Bill_Type'], rec['Bill_Number'])
                         leg = rec['Name']
                         # drop time portion
                         date = rec['Agenda_Date'].split()[0]
@@ -308,8 +309,9 @@ class NJBillScraper(BillScraper, MDBMixin):
                     vote_id = vote_id.replace(" ", "_")
 
                     if vote_id not in votes:
-                        votes[vote_id] = Vote(chamber, date, action, None, None,
-                                              None, None, bill_id=bill_id)
+                        votes[vote_id] = Vote(
+                            chamber, date, action, None, None,
+                            None, None, bill_id=bill_id)
                     if vote_file_type == 'committee':
                         votes[vote_id]['committee'] = self._committees[
                             rec['Committee_House']]
@@ -324,7 +326,7 @@ class NJBillScraper(BillScraper, MDBMixin):
             # remove temp file
             os.remove(s_vote_zip)
 
-            #Counts yes/no/other votes and saves overall vote
+            # Counts yes/no/other votes and saves overall vote
             for vote in votes.itervalues():
                 vote_yes_count = len(vote["yes_votes"])
                 vote_no_count = len(vote["no_votes"])
@@ -355,7 +357,7 @@ class NJBillScraper(BillScraper, MDBMixin):
                 bill = bill_dict[vote_bill_id]
                 bill.add_vote(vote)
 
-        #Actions
+        # Actions
         bill_action_csv = self.access_to_csv('BillHist')
         actor_map = {'A': 'lower', 'G': 'executive', 'S': 'upper'}
 

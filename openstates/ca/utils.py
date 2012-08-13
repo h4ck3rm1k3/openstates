@@ -4,6 +4,7 @@ import lxml.html
 
 
 class CachedAttr(object):
+
     '''Computes attribute value and caches it in instance.
 
     Example:
@@ -26,9 +27,11 @@ class CachedAttr(object):
 
 
 class UrlData(object):
+
     '''Given a url, its nickname, and a scraper instance,
     provide the parsed lxml doc, the raw html, and the url
     '''
+
     def __init__(self, name, url, scraper, urls_object):
         '''urls_object is a reference back to the Urls container.
         '''
@@ -79,6 +82,7 @@ class UrlData(object):
 
 
 class UrlsMeta(type):
+
     '''This metaclass aggregates the validator functions marked
     using the Urls.validate decorator.
     '''
@@ -96,6 +100,7 @@ class UrlsMeta(type):
 
 
 class Urls(object):
+
     '''Contains urls we need to fetch during this scrape.
     '''
     __metaclass__ = UrlsMeta

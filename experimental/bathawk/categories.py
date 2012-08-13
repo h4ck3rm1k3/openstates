@@ -79,4 +79,4 @@ categories = [
 
     ('committee:failed',
      'The bill has failed to make it out of committee other'),
-    ]
+]

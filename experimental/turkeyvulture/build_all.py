@@ -7,6 +7,7 @@ from billy import db
 
 from .build_index import build_index
 
+
 def main():
     for abbr in db.metadata.distinct('_id'):
         check_call('')

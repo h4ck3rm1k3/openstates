@@ -7,7 +7,7 @@ rules = (
            u'Nays- (?P<excused>\d+) Excused - (?P<absent>\d+) Absent'),
           (u'(?P<yes_votes>\d+) -Yeas, (?P<no_votes>\d+) -Nays, '
            u'(?P<excused>\d+) -Excused, (?P<absent>\d+) -Absent'),
-           u'(?P<committees>Committee on .+?) suggested and ordered printed',
+          u'(?P<committees>Committee on .+?) suggested and ordered printed',
           (u'\(Yeas (?P<yes_votes>\d+) - Nays (?P<no_votes>\d+) - Absent '
            u'(?P<absent>\d+) - Excused (?P<excused>\d+)\)( \(Vacancy '
            u'(?P<vacant>\d+)\))?')]),
@@ -28,7 +28,7 @@ rules = (
          'committee:referred'),
     Rule(r'VETO was NOT SUSTAINED', 'bill:veto_override:passed'),
     Rule(r'VETO was SUSTAINED', 'bill:veto_override:failed'),
-    )
+)
 
 
 class Categorizer(BaseCategorizer):
@@ -67,7 +67,7 @@ def get_actor(action_text, chamber, rgxs=(
         (re.compile(r'(in|by) senate', re.I), 'upper'),
         (re.compile(r'(in|by) house', re.I), 'lower'),
         (re.compile(r'by governor', re.I), 'governor'),
-        )):
+)):
     '''Guess the actor for a particular action.
     '''
     for r, actor in rgxs:
@@ -95,5 +95,5 @@ committees = [
     u'TAXATION',
     u'TRANSPORTATION',
     u'VETERANS AND LEGAL AFFAIRS',
-    ]
+]
 committees_rgx = '(%s)' % '|'.join(sorted(committees, key=len, reverse=True))

@@ -40,7 +40,8 @@ class WVLegislatorScraper(LegislatorScraper):
         page.make_links_absolute(url)
 
         xpath = '//select[@name="sel_member"]/option[@selected]/text()'
-        district = page.xpath('//h1[contains(., "DISTRICT")]/text()').pop().split()[1].strip().lstrip('0')
+        district = page.xpath(
+            '//h1[contains(., "DISTRICT")]/text()').pop().split()[1].strip().lstrip('0')
 
         party = page.xpath('//h2').pop().text_content()
         party = re.search(r'\((R|D)[ \-\]]', party).group(1)
@@ -97,4 +98,3 @@ class WVLegislatorScraper(LegislatorScraper):
                 name='Business Office',
                 type='district',
                 phone=officedata['Business Phone:'].pop())
-

@@ -10,11 +10,11 @@ metadata = dict(
     legislature_name='Idaho State Legislature',
     legislature_url='http://www.legislature.idaho.gov/',
     capitol_timezone='America/Denver',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
-    terms = [
+    terms=[
         #{'name': '1997-1998',
         #    'sessions': [
         #        '1998',
@@ -70,16 +70,16 @@ metadata = dict(
                 '2011', '2012',
             ],
             'start_year': 2011, 'end_year': 2012
-        },
+         },
         {'name': '2013-2014',
             'sessions': [
                 '2013',
                 '2014',
             ],
             'start_year': 2013, 'end_year': 2014
-        },
+         },
     ],
-    session_details = {
+    session_details={
         #'1998':
         #    {'type': 'primary',
         #    'verbose_name': 'Fifty-fourth Legislature - Second Regular Session',
@@ -98,8 +98,8 @@ metadata = dict(
         #'2000spcl':
         #    {'type': 'special',
         #    'verbose_name': 'Fifty-fifth Legislature - First Extraordinary Session',
-        #    'start_date': datetime.date(2000, 12, 8), # 10:00 am
-        #    'end_date': datetime.date(2000, 12, 8)}, # 1:47 pm
+        # 'start_date': datetime.date(2000, 12, 8), # 10:00 am
+        # 'end_date': datetime.date(2000, 12, 8)}, # 1:47 pm
         #'2001':
         #    {'type': 'primary',
         #    'verbose_name': 'Fifty-sixth Legislature - First Regular Session',
@@ -133,8 +133,8 @@ metadata = dict(
         #'2006spcl':
         #    {'type': 'primary',
         #    'verbose_name': 'Fifty-eighth Legislature - First Extraordinary Session',
-        #    'start_date': datetime.date(2006, 8, 25), # 8:00 am
-        #    'end_date': datetime.date(2006, 8, 25)}, # 11:16 pm
+        # 'start_date': datetime.date(2006, 8, 25), # 8:00 am
+        # 'end_date': datetime.date(2006, 8, 25)}, # 11:16 pm
         #'2007':
         #    {'type': 'primary',
         #    'verbose_name': 'Fifty-ninth Legislature - First Regular Session',
@@ -156,27 +156,27 @@ metadata = dict(
         #    'start_date': datetime.date(2010, 1, 11),
         #    'end_date': datetime.date(2010, 3, 29)},
         '2011':
-            {'type': 'primary',
-            'display_name': '61st Legislature, 1st Regular Session (2011)',
-            'start_date': datetime.date(2011, 1, 10),
-            'end_date': datetime.date(2011, 4, 7),
-            '_scraped_name': '2011 Session Information',
-            },
+        {'type': 'primary',
+         'display_name': '61st Legislature, 1st Regular Session (2011)',
+         'start_date': datetime.date(2011, 1, 10),
+         'end_date': datetime.date(2011, 4, 7),
+         '_scraped_name': '2011 Session Information',
+         },
         '2012':
-            {'type': 'primary',
-            'display_name': '61st Legislature, 2nd Regular Session (2012)',
-            '_scraped_name': '2012 Session Information',
-            },
+        {'type': 'primary',
+         'display_name': '61st Legislature, 2nd Regular Session (2012)',
+         '_scraped_name': '2012 Session Information',
+         },
         '2013':
-            {'type': 'primary',
-            'display_name': '62nd Legislature, 1st Regular Session (2013)',
-            '_scraped_name': '2013 Session Information',
-            },
+        {'type': 'primary',
+         'display_name': '62nd Legislature, 1st Regular Session (2013)',
+         '_scraped_name': '2013 Session Information',
+         },
         '2014':
-            {'type': 'primary',
-            'display_name': '63nd Legislature, 1st Regular Session (2014)',
-            '_scraped_name': '2014 Session Information',
-            },
+        {'type': 'primary',
+         'display_name': '63nd Legislature, 1st Regular Session (2014)',
+         '_scraped_name': '2014 Session Information',
+         },
     },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=['2010 Session Information',
@@ -191,7 +191,8 @@ metadata = dict(
                                '2002 Session Information ',
                                '2001 Session Information ',
                                '2000 - 1998 Session Information '],
-    )
+)
+
 
 def session_list():
     from billy.scrape.utils import url_xpath

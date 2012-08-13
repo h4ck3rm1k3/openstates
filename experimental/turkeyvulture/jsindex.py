@@ -115,7 +115,7 @@ class IndexBuilder(object):
             'index': dict((k, list(v)) for (k, v) in self.index.items()),
             'tails': dict((k, list(v)) for (k, v) in self.tails.items()),
             'objects': self.objects
-            }
+        }
 
     def as_json(self, showsizes=False):
         data = self.jsondata()
@@ -152,9 +152,11 @@ class IndexBuilder(object):
 
 
 class JSONDateEncoder(json.JSONEncoder):
+
     """
     JSONEncoder that encodes datetime objects as Unix timestamps.
     """
+
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return time.mktime(obj.utctimetuple())

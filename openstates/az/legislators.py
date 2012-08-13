@@ -2,7 +2,9 @@ from billy.scrape import NoDataForPeriod
 from billy.scrape.legislators import LegislatorScraper, Legislator
 from lxml import html
 
-import re, datetime
+import re
+import datetime
+
 
 class AZLegislatorScraper(LegislatorScraper):
     jurisdiction = 'az'
@@ -41,7 +43,7 @@ class AZLegislatorScraper(LegislatorScraper):
 
         body = {'lower': 'H', 'upper': 'S'}[chamber]
         url = 'http://www.azleg.gov/MemberRoster.asp?Session_ID=%s&body=%s' % (
-                                                               session_id, body)
+            session_id, body)
         page = self.urlopen(url)
         root = html.fromstring(page)
         path = '//table[@id="%s"]/tr' % {'H': 'house', 'S': 'senate'}[body]
@@ -77,8 +79,8 @@ class AZLegislatorScraper(LegislatorScraper):
             party = party.text_content().strip()
             email = email.text_content().strip()
 
-            if ('Vacated' in email or 'Resigned' in email or 
-                'Removed' in email):
+            if ('Vacated' in email or 'Resigned' in email or
+                    'Removed' in email):
                 # comment out the following 'continue' for historical
                 # legislative sessions
                 # for the current session, if a legislator has left we will
@@ -104,8 +106,8 @@ class AZLegislatorScraper(LegislatorScraper):
                 fax = "602-" + fax
             if vacated:
                 end_date = datetime.datetime.strptime(vacated, '%m/%d/%Y')
-                leg = Legislator( term, chamber, district, full_name=name,
-                                  party=party, url=link)
+                leg = Legislator(term, chamber, district, full_name=name,
+                                 party=party, url=link)
                 leg['roles'][0]['end_date'] = end_date
             else:
                 leg = Legislator(term, chamber, district, full_name=name,
@@ -116,19 +118,19 @@ class AZLegislatorScraper(LegislatorScraper):
                            phone=phone, fax=fax)
 
             if position:
-                leg.add_role( position, term, chamber=chamber,
+                leg.add_role(position, term, chamber=chamber,
                              district=district, party=party)
 
             leg.add_source(url)
 
-            #Probably just get this from the committee scraper
+            # Probably just get this from the committee scraper
             #self.scrape_member_page(link, session, chamber, leg)
             self.save_legislator(leg)
 
     def scrape_member_page(self, url, session, chamber, leg):
         html = self.urlopen(url)
         root = html.fromstring(html)
-        #get the committee membership
+        # get the committee membership
         c = root.xpath('//td/div/strong[contains(text(), "Committee")]')
         for row in c.xpath('ancestor::table[1]')[1:]:
             name = row[0].text_content().strip()

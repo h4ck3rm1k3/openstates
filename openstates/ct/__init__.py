@@ -3,7 +3,7 @@ from .bills import CTBillScraper
 from .legislators import CTLegislatorScraper
 from .events import CTEventScraper
 
-settings = dict(SCRAPELIB_RPM = 20)
+settings = dict(SCRAPELIB_RPM=20)
 
 metadata = dict(
     name='Connecticut',
@@ -11,7 +11,7 @@ metadata = dict(
     abbreviation='ct',
     legislature_name='Connecticut General Assembly',
     legislature_url='http://www.cga.ct.gov/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -46,6 +46,7 @@ metadata = dict(
                                ]
 )
 
+
 def session_list():
     import scrapelib
     text = scrapelib.urlopen('ftp://ftp.cga.ct.gov')
@@ -53,6 +54,7 @@ def session_list():
     sessions.remove('incoming')
     sessions.remove('pub')
     return sessions
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

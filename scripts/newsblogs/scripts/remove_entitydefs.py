@@ -1,7 +1,8 @@
 '''HTML entity defs weren't getting unescaped during import until
 today. This script retroactively fixes the ones in the feeds_db.
 '''
-import re, htmlentitydefs
+import re
+import htmlentitydefs
 
 from billy.core import feeds_db
 

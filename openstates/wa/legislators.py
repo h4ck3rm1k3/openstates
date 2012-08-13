@@ -17,9 +17,11 @@ class WALegislatorScraper(LegislatorScraper):
 
         # these pages are useful for checking if a leg is still in office
         if chamber == 'upper':
-            cur_members = self.urlopen('http://www.leg.wa.gov/senate/senators/Pages/default.aspx')
+            cur_members = self.urlopen(
+                'http://www.leg.wa.gov/senate/senators/Pages/default.aspx')
         else:
-            cur_members = self.urlopen('http://www.leg.wa.gov/house/representatives/Pages/default.aspx')
+            cur_members = self.urlopen(
+                'http://www.leg.wa.gov/house/representatives/Pages/default.aspx')
 
         page = self.urlopen(url)
         page = lxml.etree.fromstring(page.bytes)
@@ -55,7 +57,6 @@ class WALegislatorScraper(LegislatorScraper):
             last = xpath(member, "string(wa:LastName)")
             last = last.lower().replace(' ', '')
 
-
             if chamber == 'upper':
                 leg_url = ("http://www.leg.wa.gov/senate/senators/"
                            "Pages/%s.aspx" % last)
@@ -73,12 +74,15 @@ class WALegislatorScraper(LegislatorScraper):
                     "//a[contains(@href, 'publishingimages')]")
                 if photo_link:
                     photo_url = photo_link[0].attrib['href']
-                offices = leg_page.xpath("//table[@cellspacing='0']/tr/td/b[contains(text(), 'Office')]")
+                offices = leg_page.xpath(
+                    "//table[@cellspacing='0']/tr/td/b[contains(text(), 'Office')]")
                 for office in offices:
                     office_block = office.getparent()
                     office_name = office.text_content().strip().rstrip(":")
-                    address_lines = [x.tail for x in office_block.xpath(".//br")]
-                    address_lines = filter(lambda a: a is not None, address_lines)
+                    address_lines = [
+                        x.tail for x in office_block.xpath(".//br")]
+                    address_lines = filter(
+                        lambda a: a is not None, address_lines)
                     phone = address_lines.pop(len(address_lines) - 1)
                     address = "\n".join(address_lines)
                     obj = {

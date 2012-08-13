@@ -58,7 +58,7 @@ committees = [
     u'Veterans Affairs/ Homeland Security',
     u'Water Resources',
     u'Workforce Investment for Economic Development',
-    ]
+]
 
 
 committees_rgx = '(%s)' % '|'.join(sorted(committees, key=len, reverse=True))
@@ -110,7 +110,7 @@ rules = (
     Rule([u'Read 1st time'], [u'bill:reading:1']),
     Rule([u'To .+? then .+? then (?P<committees>.+)']),
     Rule(r'To %s' % committees_rgx, 'committee:referred')
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

@@ -5,11 +5,12 @@ import lxml.html
 
 from billy.scrape.events import EventScraper, Event
 
+
 class SCEventScraper(EventScraper):
     jurisdiction = 'sc'
     _tz = pytz.timezone('US/Eastern')
 
-    def get_page_from_url(self,url):
+    def get_page_from_url(self, url):
         page = self.urlopen(url)
         page = lxml.html.fromstring(page)
         page.make_links_absolute(url)
@@ -17,7 +18,7 @@ class SCEventScraper(EventScraper):
 
     def normalize_time(self, time_string):
         time_string = time_string.lower().strip()
-        if re.search(r'adjourn',time_string):
+        if re.search(r'adjourn', time_string):
             time_string = '12:00 am'
         if re.search(r' noon', time_string):
             time_string = time_string.replace(' noon', ' pm')
@@ -31,9 +32,9 @@ class SCEventScraper(EventScraper):
         block_reg = re.compile(
             r'^([0-9]{1,2}:[0-9]{2}( [ap]m)?)-[0-9]{1,2}:[0-9]{2} ([ap]m)')
 
-        if re.search(block_reg,time_string):
+        if re.search(block_reg, time_string):
             start_time, start_meridiem, end_meridiem = re.search(
-                block_reg,time_string).groups()
+                block_reg, time_string).groups()
 
             start_hour = int(start_time.split(':')[0])
             if start_meridiem:
@@ -126,7 +127,7 @@ class SCEventScraper(EventScraper):
                             ".//a[contains(@href,'billsearch.php')]"):
                         bill_url = bill.attrib['href']
                         bill_id = bill.text_content().replace(
-                            '.','').replace(' ','')
+                            '.', '').replace(' ', '')
                         bill_description = self.get_bill_description(bill_url)
 
                         event.add_related_bill(

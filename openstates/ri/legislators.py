@@ -16,6 +16,7 @@ excel_mapping = {
     'email': 6,
 }
 
+
 class RILegislatorScraper(LegislatorScraper):
     jurisdiction = 'ri'
     latest_only = True
@@ -27,7 +28,8 @@ class RILegislatorScraper(LegislatorScraper):
             source_url = 'http://www.rilin.state.ri.us/senators/default.aspx'
             source_url_title_replacement = rep_type
         elif chamber == 'lower':
-            url = ('http://webserver.rilin.state.ri.us/Documents/Representatives.xls')
+            url = (
+                'http://webserver.rilin.state.ri.us/Documents/Representatives.xls')
             rep_type = 'Representative '
             source_url = 'http://www.rilin.state.ri.us/representatives/default.aspx'
             source_url_title_replacement = 'Rep. '
@@ -45,7 +47,8 @@ class RILegislatorScraper(LegislatorScraper):
         leg_page.make_links_absolute(source_url)
 
         for link in leg_page.xpath('//td[@class="ms-vb2"]'):
-            leg_name = link.text_content().replace(source_url_title_replacement,'')
+            leg_name = link.text_content().replace(
+                source_url_title_replacement, '')
             leg_url = link.xpath("..//a")[0].attrib['href']
             leg_source_url_map[leg_name] = leg_url
 
@@ -57,9 +60,9 @@ class RILegislatorScraper(LegislatorScraper):
             district_name = dist
             full_name = re.sub(rep_type, '', d['full_name']).strip()
             translate = {
-                "Democrat"    : "Democratic",
-                "Republican"  : "Republican",
-                "Independent" : "Independent"
+                "Democrat": "Democratic",
+                "Republican": "Republican",
+                "Independent": "Independent"
             }
 
             homepage_url = None
@@ -84,4 +87,3 @@ class RILegislatorScraper(LegislatorScraper):
             if homepage_url:
                 leg.add_source(homepage_url)
             self.save_legislator(leg)
-

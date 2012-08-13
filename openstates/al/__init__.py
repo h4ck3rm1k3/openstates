@@ -3,7 +3,7 @@ from billy.utils.fulltext import pdfdata_to_text, text_after_line_numbers
 from .bills import ALBillScraper
 from .legislators import ALLegislatorScraper
 
-metadata =  {
+metadata = {
     'name': 'Alabama',
     'capitol_timezone': 'America/Chicago',
     'abbreviation': 'al',
@@ -25,14 +25,14 @@ metadata =  {
         # 'start_year': 2009,
         # 'end_year': 2010},
         {'name': '2011-2014',
-         'sessions': ['2011rs','2012rs', 'First Special Session 2012',
+         'sessions': ['2011rs', '2012rs', 'First Special Session 2012',
                       '2013rs', '2014rs'],
          'start_year': 2011,
          'end_year': 2014,
-        }
+         }
     ],
     'feature_flags': ['subjects', 'influenceexplorer'],
-    'session_details':{
+    'session_details': {
         #'Organization Session 2007': {
         #    'start_date': datetime.date(2007, 1, 9),
         #    'end_date': datetime.date(2007, 1, 16),
@@ -138,8 +138,9 @@ metadata =  {
 
 def session_list():
     from billy.scrape.utils import url_xpath
-    sessions = url_xpath('http://alisondb.legislature.state.al.us/acas/ACTIONSessionResultsMac.asp',
-        '//option/text()' )
+    sessions = url_xpath(
+        'http://alisondb.legislature.state.al.us/acas/ACTIONSessionResultsMac.asp',
+        '//option/text()')
     return [s.strip() for s in sessions]
 
 

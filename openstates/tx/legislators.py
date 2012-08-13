@@ -2,12 +2,13 @@ import re
 
 from billy.utils import urlescape
 from billy.scrape.legislators import (LegislatorScraper, Legislator,
-                                            Person)
+                                      Person)
 from .utils import clean_committee_name
 
 import lxml.html
 
 phone_re = re.compile('\(\d{3}\) \d{3}-\d{4}')
+
 
 class TXLegislatorScraper(LegislatorScraper):
     jurisdiction = 'tx'
@@ -112,7 +113,7 @@ class TXLegislatorScraper(LegislatorScraper):
             # (without grabbing a whole bunch of pages, at least)
             # so for now we will hard-code the one broken case
             if (name == "Oversight of HHS Eligibility System" and
-                term == '82'):
+                    term == '82'):
                 comm_chamber = 'joint'
             else:
                 comm_chamber = chamber

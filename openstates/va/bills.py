@@ -8,6 +8,7 @@ import lxml.html
 
 BASE_URL = 'http://lis.virginia.gov'
 
+
 class VABillScraper(BillScraper):
     jurisdiction = 'va'
 
@@ -72,7 +73,6 @@ class VABillScraper(BillScraper):
             # get bills from page
             self.get_page_bills(link.text, link.get('href'))
 
-
     def scrape(self, chamber, session):
         self.user_agent = 'openstates +mozilla'
         # internal id for the session, store on self so all methods have access
@@ -120,20 +120,21 @@ class VABillScraper(BillScraper):
                     bill.add_source(bill_url)
                     self.save_bill(bill)
 
-
     def scrape_bill_details(self, url, bill):
         html = self.urlopen(url, retry_on_404=True)
         doc = lxml.html.fromstring(html)
 
         # summary sections
-        summary = doc.xpath('//h4[starts-with(text(), "SUMMARY")]/following-sibling::p/text()')
+        summary = doc.xpath(
+            '//h4[starts-with(text(), "SUMMARY")]/following-sibling::p/text()')
         if summary and summary[0].strip():
             bill['summary'] = summary[0].strip()
 
         # versions
         for va in doc.xpath('//h4[text()="FULL TEXT"]/following-sibling::ul[1]/li/a[1]'):
 
-            # 11/16/09 \xa0House: Prefiled and ordered printed; offered 01/13/10 10100110D
+            # 11/16/09 \xa0House: Prefiled and ordered printed; offered
+            # 01/13/10 10100110D
             date, desc = va.text.split(u' \xa0')
             desc.rsplit(' ', 1)[0]              # chop off last part
             link = va.get('href')
@@ -141,10 +142,11 @@ class VABillScraper(BillScraper):
 
             # budget bills in VA are searchable but no full text available
             if '+men+' in link:
-                self.warning('not adding budget version, bill text not available')
+                self.warning(
+                    'not adding budget version, bill text not available')
             else:
                 # VA duplicates reprinted bills, lets keep the original name
-                bill.add_version(desc, BASE_URL+link, date=date,
+                bill.add_version(desc, BASE_URL + link, date=date,
                                  mimetype='text/html',
                                  on_duplicate='use_old')
 
@@ -168,9 +170,8 @@ class VABillScraper(BillScraper):
                     vote.add_source(BASE_URL + vote_url[0])
                 # set other count, it isn't provided
                 vote['other_count'] = len(vote['other_votes'])
-                #vote.validate()
+                # vote.validate()
                 bill.add_vote(vote)
-
 
             # categorize actions
             for pattern, atype in self._action_classifiers:
@@ -183,15 +184,14 @@ class VABillScraper(BillScraper):
             if atype:
                 bill.add_action(actor, action, date, type=atype)
 
-
     def fetch_sponsors(self, bill):
         url = "http://lis.virginia.gov/cgi-bin/legp604.exe?%s+mbr+%s" % (
             self.site_id, bill['bill_id'].replace(' ', ''))
 
         # order of chamber uls
-        #if bill['chamber'] == 'lower':
+        # if bill['chamber'] == 'lower':
         #    order = ['lower', 'upper']
-        #else:
+        # else:
         #    order = ['upper', 'lower']
 
         html = self.urlopen(url, retry_on_404=True)

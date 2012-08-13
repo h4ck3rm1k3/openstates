@@ -72,7 +72,7 @@ class HIEventScraper(EventScraper):
             if "/" in committee:
                 committees = committee.split("/")
             else:
-                committees = [committee,]
+                committees = [committee, ]
 
             for committee in committees:
                 if "INFO" not in committee:

@@ -21,11 +21,11 @@ def main(abbr):
             'Accept-Language': 'en-us,en;q=0.5',
             'User-Agent': ('Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:10.0.2) '
                            'Gecko/20100101 Firefox/10.0.2'),
-            },
+        },
         'follow_robots': False,
 
         # Note, this script needs run in the same dir as billy_settings.py
-        }
+    }
 
     logger = logbook.Logger()
     DATA = join(settings.BILLY_DATA_DIR, abbr, 'billtext')

@@ -2,6 +2,7 @@ import lxml.html
 
 from billy.scrape.committees import CommitteeScraper, Committee
 
+
 class MDCommitteeScraper(CommitteeScraper):
 
     jurisdiction = 'md'
@@ -25,7 +26,6 @@ class MDCommitteeScraper(CommitteeScraper):
             elif chamber in ('Joint', 'Statutory', 'Special Joint'):
                 chamber = 'joint'
                 self.scrape_committee(chamber, a.text, url)
-
 
     def scrape_committee(self, chamber, com_name, url):
         html = self.urlopen(url)

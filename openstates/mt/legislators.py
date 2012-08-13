@@ -78,7 +78,7 @@ class MTLegislatorScraper(LegislatorScraper):
 
             # Get full name properly capped.
             fullname = _fullname = '%s %s' % (entry['first_name'].capitalize(),
-                                   entry['last_name'].capitalize())
+                                              entry['last_name'].capitalize())
 
             city_lower = entry['city'].lower()
 
@@ -89,7 +89,7 @@ class MTLegislatorScraper(LegislatorScraper):
             address = '\n'.join([
                 entry['address'],
                 '%s, %s %s' % (entry['city'], entry['state'], entry['zip'])
-                ])
+            ])
 
             office = dict(
                 name='District Office', type='district', phone=None,
@@ -202,18 +202,18 @@ class MTLegislatorScraper(LegislatorScraper):
         except IndexError:
             raise NoDetails('No details found at %r' % url)
 
-        details = { 'photo_url': photo_url }
+        details = {'photo_url': photo_url}
 
-        # # Parse address.
+        # Parse address.
         elements = list(doc.xpath('//b[contains(., "Address")]/..')[0])
-        # # dropper = lambda element: element.tag != 'b'
-        # # elements = dropwhile(dropper, elements)
-        # # assert next(elements).text == 'Address'
-        # # elements = list(takewhile(taker, elements))
+        # dropper = lambda element: element.tag != 'b'
+        # elements = dropwhile(dropper, elements)
+        # assert next(elements).text == 'Address'
+        # elements = list(takewhile(taker, elements))
 
-        # # MT's website currently has a typo that places the "address"
-        # # heading inline with the "Information Office" phone number.
-        # # This hack tempprarily makes things work.
+        # MT's website currently has a typo that places the "address"
+        # heading inline with the "Information Office" phone number.
+        # This hack tempprarily makes things work.
         elements = elements[3:]
         chunks = []
         for br in elements:
@@ -251,4 +251,3 @@ class MTLegislatorScraper(LegislatorScraper):
                     details['email'] = match.group()
 
         return details
-

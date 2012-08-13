@@ -10,7 +10,7 @@ metadata = dict(
     capitol_timezone='America/Los_Angeles',
     legislature_name='Oregon Legislative Assembly',
     legislature_url='http://www.leg.state.or.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -18,7 +18,7 @@ metadata = dict(
         {'name': '2011-2012',
          'sessions': ['2011 Regular Session',
                       '2012 Regular Session',
-                      '2012 Special Session' ],
+                      '2012 Special Session'],
          'start_year': 2011, 'end_year': 2012},
         {'name': '2013-2014',
          'sessions': ['2013 Regular Session',
@@ -36,7 +36,7 @@ metadata = dict(
             '_scraped_name': '2012 Regular Session',
             'slug': '12reg',
         },
-        '2012 Special Session' : {
+        '2012 Special Session': {
             'display_name': '2012 Speical Session',
             '_scraped_name': '2012 Special Session',
             'slug': '12ss1',
@@ -61,11 +61,13 @@ metadata = dict(
                                '2007 Interim', '2007 Regular Session']
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return [x.strip() for x in
             url_xpath('https://olis.leg.state.or.us/liz/sessions/',
                       '//a[contains(@href, "/liz/")]/text()')]
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

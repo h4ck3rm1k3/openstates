@@ -8,14 +8,15 @@ import lxml.html
 
 BASE_URL = 'http://www.legislature.mi.gov'
 
+
 def jres_id(n):
     """ joint res ids go from A-Z, AA-ZZ, etc. """
-    return chr(ord('A')+(n-1)%25)*((n/26)+1)
+    return chr(ord('A') + (n - 1) % 25) * ((n / 26) + 1)
 
-bill_types = {'B':'bill',
-              'R':'resolution',
-              'CR':'concurrent resolution',
-              'JR':'joint resolution'}
+bill_types = {'B': 'bill',
+              'R': 'resolution',
+              'CR': 'concurrent resolution',
+              'JR': 'joint resolution'}
 
 _categorizers = {
     'read a first time': 'bill:reading:1',
@@ -33,10 +34,12 @@ _categorizers = {
     'amendment(s) defeated': 'amendment:failed',
 }
 
+
 def categorize_action(action):
     for prefix, atype in _categorizers.iteritems():
         if action.lower().startswith(prefix):
             return atype
+
 
 class MIBillScraper(BillScraper):
     jurisdiction = 'mi'
@@ -49,13 +52,14 @@ class MIBillScraper(BillScraper):
         # if first page isn't found, try second year
         if 'Page Not Found' in html:
             html = self.urlopen('http://legislature.mi.gov/doc.aspx?%s-%s'
-                                % (session[-4:], bill_id.replace(' ','-')))
+                                % (session[-4:], bill_id.replace(' ', '-')))
             if 'Page Not Found' in html:
                 return None
 
         doc = lxml.html.fromstring(html)
 
-        title = doc.xpath('//span[@id="frg_billstatus_ObjectSubject"]')[0].text_content()
+        title = doc.xpath(
+            '//span[@id="frg_billstatus_ObjectSubject"]')[0].text_content()
 
         # get B/R/JR/CR part and look up bill type
         bill_type = bill_types[bill_id.split(' ')[0][1:]]
@@ -71,7 +75,8 @@ class MIBillScraper(BillScraper):
             bill.add_sponsor(sp_type, sponsor)
             sp_type = 'cosponsor'
 
-        bill['subjects'] = doc.xpath('//span[@id="frg_billstatus_CategoryList"]/a/text()')
+        bill['subjects'] = doc.xpath(
+            '//span[@id="frg_billstatus_CategoryList"]/a/text()')
 
         # actions (skip header)
         for row in doc.xpath('//table[@id="frg_billstatus_HistoriesGridView"]/tr')[1:]:
@@ -89,7 +94,8 @@ class MIBillScraper(BillScraper):
             rcmatch = re.search('Roll Call # (\d+)', action, re.IGNORECASE)
             if rcmatch:
                 rc_num = rcmatch.groups()[0]
-                # in format mileg.aspx?page=getobject&objectname=2011-SJ-02-10-011
+                # in format
+                # mileg.aspx?page=getobject&objectname=2011-SJ-02-10-011
                 journal_link = tds[1].xpath('a/@href')
                 if journal_link:
                     objectname = journal_link[0].rsplit('=', 1)[-1]
@@ -103,13 +109,15 @@ class MIBillScraper(BillScraper):
                     count = re.search('YEAS (\d+)', action, re.IGNORECASE)
                     count = int(count.groups()[0]) if count else 0
                     if count != len(vote['yes_votes']):
-                        self.warning('vote count mismatch for %s %s, %d != %d' % 
-                                     (bill_id, action, count, len(vote['yes_votes'])))
+                        self.warning(
+                            'vote count mismatch for %s %s, %d != %d' %
+                            (bill_id, action, count, len(vote['yes_votes'])))
                     count = re.search('NAYS (\d+)', action, re.IGNORECASE)
                     count = int(count.groups()[0]) if count else 0
                     if count != len(vote['no_votes']):
-                        self.warning('vote count mismatch for %s %s, %d != %d' % 
-                                     (bill_id, action, count, len(vote['no_votes'])))
+                        self.warning(
+                            'vote count mismatch for %s %s, %d != %d' %
+                            (bill_id, action, count, len(vote['no_votes'])))
 
                     vote['yes_count'] = len(vote['yes_votes'])
                     vote['no_count'] = len(vote['no_votes'])
@@ -118,7 +126,7 @@ class MIBillScraper(BillScraper):
                     vote.add_source(vote_url)
                     bill.add_vote(vote)
                 else:
-                    self.warning("missing journal link for %s %s" % 
+                    self.warning("missing journal link for %s %s" %
                                  (bill_id, journal))
 
         # versions
@@ -177,7 +185,8 @@ class MIBillScraper(BillScraper):
     def parse_roll_call(self, vote, url, rc_num):
         html = self.urlopen(url)
         if 'In The Chair' not in html:
-            self.warning('"In The Chair" indicator not found, unable to extract vote')
+            self.warning(
+                '"In The Chair" indicator not found, unable to extract vote')
             return
         vote_doc = lxml.html.fromstring(html)
 

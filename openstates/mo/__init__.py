@@ -11,7 +11,7 @@ metadata = dict(
     legislature_name='Missouri General Assembly',
     legislature_url='http://www.moga.mo.gov/',
     capitol_timezone='America/Chicago',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -22,11 +22,11 @@ metadata = dict(
         {'name': '2013-2014',
          'sessions': ['2013', '2014'],
          'start_year': 2013, 'end_year': 2014},
-        ],
+    ],
     session_details={
-        '2012': {'start_date': datetime.date(2012,1,26), 'type': 'primary',
+        '2012': {'start_date': datetime.date(2012, 1, 26), 'type': 'primary',
                  'display_name': '2012 Regular Session'},
-        '2013': {'start_date': datetime.date(2012,1,26),
+        '2013': {'start_date': datetime.date(2012, 1, 26),
                  'type': 'primary',
                  "_scraped_name": "2013 - 97th General Assembly - 1st Regular Session",
                  'display_name': '2013 Regular Session'},
@@ -34,7 +34,7 @@ metadata = dict(
                  'display_name': '2014 Regular Session'},
     },
     feature_flags=["subjects", 'influenceexplorer'],
-    _ignored_scraped_sessions = [
+    _ignored_scraped_sessions=[
         '2012 - 96th General Assembly - 2nd Regular Session',
         '2011 - 96th General Assembly - 1st Regular Session',
         '2010 - 95th General Assembly - 2nd Regular Session',
@@ -56,10 +56,12 @@ metadata = dict(
     ]
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://www.senate.mo.gov/pastsessions.htm',
-        "//div[@id='list']/li/a/text()")
+                     "//div[@id='list']/li/a/text()")
+
 
 def extract_text(doc, data):
     text = pdfdata_to_text(data)
