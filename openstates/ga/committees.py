@@ -20,8 +20,8 @@ class GACommitteeScraper(CommitteeScraper):
         sid = self.metadata['session_details'][session]['_guid']
         committees = backoff(self.cservice.GetCommitteesBySession, sid)
 
-        #if committees.strip() == "":
-        #    return  # If we get here, it's a problem.
+        # if committees.strip() == "":
+        # return  # If we get here, it's a problem.
         # Commenting this out for future debugging. - PRT
 
         committees = committees['CommitteeListing']
@@ -40,7 +40,7 @@ class GACommitteeScraper(CommitteeScraper):
             if code in self.ctty_cache:
                 ctty = self.ctty_cache[code]
                 if (ctty['chamber'] != chamber) and (description and
-                        'joint' in description.lower()):
+                                                     'joint' in description.lower()):
                     ctty['chamber'] = 'joint'
                 else:
                     ctty = None
@@ -57,7 +57,8 @@ class GACommitteeScraper(CommitteeScraper):
 
             members = committee['Members']['CommitteeMember']
             for member in members:
-                name = "{First} {Last}".format(**dict(member['Member']['Name']))
+                name = "{First} {Last}".format(
+                    **dict(member['Member']['Name']))
                 role = member['Role']
                 ctty.add_member(name, role, _guid=member['Member']['Id'])
 

@@ -13,6 +13,7 @@ BILL_DETAIL_URL_BASE = 'https://www.revisor.mn.gov/revisor/pages/search_status/'
 # The versions of a bill use a different base URL.
 VERSION_URL_BASE = "https://www.revisor.mn.gov/bills/"
 
+
 class MNBillScraper(BillScraper):
     jurisdiction = 'mn'
 
@@ -40,7 +41,7 @@ class MNBillScraper(BillScraper):
     )
 
     def get_bill_topics(self, chamber, session):
-        search_chamber = {'lower':'House', 'upper':'Senate'}[chamber]
+        search_chamber = {'lower': 'House', 'upper': 'Senate'}[chamber]
         search_session = self.metadata['session_details'][session]['site_id']
         self._subject_mapping = defaultdict(list)
 
@@ -162,14 +163,15 @@ class MNBillScraper(BillScraper):
 
         bill_id = doc.xpath('//h1/text()')[0]
         bill_title = doc.xpath('//h2/following-sibling::p/text()')[0].strip()
-        bill_type = {'F': 'bill', 'R':'resolution',
+        bill_type = {'F': 'bill', 'R': 'resolution',
                      'C': 'concurrent resolution'}[bill_id[1]]
         bill = Bill(session, chamber, bill_id, bill_title, type=bill_type)
         bill['subjects'] = self._subject_mapping[bill_id]
         bill.add_source(bill_detail_url)
 
         # grab sponsors
-        sponsors = doc.xpath('//h2[text()="Authors"]/following-sibling::ul[1]/li/a/text()')
+        sponsors = doc.xpath(
+            '//h2[text()="Authors"]/following-sibling::ul[1]/li/a/text()')
         if sponsors:
             primary_sponsor = sponsors[0].strip()
             bill.add_sponsor('primary', primary_sponsor, chamber=chamber)
@@ -177,7 +179,8 @@ class MNBillScraper(BillScraper):
             for leg in cosponsors:
                 bill.add_sponsor('cosponsor', leg.strip(), chamber=chamber)
 
-        other_sponsors = doc.xpath('//h3[contains(text(), "Authors")]/following-sibling::ul[1]/li/a/text()')
+        other_sponsors = doc.xpath(
+            '//h3[contains(text(), "Authors")]/following-sibling::ul[1]/li/a/text()')
         for leg in other_sponsors:
             bill.add_sponsor('cosponsor', leg.strip(), chamber=other_chamber)
 
@@ -218,13 +221,13 @@ class MNBillScraper(BillScraper):
         This method uses the legislature's search page to collect all the bills
         for a given chamber and session.
         """
-        search_chamber = {'lower':'House', 'upper':'Senate'}[chamber]
+        search_chamber = {'lower': 'House', 'upper': 'Senate'}[chamber]
         search_session = self.metadata['session_details'][session]['site_id']
 
         self.get_bill_topics(chamber, session)
 
         # MN bill search page returns a maximum 500 search results
-        total_rows = list() # used to concatenate search results
+        total_rows = list()  # used to concatenate search results
         stride = 500
         start = 0
 
@@ -238,7 +241,7 @@ class MNBillScraper(BillScraper):
                 # session: legislative session id
                 # bill: Range start-end (e.g. 1-10)
                 url = search_url % (search_chamber, search_session, start,
-                                    start+stride, bill_type)
+                                    start + stride, bill_type)
 
                 html = self.urlopen(url)
                 doc = lxml.html.fromstring(html)
@@ -264,8 +267,8 @@ class MNBillScraper(BillScraper):
             session_number = search_session[0]
             bill_id = bill_details_link.text_content()
             bill_version_url = 'https://www.revisor.mn.gov/bin/getbill.php' \
-            '?session_year=%s&session_number=%s&number=%s&version=list' % (
-                session_year, session_number, bill_id)
+                '?session_year=%s&session_number=%s&number=%s&version=list' % (
+                    session_year, session_number, bill_id)
 
             self.get_bill_info(search_chamber, session, bill_details_url,
                                bill_version_url)

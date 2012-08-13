@@ -60,7 +60,7 @@ class Lexer(RegexLexer):
              bygroups(CompilationName)),
 
             (r'(added|amended|renumbered) by',
-            # (r',? (:?(:?as|and) )?(added|amended|renumbered) by',
+             # (r',? (:?(:?as|and) )?(added|amended|renumbered) by',
                 Token.RevisionSpec, 'path'),
             # Junk.
             # (r'amending [^,]+', Junk, 'junk'),
@@ -70,10 +70,11 @@ class Lexer(RegexLexer):
             (r' is renumbered', Renumbered),
             (r'renumbered', Renumbered),
             (r'\band\b', Token.And)
-            ],
+        ],
 
         'path': [
-            (r',? (:?(:?as|and) )?(added|amended|renumbered) by', Token.RevisionSpec),
+            (r',? (:?(:?as|and) )?(added|amended|renumbered) by',
+             Token.RevisionSpec),
 
             (r' local law number (\w+) of the city of (.+?) for the year (\w+)',
                 bygroups(Token.LocalLaw.Number,
@@ -85,7 +86,8 @@ class Lexer(RegexLexer):
 
             # "of the codes and ordinances of the city of Yonkers..."
             (r' of the (.+?) of the city of (.+?)(?:,|is)',
-                bygroups(Token.MunicipalLaw.Name, Token.MunicipalLaw.Jxn), '#pop'),
+                bygroups(
+                    Token.MunicipalLaw.Name, Token.MunicipalLaw.Jxn), '#pop'),
 
             (r' of the laws of (\d{4})', bygroups(SessionLawYear), '#pop'),
             (r'(?i)of the ([A-Za-z \-.&]+ (:?law|rules|code of the city of New York))',
@@ -98,15 +100,16 @@ class Lexer(RegexLexer):
             (r'[^ ,]+', NodeID),
             (r',? and ', NodeAndOrComma),
             (r', ', NodeAndOrComma),
-            ],
+        ],
 
         'junk': [
             (r'(?!(is|are) (amended|renumbered|repealed)).', Junk),
-            (r'(is|are) amended to read as follows:', AmendedAsFollows, '#pop'),
+            (r'(is|are) amended to read as follows:',
+             AmendedAsFollows, '#pop'),
             (r' (is|are) amended and \w+ new', AmendedByAdding, 'path'),
             (r' is amended by adding', AmendedByAdding, '#pop'),
             (r'is renumbered', Renumbered, '#pop'),
-            ]
+        ]
     }
 
 
@@ -217,14 +220,15 @@ class Parser(base.Parser):
         'root': [
             (SectionID, 'section_set_id'),
             (NodeType, 'path_new node_new node_set_type', 'path'),
-            (NodeType.Plural, 'path_new_parallel node_new node_set_type', 'path'),
+            (NodeType.Plural,
+             'path_new_parallel node_new node_set_type', 'path'),
             (AmendedAsFollows, 'amended_as_follows'),
             (AmendedByAdding, 'amended_by_adding', 'path'),
             (Renumbered, 'renumbered', 'path'),
             (ActName, 'path_set_act_name'),
             (Junk, ''),
             (CompilationName, 'path_set_compilation_name'),
-            ],
+        ],
 
         'path': [
             (SessionLawYear, 'path_set_session_law_year', '#pop'),
@@ -233,5 +237,5 @@ class Parser(base.Parser):
             (NodeType, 'node_set_type'),
             (NodeAndOrComma, 'path_clone'),
             (Junk, '', '#pop')
-            ],
-        }
+        ],
+    }

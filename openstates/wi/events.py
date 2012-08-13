@@ -8,6 +8,7 @@ import pytz
 
 calurl = "http://committeeschedule.legis.wisconsin.gov/?filter=Upcoming&committeeID=-1"
 
+
 class WIEventScraper(EventScraper):
     jurisdiction = 'wi'
     _tz = pytz.timezone('US/Eastern')
@@ -20,7 +21,8 @@ class WIEventScraper(EventScraper):
 
     def scrape_participants(self, session, href):
         page = self.lxmlize(href)
-        legs = page.xpath("//a[contains(@href, '/Pages/leg-info.aspx')]/text()")
+        legs = page.xpath(
+            "//a[contains(@href, '/Pages/leg-info.aspx')]/text()")
         role_map = {"participant": "participant",
                     "Chair": "chair",
                     "Co-Chair": "chair",

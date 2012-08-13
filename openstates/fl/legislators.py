@@ -18,7 +18,8 @@ class FLLegislatorScraper(LegislatorScraper):
 
     def scrape_sen_offices(self, leg, leg_url):
         doc = lxml.html.fromstring(self.urlopen(leg_url))
-        email = doc.xpath('//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
+        email = doc.xpath(
+            '//a[contains(@href, "mailto:")]')[0].get('href').split(':')[-1]
         leg['email'] = email
 
         # order of this page is
@@ -156,7 +157,8 @@ class FLLegislatorScraper(LegislatorScraper):
             if party == 'Democrat':
                 party = 'Democratic'
 
-            district = div.xpath('.//div[@class="districtnumber"]/text()')[0].strip()
+            district = div.xpath(
+                './/div[@class="districtnumber"]/text()')[0].strip()
 
             leg_url = link.get('href')
             split_url = urlparse.urlsplit(leg_url)

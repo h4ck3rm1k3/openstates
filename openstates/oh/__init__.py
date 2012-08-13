@@ -11,7 +11,7 @@ metadata = dict(
     capitol_timezone='America/New_York',
     legislature_name='Ohio General Assembly',
     legislature_url='http://www.legislature.state.oh.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -24,21 +24,22 @@ metadata = dict(
          'start_year': 2013, 'end_year': 2014},
     ],
     session_details={
-        '128': { 'display_name': '128th Legislature (2009-2010)',
+        '128': {'display_name': '128th Legislature (2009-2010)',
                 '_scraped_name': '128',
-               },
+                },
         '129': {'start_date': datetime.date(2011, 1, 3),
                 'display_name': '129th Legislature (2011-2012)',
                 '_scraped_name': '129',
-               },
-        '130': { 'display_name': '130th Legislature (2013-2014)',
+                },
+        '130': {'display_name': '130th Legislature (2013-2014)',
                 '_scraped_name': '130',
-               },
+                },
     },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=['127', '126', '125', '124', '123', '122']
 
 )
+
 
 def session_list():
     from billy.scrape.utils import url_xpath

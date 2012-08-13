@@ -8,6 +8,7 @@ from billy.scrape.votes import VoteScraper, Vote
 
 import lxml.html
 
+
 class NVBillScraper(BillScraper):
     jurisdiction = 'nv'
 
@@ -19,7 +20,8 @@ class NVBillScraper(BillScraper):
         ('From committee: .+? adopted', 'committee:passed'),
         ('From committee: .+? pass', 'committee:passed'),
         ('Prefiled. Referred', ['bill:introduced', 'committee:referred']),
-        ('Read first time. Referred', ['bill:reading:1', 'committee:referred']),
+        ('Read first time. Referred',
+         ['bill:reading:1', 'committee:referred']),
         ('Read first time.', 'bill:reading:1'),
         ('Read second time.', 'bill:reading:2'),
         ('Read third time. Lost', ['bill:failed', 'bill:reading:3']),
@@ -60,7 +62,8 @@ class NVBillScraper(BillScraper):
             self.scrape_assem_bills(chamber, insert, session, year)
 
     def scrape_subjects(self, insert, session, year):
-        url = 'http://www.leg.state.nv.us/Session/%s/Reports/TablesAndIndex/%s_%s-index.html' % (insert, year, session)
+        url = 'http://www.leg.state.nv.us/Session/%s/Reports/TablesAndIndex/%s_%s-index.html' % (
+            insert, year, session)
 
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)
@@ -88,7 +91,8 @@ class NVBillScraper(BillScraper):
                     8: 'joint resolution'}
 
         for docnum, bill_type in doc_type.iteritems():
-            parentpage_url = 'http://www.leg.state.nv.us/Session/%s/Reports/HistListBills.cfm?DoctypeID=%s' % (insert, docnum)
+            parentpage_url = 'http://www.leg.state.nv.us/Session/%s/Reports/HistListBills.cfm?DoctypeID=%s' % (
+                insert, docnum)
             links = self.scrape_links(parentpage_url)
             count = 0
             for link in links:
@@ -99,14 +103,17 @@ class NVBillScraper(BillScraper):
                 page = page.replace(u"\xa0", " ")
                 root = lxml.html.fromstring(page)
 
-                bill_id = root.xpath('string(/html/body/div[@id="content"]/table[1]/tr[1]/td[1]/font)')
-                title = root.xpath('string(/html/body/div[@id="content"]/table[1]/tr[5]/td)')
+                bill_id = root.xpath(
+                    'string(/html/body/div[@id="content"]/table[1]/tr[1]/td[1]/font)')
+                title = root.xpath(
+                    'string(/html/body/div[@id="content"]/table[1]/tr[5]/td)')
 
                 bill = Bill(session, chamber, bill_id, title,
                             type=bill_type)
                 bill['subjects'] = self.subject_mapping[bill_id]
 
-                bill_text = root.xpath("string(/html/body/div[@id='content']/table[6]/tr/td[2]/a/@href)")
+                bill_text = root.xpath(
+                    "string(/html/body/div[@id='content']/table[6]/tr/td[2]/a/@href)")
                 text_url = "http://www.leg.state.nv.us" + bill_text
                 bill.add_version("Bill Text", text_url,
                                  mimetype='application/pdf')
@@ -118,14 +125,14 @@ class NVBillScraper(BillScraper):
                 for leg in secondary:
                     bill.add_sponsor('cosponsor', leg)
 
-
                 minutes_count = 2
                 for mr in root.xpath('//table[4]/tr/td[3]/a'):
-                    minutes =  mr.xpath("string(@href)")
+                    minutes = mr.xpath("string(@href)")
                     minutes_url = "http://www.leg.state.nv.us" + minutes
                     minutes_date_path = "string(//table[4]/tr[%s]/td[2])" % minutes_count
                     minutes_date = mr.xpath(minutes_date_path).split()
-                    minutes_date = minutes_date[0] + minutes_date[1] + minutes_date[2] + " Agenda"
+                    minutes_date = minutes_date[0] + \
+                        minutes_date[1] + minutes_date[2] + " Agenda"
                     bill.add_document(minutes_date, minutes_url)
                     minutes_count = minutes_count + 1
 
@@ -134,14 +141,13 @@ class NVBillScraper(BillScraper):
                 bill.add_source(page_path)
                 self.save_bill(bill)
 
-
-
     def scrape_assem_bills(self, chamber, insert, session, year):
 
         doc_type = {1: 'bill', 3: 'resolution', 5: 'concurrent resolution',
                     6: 'joint resolution'}
         for docnum, bill_type in doc_type.iteritems():
-            parentpage_url = 'http://www.leg.state.nv.us/Session/%s/Reports/HistListBills.cfm?DoctypeID=%s' % (insert, docnum)
+            parentpage_url = 'http://www.leg.state.nv.us/Session/%s/Reports/HistListBills.cfm?DoctypeID=%s' % (
+                insert, docnum)
             links = self.scrape_links(parentpage_url)
             count = 0
             for link in links:
@@ -151,13 +157,16 @@ class NVBillScraper(BillScraper):
                 page = page.replace(u"\xa0", " ")
                 root = lxml.html.fromstring(page)
 
-                bill_id = root.xpath('string(/html/body/div[@id="content"]/table[1]/tr[1]/td[1]/font)')
-                title = root.xpath('string(/html/body/div[@id="content"]/table[1]/tr[5]/td)')
+                bill_id = root.xpath(
+                    'string(/html/body/div[@id="content"]/table[1]/tr[1]/td[1]/font)')
+                title = root.xpath(
+                    'string(/html/body/div[@id="content"]/table[1]/tr[5]/td)')
 
                 bill = Bill(session, chamber, bill_id, title,
                             type=bill_type)
                 bill['subjects'] = self.subject_mapping[bill_id]
-                bill_text = root.xpath("string(/html/body/div[@id='content']/table[6]/tr/td[2]/a/@href)")
+                bill_text = root.xpath(
+                    "string(/html/body/div[@id='content']/table[6]/tr/td[2]/a/@href)")
                 text_url = "http://www.leg.state.nv.us" + bill_text
                 bill.add_version("Bill Text", text_url,
                                  mimetype='application/pdf')
@@ -171,14 +180,14 @@ class NVBillScraper(BillScraper):
 
                 minutes_count = 2
                 for mr in root.xpath('//table[4]/tr/td[3]/a'):
-                    minutes =  mr.xpath("string(@href)")
+                    minutes = mr.xpath("string(@href)")
                     minutes_url = "http://www.leg.state.nv.us" + minutes
                     minutes_date_path = "string(//table[4]/tr[%s]/td[2])" % minutes_count
                     minutes_date = mr.xpath(minutes_date_path).split()
-                    minutes_date = minutes_date[0] + minutes_date[1] + minutes_date[2] + " Minutes"
+                    minutes_date = minutes_date[0] + \
+                        minutes_date[1] + minutes_date[2] + " Minutes"
                     bill.add_document(minutes_date, minutes_url)
                     minutes_count = minutes_count + 1
-
 
                 self.scrape_actions(root, bill, "lower")
                 self.scrape_votes(page, bill, insert, year)
@@ -196,7 +205,6 @@ class NVBillScraper(BillScraper):
                 web_end = mr.xpath('string(@href)')
                 links.append(web_end)
         return links
-
 
     def scrape_sponsors(self, page):
         primary = []
@@ -219,7 +227,8 @@ class NVBillScraper(BillScraper):
         path = '/html/body/div[@id="content"]/table/tr/td/p[1]'
         for mr in root.xpath(path):
             date = mr.text_content().strip()
-            date = date.split()[0] + " " + date.split()[1] + " " + date.split()[2]
+            date = date.split()[0] + " " + date.split()[1] + \
+                " " + date.split()[2]
             date = datetime.strptime(date, "%b %d, %Y")
             for el in mr.xpath('../../following-sibling::tr[1]/td/ul/li'):
                 action = el.text_content().strip()
@@ -263,7 +272,8 @@ class NVBillScraper(BillScraper):
             if not date:
                 date = root.xpath('//h1/text()')[-2].strip()
             date = datetime.strptime(date, "%B %d, %Y at %H:%M %p")
-            top_block_text = root.xpath('//div[@align="center"]')[0].text_content()
+            top_block_text = root.xpath(
+                '//div[@align="center"]')[0].text_content()
             yes_count = int(re.findall("(\d+) Yea", top_block_text)[0])
             no_count = int(re.findall("(\d+) Nay", top_block_text)[0])
             excused = int(re.findall("(\d+) Excused", top_block_text)[0])

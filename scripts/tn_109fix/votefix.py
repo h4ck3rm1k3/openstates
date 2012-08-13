@@ -1,4 +1,4 @@
-import sys
+#import sys
 
 import pymongo
 
@@ -18,14 +18,5 @@ def main(state):
             db.votes.save(vote, w=1)
 
 
-
 if __name__ == "__main__":
     main('tn')
-
-
-
-
-
-
-
-

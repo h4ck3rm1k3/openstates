@@ -3,7 +3,7 @@
 from sunlight import openstates
 import sys
 import codecs
-sys.stdout=codecs.getwriter('utf-8')(sys.stdout)
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 
 state = sys.argv[1]
 

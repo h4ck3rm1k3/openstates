@@ -125,7 +125,8 @@ def digest_state(state):
     demSkew = sorted(raw, key=lambda x: x['dem'])
     repSkew = sorted(raw, key=lambda x: x['repub'])
     othSkew = sorted(raw, key=lambda x: x['other'])
-    allSkew = sorted(raw, key=lambda x: (abs(x['dem']) + abs(x['repub']) + abs(x['other'])))
+    allSkew = sorted(raw, key=lambda x:
+                     (abs(x['dem']) + abs(x['repub']) + abs(x['other'])))
 
     return (demSkew, repSkew, othSkew, allSkew)
 

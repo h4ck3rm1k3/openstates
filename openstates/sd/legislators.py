@@ -79,7 +79,8 @@ class SDLegislatorScraper(LegislatorScraper):
         for link in page.xpath("//a[contains(@href, 'CommitteeMem')]"):
             comm = link.text.strip()
 
-            role = link.xpath('../following-sibling::td')[0].text_content().lower()
+            role = link.xpath(
+                '../following-sibling::td')[0].text_content().lower()
 
             if comm.startswith('Joint'):
                 chamber = 'joint'

@@ -12,8 +12,8 @@ def main(abbr, session=None):
         '$or': [
             {'action_dates.passed_upper': None},
             {'action_dates.passed_lower': None}
-            ]
-        }
+        ]
+    }
 
     if session is not None:
         spec['session'] = session
@@ -72,4 +72,5 @@ if __name__ == '__main__':
             print bill['bill_id'], url
             print bill['action_dates']
             webbrowser.open(url)
-            import pdb;pdb.set_trace()
+            import pdb
+            pdb.set_trace()

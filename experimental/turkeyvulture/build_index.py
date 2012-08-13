@@ -20,7 +20,7 @@ templates = {
             {{ subject }}
         {% endfor %}
         ''')
-    }
+}
 
 if __name__ == '__main__':
     from billy.models import db
@@ -34,7 +34,8 @@ if __name__ == '__main__':
     objects = coll.find(spec)
     print 'adding', objects.count(), cname, 'with spec %r' % spec
     renderer = lambda obj: templates[cname].render(obj=obj)
-    index.add(cname[0], objects, renderer, all_substrs=True, storekeys=storekeys)
+    index.add(cname[0], objects, renderer,
+              all_substrs=True, storekeys=storekeys)
 
     cname = 'committees'
     storekeys = ['committee', 'chamber', '_type', 'state', '_id', 'members']
@@ -43,11 +44,13 @@ if __name__ == '__main__':
     objects = coll.find(spec)
     print 'adding', objects.count(), cname, 'with spec %r' % spec
     renderer = lambda obj: templates[cname].render(obj=obj)
-    index.add(cname[0], objects, renderer, all_substrs=True, storekeys=storekeys)
+    index.add(cname[0], objects, renderer,
+              all_substrs=True, storekeys=storekeys)
 
     spec.update(session='20112012')
-    storekeys = ['bill_id', 'title', '_type', 'subjects', 'type', 'scraped_subjects',
-                 'state', '_id', 'session']
+    storekeys = [
+        'bill_id', 'title', '_type', 'subjects', 'type', 'scraped_subjects',
+        'state', '_id', 'session']
     objects = db.bills.find(spec)
     print 'adding', objects.count(), 'bills', 'with spec %r' % spec
     renderer = lambda obj: templates['bills'].render(obj=obj)
@@ -63,7 +66,8 @@ if __name__ == '__main__':
     index_dir = join(HERE, ROOT)
 
     for stem, stem_id in index.stem2id.items():
-        import ipdb;ipdb.set_trace()
+        import ipdb
+        ipdb.set_trace()
         results = index.index[stem_id]
         second = itemgetter(2)
         types = map(second, results)

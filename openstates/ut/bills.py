@@ -24,7 +24,6 @@ SUB_BLACKLIST = [
 ]  # Pages are the same, we'll strip this from bills we catch.
 
 
-
 class UTBillScraper(BillScraper):
     jurisdiction = 'ut'
 
@@ -33,9 +32,9 @@ class UTBillScraper(BillScraper):
         normal = super(UTBillScraper, self).accept_response(response)
         return (normal and
                 'com.microsoft.jdbc.base.BaseSQLException' not in
-                    response.text and
+                response.text and
                 'java.sql.SQLException' not in
-                    response.text)
+                response.text)
         # The UT site has been throwing a lot of transiant DB errors, these
         # will backoff and retry if their site has an issue. Seems to happen
         # often enough.
@@ -107,7 +106,7 @@ class UTBillScraper(BillScraper):
         bill.add_source(url)
 
         for link in page.xpath(
-            '//a[contains(@href, "bills/") and text() = "HTML"]'):
+                '//a[contains(@href, "bills/") and text() = "HTML"]'):
 
             name = link.getprevious().tail.strip()
             bill.add_version(name, link.attrib['href'], mimetype="text/html")
@@ -117,7 +116,7 @@ class UTBillScraper(BillScraper):
                                  mimetype="application/pdf")
 
         for link in page.xpath(
-            "//a[contains(@href, 'fnotes') and text() = 'HTML']"):
+                "//a[contains(@href, 'fnotes') and text() = 'HTML']"):
 
             bill.add_document("Fiscal Note", link.attrib['href'])
 
@@ -341,7 +340,6 @@ class UTBillScraper(BillScraper):
 
         logger.info(vote)
         bill.add_vote(vote)
-
 
     def parse_vote(self, bill, actor, date, motion, url, uniqid):
         page = self.urlopen(url)

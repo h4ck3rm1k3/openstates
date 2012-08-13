@@ -4,6 +4,7 @@ import urllib
 from billy.scrape.committees import CommitteeScraper, Committee
 import lxml.html
 
+
 class MICommitteeScraper(CommitteeScraper):
     jurisdiction = 'mi'
 
@@ -30,7 +31,7 @@ class MICommitteeScraper(CommitteeScraper):
                 self.warning('no committees yet for the house')
                 return
             com_url = base_url + opt.get('value')
-            com_html =  self.urlopen(com_url)
+            com_html = self.urlopen(com_url)
             cdoc = lxml.html.fromstring(com_html)
             com = Committee(chamber='lower', committee=name)
             com.add_source(com_url)
@@ -61,9 +62,8 @@ class MICommitteeScraper(CommitteeScraper):
         for link in doc.xpath('//li/a[contains(@href, "/committee/")]/@href'):
             if link.endswith('appropssubcommittee.html'):
                 self.scrape_approp_subcommittees(link)
-            elif not link.endswith(('statutory.htm','pdf','taskforce.html')):
+            elif not link.endswith(('statutory.htm', 'pdf', 'taskforce.html')):
                 self.scrape_senate_committee(link)
-
 
     def scrape_senate_committee(self, url):
         html = self.urlopen(url)
@@ -93,7 +93,6 @@ class MICommitteeScraper(CommitteeScraper):
 
         com.add_source(url)
         self.save_committee(com)
-
 
     def scrape_approp_subcommittees(self, url):
         html = self.urlopen(url)

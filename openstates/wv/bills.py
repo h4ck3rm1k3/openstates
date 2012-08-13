@@ -17,6 +17,7 @@ from .actions import Categorizer
 
 
 class _Url(object):
+
     '''A url object that can be compared with other url orbjects
     without regard to the vagaries of casing, encoding, escaping,
     and ordering of parameters in query strings.'''

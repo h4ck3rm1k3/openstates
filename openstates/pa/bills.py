@@ -63,8 +63,8 @@ class PABillScraper(BillScraper):
         self.parse_bill_versions(bill, page)
 
         vote_count = self.parse_history(bill,
-                            history_url(chamber, session, special,
-                                        type_abbr, bill_num))
+                                        history_url(chamber, session, special,
+                                                    type_abbr, bill_num))
 
         # only fetch votes if votes were seen in history
         if vote_count:
@@ -84,7 +84,7 @@ class PABillScraper(BillScraper):
             'icon-IE': 'text/html',
             'icon-file-pdf': 'application/pdf',
             'icon-file-word': 'application/msword',
-            }
+        }
         for a in page.xpath('//*[contains(@class, "BillInfo-PNTable")]//td/a'):
             try:
                 span = a[0]
@@ -142,7 +142,8 @@ class PABillScraper(BillScraper):
 
             if sponsor.find(' and ') != -1:
                 dual_sponsors = sponsor.split(' and ')
-                bill.add_sponsor(sponsor_type, dual_sponsors[0].strip().title())
+                bill.add_sponsor(
+                    sponsor_type, dual_sponsors[0].strip().title())
                 bill.add_sponsor('cosponsor', dual_sponsors[1].strip().title())
             else:
                 name = sponsor.strip().title()
@@ -190,7 +191,7 @@ class PABillScraper(BillScraper):
             else:
                 committee = re.findall(r'\t?(.+)', caption).pop()
                 self.parse_committee_votes(committee,
-                    chamber, bill, td.xpath('a')[0].attrib['href'])
+                                           chamber, bill, td.xpath('a')[0].attrib['href'])
 
             self.parse_chamber_votes(chamber, bill,
                                      td.xpath('a')[0].attrib['href'])
@@ -292,7 +293,8 @@ class PABillScraper(BillScraper):
             bill.add_vote(vote)
 
         for link in doc.xpath("//a[contains(@href, 'listVotes.cfm')]"):
-            self.parse_committee_votes(committee, chamber, bill, link.attrib['href'])
+            self.parse_committee_votes(
+                committee, chamber, bill, link.attrib['href'])
 
     def parse_upper_committee_vote_rollcall(self, bill, url):
         bill.add_source(url)
@@ -321,4 +323,3 @@ class PABillScraper(BillScraper):
 
         rollcall['passed'] = rollcall['yes_count'] > rollcall['no_count']
         return dict(rollcall)
-

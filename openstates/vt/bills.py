@@ -17,12 +17,14 @@ def parse_exec_date(date_str):
     """
     match = re.search(r'((\w+) (\d{1,2}),\s?(\d{4,4}))', date_str)
     if match:
-        date_str = "%s %s, %s" % (match.group(2), match.group(3), match.group(4))
+        date_str = "%s %s, %s" % (
+            match.group(2), match.group(3), match.group(4))
         return datetime.datetime.strptime(date_str, "%B %d, %Y")
 
     match = re.search(r'((\w+), (\d{1,2}),\s?(\d{4,4}))', date_str)
     if match:
-        date_str = "%s, %s, %s" % (match.group(2), match.group(3), match.group(4))
+        date_str = "%s, %s, %s" % (
+            match.group(2), match.group(3), match.group(4))
         return datetime.datetime.strptime(date_str, "%B, %d, %Y")
 
     match = re.search(r'(\d{1,2}/\d{1,2}/\d{4,4})', date_str)
@@ -58,7 +60,6 @@ class VTBillScraper(BillScraper):
         else:
             bill_abbr = "S."
 
-
         urls = [
             "http://www.leg.state.vt.us/docs/bills.cfm?Session=%s&Body=%s",
             "http://www.leg.state.vt.us/docs/resolutn.cfm?Session=%s&Body=%s"
@@ -75,7 +76,8 @@ class VTBillScraper(BillScraper):
             for link in page.xpath("//a[contains(@href, 'summary.cfm')]"):
                 bill_id = link.text
                 if only_bills is not None and bill_id not in only_bills:
-                    self.log("Skipping bill we are not interested in %s" % bill_id)
+                    self.log("Skipping bill we are not interested in %s" %
+                             bill_id)
                     continue
 
                 if bill_id.startswith('JR'):
@@ -160,8 +162,10 @@ class VTBillScraper(BillScraper):
 
         # If nearly all of the bill attributes but the title are blank, this is a bad bill.
         # See Issue #166.
-        if all(len(bill[x]) == 0 for x in ('votes', 'alternate_titles', 'sponsors',
-            'actions', 'versions', 'documents')):
+        if all(
+            len(bill[
+                x]) == 0 for x in ('votes', 'alternate_titles', 'sponsors',
+                                   'actions', 'versions', 'documents')):
             return False
 
         # Get subjects.
@@ -221,7 +225,6 @@ class VTBillScraper(BillScraper):
         for tr in page.xpath("//table[1]/tr")[3:]:
             if len(tr.xpath("td")) != 2:
                 continue
-
 
             # avoid splitting duplicate names
             name = tr.xpath("string(td[1])").strip()

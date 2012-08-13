@@ -15,7 +15,6 @@ class UTCommitteeScraper(CommitteeScraper):
         page.make_links_absolute(url)
         return page
 
-
     def scrape(self, term, chambers):
         self.validate_term(term, latest_only=True)
 
@@ -31,7 +30,6 @@ class UTCommitteeScraper(CommitteeScraper):
                 chamber = "upper"
             else:
                 chamber = "joint"
-
 
             # Drop leading "House" or "Senate" from name
             comm_name = re.sub(r"^(House|Senate) ", "", comm_name)

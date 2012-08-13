@@ -62,8 +62,10 @@ class ORLegislatorScraper(LegislatorScraper):
                     elif len(kvpair) == 2:
                         key, value = kvpair
                     else:
-                        # Never seen text + an <a> tag, perhaps this can happen.
-                        raise ValueError("Too many elements. Something changed")
+                        # Never seen text + an <a> tag, perhaps this can
+                        # happen.
+                        raise ValueError(
+                            "Too many elements. Something changed")
 
                     key = key.text_content().strip(" :")
                     if value is None:
@@ -96,6 +98,6 @@ class ORLegislatorScraper(LegislatorScraper):
                            name='Capitol Office',
                            address=info['Capitol Address'],
                            phone=phone,
-                           email=info['Email'].attrib['href'].replace("mailto:",""))
+                           email=info['Email'].attrib['href'].replace("mailto:", ""))
 
             self.save_legislator(leg)

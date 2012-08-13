@@ -6,6 +6,7 @@ import re
 import pytz
 import lxml.html
 
+
 def last_space(string):
     # this is a big hack.
     for x in range(0, len(string)):
@@ -13,9 +14,11 @@ def last_space(string):
             return x
     return None
 
+
 class MDEventScraper(EventScraper):
     jurisdiction = 'md'
     _tz = pytz.timezone('US/Eastern')
+
     def lxmlize(self, url):
         page = self.urlopen(url)
         page = lxml.html.fromstring(page)
@@ -29,7 +32,7 @@ class MDEventScraper(EventScraper):
         if session[-2:] == "s1":
             return None  # Special sessions 404
 
-        url = "http://mlis.state.md.us/%s/hearsch/alladd.htm" % ( session )
+        url = "http://mlis.state.md.us/%s/hearsch/alladd.htm" % (session)
         page = self.lxmlize(url)
         events = page.xpath("//pre")
         for event in events:
@@ -60,8 +63,8 @@ class MDEventScraper(EventScraper):
             )
             time = re.sub("\s+", " ", time).strip()
             trans = {
-                "P.M." : "PM",
-                "A.M." : "AM"
+                "P.M.": "PM",
+                "A.M.": "AM"
             }
             for transition in trans:
                 time = time.replace(transition, trans[transition])
@@ -126,11 +129,10 @@ class MDEventScraper(EventScraper):
             for bill in bills:
                 name = bill[:3]
                 bid = bill[3]
-                bill_id = "%s %s" % ( ''.join(name), bid )
+                bill_id = "%s %s" % (''.join(name), bid)
                 event.add_related_bill(bill_id,
                                        description=subject,
                                        type='consideration')
-
 
             event.add_participant("host", ctty_name, 'committee',
                                   chamber=chamber)

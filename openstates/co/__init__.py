@@ -11,7 +11,7 @@ metadata = dict(
     legislature_name='Colorado General Assembly',
     legislature_url='http://www.leg.state.co.us/',
     capitol_timezone='America/Denver',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -22,35 +22,35 @@ metadata = dict(
         {'name': '2013-2014',
          'sessions': ['2013A', '2014A'],
          'start_year': 2013, 'end_year': 2014},
-        ],
+    ],
     session_details={
         '2011A': {
-            'start_date'   : datetime.date(2011,1,26),
-            'type'         : 'primary',
-             'display_name': '2011 Regular Session',
-             '_scraped_name' : "2011 Regular Session"
-         },
+            'start_date': datetime.date(2011, 1, 26),
+            'type': 'primary',
+            'display_name': '2011 Regular Session',
+            '_scraped_name': "2011 Regular Session"
+        },
         '2012A': {
-            'start_date'   : datetime.date(2012,1,11),
-            'type'         : 'primary',
-             'display_name': '2012 Regular Session',
-         },
+            'start_date': datetime.date(2012, 1, 11),
+            'type': 'primary',
+            'display_name': '2012 Regular Session',
+        },
         '2012B': {
-            'start_date'   : datetime.date(2012,5,14),
-            'type'         : 'special',
-             'display_name': '2012 First Extraordinary Session',
-         },
+            'start_date': datetime.date(2012, 5, 14),
+            'type': 'special',
+            'display_name': '2012 First Extraordinary Session',
+        },
         '2013A': {
-            'type'         : 'primary',
-             'display_name': '2013 Regular Session',
-         },
+            'type': 'primary',
+            'display_name': '2013 Regular Session',
+        },
         '2014A': {
-            'type'         : 'primary',
-             'display_name': '2014 Regular Session',
-         },
+            'type': 'primary',
+            'display_name': '2014 Regular Session',
+        },
     },
     feature_flags=['influenceexplorer'],
-    _ignored_scraped_sessions = [
+    _ignored_scraped_sessions=[
         '2010 Legislative Session',
         '2009 Legislative Session',
         '2008 Legislative Session',
@@ -70,10 +70,12 @@ metadata = dict(
     ]
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     import re
-    tags = url_xpath('http://www.leg.state.co.us/clics/clics2011a/cslFrontPages.nsf/PrevSessionInfo?OpenForm',
+    tags = url_xpath(
+        'http://www.leg.state.co.us/clics/clics2011a/cslFrontPages.nsf/PrevSessionInfo?OpenForm',
         "//font/text()")
     sessions = []
     regex = "2[0-9][0-9][0-9]\ .*\ Session"
@@ -81,16 +83,18 @@ def session_list():
     for tag in tags:
         sess = re.findall(regex, tag)
         for session in sess:
-            sessions.append( session )
+            sessions.append(session)
 
-    tags = url_xpath('http://www.leg.state.co.us/CLICS/CLICS2011A/csl.nsf/Home?OpenForm&amp;BaseTarget=Bottom',
+    tags = url_xpath(
+        'http://www.leg.state.co.us/CLICS/CLICS2011A/csl.nsf/Home?OpenForm&amp;BaseTarget=Bottom',
         "//font/text()")
     for tag in tags:
         sess = re.findall(regex, tag)
         for session in sess:
-            sessions.append( session )
+            sessions.append(session)
 
     return sessions
+
 
 def extract_text(doc, data):
     return worddata_to_text(data)

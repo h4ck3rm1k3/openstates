@@ -7,6 +7,7 @@ from tater import Visitor
 
 
 class HeaderLexer(Lexer):
+
     '''Lexer for the House PDF vote files that are normal (nice)
     PDFs with machine-readable text and no embedded images.
     '''

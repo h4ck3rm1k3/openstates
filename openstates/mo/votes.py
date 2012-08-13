@@ -13,7 +13,7 @@ HOUSE_URL = 'http://www.house.mo.gov/journallist.aspx'
 motion_re = r"(?i)On motion of .*, .*"
 bill_re = r"(H|S)(C|J)?(R|M|B) (\d+)"
 date_re = r"(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)" \
-           ", (\w+) (\d+), (\d+)"
+    ", (\w+) (\d+), (\d+)"
 
 
 def _clean_line(obj):
@@ -119,18 +119,18 @@ class MOVoteScraper(VoteScraper):
                         # print vote
                         # print cur_motion
                         yes, no, other = counts['yes'], counts['no'], \
-                                            counts['other']
+                            counts['other']
 
                         v = Vote('upper',
-                                  date,
-                                  cur_motion,
-                                  (yes > no),
-                                  yes,
-                                  no,
-                                  other,
-                                  session=session,
-                                  bill_id=cur_bill,
-                                  bill_chamber=bc)
+                                 date,
+                                 cur_motion,
+                                 (yes > no),
+                                 yes,
+                                 no,
+                                 other,
+                                 session=session,
+                                 bill_id=cur_bill,
+                                 bill_chamber=bc)
                         v.add_source(url)
                         v.add_source(pdf_url)
                         for key in vote:
@@ -148,9 +148,9 @@ class MOVoteScraper(VoteScraper):
                     if "Journal of the Senate" in line:
                         continue
                     if re.match(
-                        r".*(Monday|Tuesday|Wednesday|Thursday|Friday|" \
-                         "Saturday|Sunday), .* \d+, \d+.*",
-                        line):
+                        r".*(Monday|Tuesday|Wednesday|Thursday|Friday|"
+                        "Saturday|Sunday), .* \d+, \d+.*",
+                            line):
                         continue
 
                     found = False

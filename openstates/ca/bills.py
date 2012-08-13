@@ -19,6 +19,7 @@ SPONSOR_TYPES = {'LEAD_AUTHOR': 'primary',
                  'COAUTHOR': 'cosponsor',
                  'PRINCIPAL_COAUTHOR': 'primary'}
 
+
 def clean_title(s):
     # replace smart quote characters
     s = s.replace(u'\xe2\u20ac\u201c', '-')
@@ -40,163 +41,163 @@ def clean_title(s):
 committee_data_upper = [
     #('CZ09',  'Standing Committee on Floor Analyses'),
     ('Standing Committee on Governance and Finance',
-      'CS73', [u'Gov. & F.']),
+     'CS73', [u'Gov. & F.']),
 
     ('Standing Committee on Energy, Utilities and Communications',
-      'CS71', [u'E. U. & C.', u'E., U. & C', 'E., U., & C.']),
+     'CS71', [u'E. U. & C.', u'E., U. & C', 'E., U., & C.']),
 
     ('Standing Committee on Education',
-      'CS44', [u'ED.']),
+     'CS44', [u'ED.']),
 
     ('Standing Committee on Appropriations',
-      'CS61', [u'APPR.']),
+     'CS61', [u'APPR.']),
 
     ('Standing Committee on Labor and Industrial Relations',
-      'CS51', [u'L. & I.R.']),
+     'CS51', [u'L. & I.R.']),
 
     ('Standing Committee on Elections and Constitutional Amendments',
-      'CS45', [u'E. & C.A.']),
+     'CS45', [u'E. & C.A.']),
 
     ('Standing Committee on Environmental Quality',
-      'CS64', [u'E.Q.']),
+     'CS64', [u'E.Q.']),
 
     ('Standing Committee on Natural Resources And Water',
-      'CS55', [u'N.R. & W.']),
+     'CS55', [u'N.R. & W.']),
 
     ('Standing Committee on Public Employment and Retirement',
-      'CS56', [u'P.E. & R.']),
+     'CS56', [u'P.E. & R.']),
 
     ('Standing Committee on Governmental Organization',
-      'CS48', [u'G.O.']),
+     'CS48', [u'G.O.']),
 
     ('Standing Committee on Insurance',
-      'CS70', [u'INS.']),
+     'CS70', [u'INS.']),
 
     ('Standing Committee on Public Safety',
-      'CS72', [u'PUB. S.']),
+     'CS72', [u'PUB. S.']),
 
     ('Standing Committee on Judiciary',
-      'CS53', [u'JUD.']),
+     'CS53', [u'JUD.']),
 
     ('Standing Committee on Health',
-      'CS60', [u'HEALTH.']),
+     'CS60', [u'HEALTH.']),
 
     ('Standing Committee on Transportation and Housing',
-      'CS59', [u'T. & H.']),
+     'CS59', [u'T. & H.']),
 
     ('Standing Committee on Business, Professions and Economic Development',
-      'CS42', [u'B., P. & E.D.']),
+     'CS42', [u'B., P. & E.D.']),
 
     ('Standing Committee on Agriculture',
-      'CS40', [u'AGRI.']),
+     'CS40', [u'AGRI.']),
 
     ('Standing Committee on Banking and Financial Institutions',
-      'CS69', [u'B. & F.I.']),
+     'CS69', [u'B. & F.I.']),
 
     ('Standing Committee on Veterans Affairs',
-      'CS66', [u'V.A.']),
+     'CS66', [u'V.A.']),
 
     ('Standing Committee on Budget and Fiscal Review',
-      'CS62', [u'B. & F.R.']),
+     'CS62', [u'B. & F.R.']),
 
     ('Standing Committee on Human Services',
-      'CS74', [u'HUM. S.', u'HUMAN S.']),
+     'CS74', [u'HUM. S.', u'HUMAN S.']),
 
     ('Standing Committee on Rules',
-      'CS58', [u'RLS.']),
-    ]
+     'CS58', [u'RLS.']),
+]
 
 committee_data_lower = [
     # LOWER
     ('Standing Committee on Rules',
-      'CX20', [u'RLS.']),
+     'CX20', [u'RLS.']),
     #('assembly floor analysis', 'CZ01', []),
     ('Standing Committee on Revenue and Taxation',
-      'CX19', [u'REV. & TAX']),
+     'CX19', [u'REV. & TAX']),
 
     ('Standing Committee on Natural Resources',
-      'CX16', [u'NAT. RES.']),
+     'CX16', [u'NAT. RES.']),
 
     ('Standing Committee on Appropriations',
-      'CX25', [u'APPR.']),
+     'CX25', [u'APPR.']),
 
     ('Standing Committee on Insurance',
-      'CX28', ['INS.']),
+     'CX28', ['INS.']),
 
     ('Standing Committee on Utilities and Commerce',
-      'CX23', [u'U. & C.']),
+     'CX23', [u'U. & C.']),
 
     ('Standing Committee on Education',
-      'CX03', [u'ED.']),
+     'CX03', [u'ED.']),
 
     ('Standing Committee on Public Safety',
-      'CX18', [u'PUB. S.']),
+     'CX18', [u'PUB. S.']),
 
     ('Standing Committee on Elections and Redistricting',
-      'CX04', [u'E. & R.']),
+     'CX04', [u'E. & R.']),
 
     ('Standing Committee on Judiciary',
-      'CX13', [u'JUD.', 'Jud.']),
+     'CX13', [u'JUD.', 'Jud.']),
     ('Standing Committee on Higher Education',
-      'CX09', [u'HIGHER ED.']),
+     'CX09', [u'HIGHER ED.']),
 
     ('Standing Committee on Health',
-      'CX08', [u'HEALTH']),
+     'CX08', [u'HEALTH']),
 
     ('Standing Committee on Human Services',
-      'CX11', [u'HUM. S.', u'HUMAN S.']),
+     'CX11', [u'HUM. S.', u'HUMAN S.']),
 
     ('Standing Committee on Arts, Entertainment, Sports, Tourism, and Internet Media',
-      'CX37', [u'A.,E.,S.,T., & I.M.']),
+     'CX37', [u'A.,E.,S.,T., & I.M.']),
 
     ('Standing Committee on Transportation',
-      'CX22', [u'TRANS.']),
+     'CX22', [u'TRANS.']),
 
     ('Standing Committee on Business, Professions and Consumer Protection',
-      'CX33', [u'B.,P. & C.P.', 'B., P. & C.P.', u'B. & P.']),
+     'CX33', [u'B.,P. & C.P.', 'B., P. & C.P.', u'B. & P.']),
 
     ('Standing Committee on Water, Parks and Wildlife',
-      'CX24', [u'W., P. & W']),
+     'CX24', [u'W., P. & W']),
 
     ('Standing Committee on Local Government',
-      'CX15', [u'L. GOV.', 'L. Gov.']),
+     'CX15', [u'L. GOV.', 'L. Gov.']),
 
     ('Standing Committee on Aging and Long Term Care',
-      'CX31', [u'AGING & L.T.C.']),
+     'CX31', [u'AGING & L.T.C.']),
 
     ('Standing Committee on Labor and Employment',
-      'CX14', [u'L. & E.']),
+     'CX14', [u'L. & E.']),
 
     ('Standing Committee on Governmental Organization',
-      'CX07', [u'G.O.']),
+     'CX07', [u'G.O.']),
 
     ('Standing Committee on Public Employees, Retirement and Social Security',
-      'CX17', [u'P.E., R. & S.S.']),
+     'CX17', [u'P.E., R. & S.S.']),
 
     ('Standing Committee on Veterans Affairs',
-      'CX38', [u'V.A.']),
+     'CX38', [u'V.A.']),
 
     ('Standing Committee on Housing and Community Development',
-      'CX10', [u'H. & C.D.']),
+     'CX10', [u'H. & C.D.']),
 
     ('Standing Committee on Environmental Safety and Toxic Materials',
-      'CX05', [u'E.S. & T.M.']),
+     'CX05', [u'E.S. & T.M.']),
 
     ('Standing Committee on Agriculture',
-      'CX01', [u'AGRI.']),
+     'CX01', [u'AGRI.']),
 
     ('Standing Committee on Banking and Finance',
-      'CX27', [u'B. & F.']),
+     'CX27', [u'B. & F.']),
 
     ('Standing Committee on Jobs, Economic Development and the Economy',
-      'CX34', [u'J., E.D. & E.']),
+     'CX34', [u'J., E.D. & E.']),
 
     ('Standing Committee on Accountability and Administrative Review',
-      'CX02', [u'A. & A.R.']),
+     'CX02', [u'A. & A.R.']),
 
     ('Standing Committee on Budget',
-      'CX29', [u'BUDGET.'])
-    ]
+     'CX29', [u'BUDGET.'])
+]
 
 committee_data_both = committee_data_upper + committee_data_lower
 
@@ -231,8 +232,10 @@ def get_committee_name_regex():
     _committee_abbrs = sorted(_committee_abbrs, reverse=True, key=len)
     _committee_abbrs = map(slugify, _committee_abbrs)
     #_committee_abbrs = map(re.escape, _committee_abbrs)
-    _committee_abbr_regex = ['%s' % '[ .,]*'.join(list(abbr)) for abbr in _committee_abbrs]
-    _committee_abbr_regex = re.compile('Com\.\s+on\s+(%s)\.?' % '|'.join(_committee_abbr_regex))
+    _committee_abbr_regex = ['%s' %
+                             '[ .,]*'.join(list(abbr)) for abbr in _committee_abbrs]
+    _committee_abbr_regex = re.compile(
+        'Com\.\s+on\s+(%s)\.?' % '|'.join(_committee_abbr_regex))
     return _committee_abbr_regex
 
 
@@ -265,14 +268,15 @@ class CABillScraper(BillScraper):
         self.session = self.Session()
 
     def committee_code_to_name(self, code,
-        committee_code_to_name=get_committee_code_data()):
+                               committee_code_to_name=get_committee_code_data()):
         '''Need to map committee codes to names.
         '''
         return committee_code_to_name[code]
 
     def committee_abbr_to_name(self, chamber, abbr,
-            committee_abbr_to_name=get_committee_abbr_data(),
-            slugify=slugify):
+                               committee_abbr_to_name=get_committee_abbr_data(
+                               ),
+                               slugify=slugify):
         abbr = slugify(abbr).lower()
         try:
             return committee_abbr_to_name[chamber][slugify(abbr)]
@@ -293,20 +297,20 @@ class CABillScraper(BillScraper):
                 'ACR': 'concurrent resolution',
                 'AJR': 'joint resolution',
                 'HR': 'resolution',
-                },
+            },
             'upper': {
                 'SB': 'bill',
                 'SCA': 'constitutional amendment',
                 'SCR': 'concurrent resolution',
                 'SR': 'resolution',
-                }
             }
+        }
 
         for abbr, type_ in bill_types[chamber].items():
             self.scrape_bill_type(chamber, session, type_, abbr)
 
     def scrape_bill_type(self, chamber, session, bill_type, type_abbr,
-            committee_abbr_regex=get_committee_name_regex()):
+                         committee_abbr_regex=get_committee_name_regex()):
 
         if chamber == 'upper':
             chamber_name = 'SENATE'
@@ -326,10 +330,10 @@ class CABillScraper(BillScraper):
 
             fsbill = Bill(bill_session, chamber, bill_id, '')
 
-            # # Construct session for web query, going from '20092010' to '0910'
+            # Construct session for web query, going from '20092010' to '0910'
             # source_session = session[2:4] + session[6:8]
 
-            # # Turn 'AB 10' into 'ab_10'
+            # Turn 'AB 10' into 'ab_10'
             # source_num = "%s_%s" % (bill.measure_type.lower(),
             #                         bill.measure_num)
 
@@ -447,7 +451,8 @@ class CABillScraper(BillScraper):
 
                 attrs = self.categorizer.categorize(act_str)
 
-                # Add in the committee strings of the related committees, if any.
+                # Add in the committee strings of the related committees, if
+                # any.
                 kwargs = attrs
                 matched_abbrs = committee_abbr_regex.findall(action.action)
 

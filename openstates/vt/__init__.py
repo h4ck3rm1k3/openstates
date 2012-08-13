@@ -10,7 +10,7 @@ metadata = dict(
     capitol_timezone='America/New_York',
     legislature_name='Vermont General Assembly',
     legislature_url='http://www.leg.state.vt.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator', 'term': 2},
         'lower': {'name': 'House', 'title': 'Representative', 'term': 2},
     },
@@ -30,15 +30,15 @@ metadata = dict(
     session_details={'2009-2010': {'type': 'primary',
                                    'display_name': '2009-2010 Regular Session',
                                    '_scraped_name': '2009-2010 Session',
-                                  },
+                                   },
                      '2011-2012': {'type': 'primary',
                                    'display_name': '2011-2012 Regular Session',
                                    '_scraped_name': '2011-2012 Session',
-                                  },
+                                   },
                      '2013-2014': {'type': 'primary',
                                    'display_name': '2013-2014 Regular Session',
                                    '_scraped_name': '2013-2014 Session',
-                                  },
+                                   },
                      },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=['2009 Special Session', '2007-2008 Session',
@@ -51,10 +51,12 @@ metadata = dict(
 
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
-    return url_xpath( 'http://www.leg.state.vt.us/ResearchMain.cfm',
-        "//div[@id='ddsidebarmenu01']/ul/li/a/text()")
+    return url_xpath('http://www.leg.state.vt.us/ResearchMain.cfm',
+                     "//div[@id='ddsidebarmenu01']/ul/li/a/text()")
+
 
 def extract_text(doc, data):
     return text_after_line_numbers(pdfdata_to_text(data))

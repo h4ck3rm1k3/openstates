@@ -14,7 +14,7 @@ metadata = dict(
     capitol_timezone='America/New_York',
     legislature_name='Rhode Island General Assembly',
     legislature_url='http://www.rilin.state.ri.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -55,8 +55,9 @@ metadata = dict(
 
 def session_list():
     from billy.scrape.utils import url_xpath
-    return url_xpath('http://status.rilin.state.ri.us/bill_history.aspx?mode=previous',
-                     "//select[@name='ctl00$rilinContent$cbYear']/option/text()")
+    return url_xpath(
+        'http://status.rilin.state.ri.us/bill_history.aspx?mode=previous',
+        "//select[@name='ctl00$rilinContent$cbYear']/option/text()")
 
 
 def extract_text(doc, data):

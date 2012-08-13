@@ -35,7 +35,8 @@ class OKLegislatorScraper(LegislatorScraper):
             party = tr.xpath('.//td[4]')[0].text_content().strip()
             party = {'R': 'Republican', 'D': 'Democratic'}[party]
 
-            leg_url = 'http://www.okhouse.gov/District.aspx?District=' + district
+            leg_url = 'http://www.okhouse.gov/District.aspx?District=' + \
+                district
             leg_doc = lxml.html.fromstring(self.urlopen(leg_url))
             leg_doc.make_links_absolute(leg_url)
             photo_url = leg_doc.xpath('//a[contains(@href, "HiRes")]/@href')[0]
@@ -136,7 +137,8 @@ class OKLegislatorScraper(LegislatorScraper):
                 district = a.xpath('../../span')[1].text.split()[1]
             url = a.get('href')
 
-            leg = Legislator(term, 'upper', district, name, party=party, url=url)
+            leg = Legislator(term, 'upper', district,
+                             name, party=party, url=url)
             leg.add_source(url)
             self.scrape_upper_offices(leg, url)
             self.save_legislator(leg)
@@ -187,5 +189,3 @@ class OKLegislatorScraper(LegislatorScraper):
             address='\n'.join(col2),
             fax=None, email=None, phone=phone)
         legislator.add_office(**office)
-
-

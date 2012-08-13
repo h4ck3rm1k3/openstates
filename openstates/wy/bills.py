@@ -11,16 +11,18 @@ import lxml.html
 
 def split_names(voters):
     """Representative(s) Barbuto, Berger, Blake, Blikre, Bonner, Botten, Buchanan, Burkhart, Byrd, Campbell, Cannady, Childers, Connolly, Craft, Eklund, Esquibel, K., Freeman, Gingery, Greear, Greene, Harshman, Illoway, Jaggi, Kasperik, Krone, Lockhart, Loucks, Lubnau, Madden, McOmie, Moniz, Nicholas, B., Patton, Pederson, Petersen, Petroff, Roscoe, Semlek, Steward, Stubson, Teeters, Throne, Vranish, Wallis, Zwonitzer, Dn. and Zwonitzer, Dv."""
-    voters = voters.split(')',1)[-1]
+    voters = voters.split(')', 1)[-1]
     # split on comma space as long as it isn't followed by an initial (\w+\.)
     # or split on 'and '
-    voters = [x.strip() for x in re.split('(?:, (?!\w+(?:\.|$)))|(?:and )', voters)]
+    voters = [x.strip()
+              for x in re.split('(?:, (?!\w+(?:\.|$)))|(?:and )', voters)]
     return voters
 
 
 def clean_line(line):
     return line.replace(u'\xa0', '').replace('\r\n', ' '
-                                            ).replace(u'\u2011', "-").strip()
+                                             ).replace(u'\u2011', "-").strip()
+
 
 def categorize_action(action):
     categorizers = (
@@ -34,7 +36,8 @@ def categorize_action(action):
         ('Withdrawn by Sponsor', 'bill:withdrawn'),
         ('Governor Signed', 'governor:signed'),
         ('Recommended (Amend and )?Do Pass', 'committee:passed:favorable'),
-        ('Recommended (Amend and )?Do NotPass', 'committee:passed:unfavorable'),
+        ('Recommended (Amend and )?Do NotPass',
+         'committee:passed:unfavorable'),
     )
 
     for pattern, types in categorizers:
@@ -127,7 +130,8 @@ class WYBillScraper(BillScraper):
                             bill.add_sponsor('primary', sponsor)
 
         action_re = re.compile('(\d{1,2}/\d{1,2}/\d{4})\s+(H |S )?(.+)')
-        vote_total_re = re.compile('(Ayes )?(\d*)(\s*)Nays(\s*)(\d+)(\s*)Excused(\s*)(\d+)(\s*)Absent(\s*)(\d+)(\s*)Conflicts(\s*)(\d+)')
+        vote_total_re = re.compile(
+            '(Ayes )?(\d*)(\s*)Nays(\s*)(\d+)(\s*)Excused(\s*)(\d+)(\s*)Absent(\s*)(\d+)(\s*)Conflicts(\s*)(\d+)')
 
         actions_text = [x.text_content() for x in
                         doc.xpath('//p')]
@@ -144,7 +148,6 @@ class WYBillScraper(BillScraper):
 
         # initial actor is bill chamber
         actor = bill['chamber']
-
 
         aiter = iter(actions)
         for line in aiter:
@@ -180,8 +183,8 @@ class WYBillScraper(BillScraper):
                     if not nextline:
                         continue
 
-                    breakers = [ "Ayes:", "Nays:", "Nayes:", "Excused:",
-                                 "Absent:",  "Conflicts:" ]
+                    breakers = ["Ayes:", "Nays:", "Nayes:", "Excused:",
+                                "Absent:",  "Conflicts:"]
 
                     for breaker in breakers:
                         if nextline.startswith(breaker):
@@ -189,7 +192,7 @@ class WYBillScraper(BillScraper):
                             if voters_type == "Nayes":
                                 voters_type = "Nays"
                                 self.log("Fixed a case of 'Naye-itis'")
-                            nextline = nextline[len(breaker)-1:]
+                            nextline = nextline[len(breaker) - 1:]
 
                     if nextline.startswith(': '):
                         voters[voters_type] = nextline

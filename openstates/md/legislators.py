@@ -4,6 +4,7 @@ import lxml.html
 
 from billy.scrape.legislators import LegislatorScraper, Legislator
 
+
 def _get_table_item(doc, name):
     """ fetch items out of table that has a left column of th """
     return doc.xpath('//th[contains(text(), "%s")]/following-sibling::td' % name)[0]
@@ -19,7 +20,8 @@ class MDLegislatorScraper(LegislatorScraper):
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)
         doc.make_links_absolute(url)
-        sen_tbl, house_tbl = doc.xpath('//div[@class="legislrlist"]//table[@class="grid"]')
+        sen_tbl, house_tbl = doc.xpath(
+            '//div[@class="legislrlist"]//table[@class="grid"]')
 
         if 'upper' in chambers:
             self.scrape_table(term, 'upper', sen_tbl)
@@ -42,7 +44,8 @@ class MDLegislatorScraper(LegislatorScraper):
             party = _get_table_item(ldoc, 'Party Affiliation:').text
             if party == 'Democrat':
                 party = 'Democratic'
-            addr_lines = _get_table_item(ldoc, 'Annapolis Address:').xpath('text()')
+            addr_lines = _get_table_item(
+                ldoc, 'Annapolis Address:').xpath('text()')
             address = []
             for line in addr_lines:
                 if 'Phone:' not in line:
@@ -68,6 +71,7 @@ class MDLegislatorScraper(LegislatorScraper):
             if img_src:
                 leg['photo_url'] = img_src[0]
 
-            leg.add_office('capitol', 'Capitol Office', address=address or None,
-                           phone=phone)
+            leg.add_office(
+                'capitol', 'Capitol Office', address=address or None,
+                phone=phone)
             self.save_legislator(leg)

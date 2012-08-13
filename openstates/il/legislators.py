@@ -25,7 +25,7 @@ class ILLegislatorScraper(LegislatorScraper):
         for row in doc.xpath('//table')[4].xpath('tr')[2:]:
             name, _, _, district, party = row.xpath('td')
             district = district.text
-            party = {'D':'Democratic', 'R': 'Republican',
+            party = {'D': 'Democratic', 'R': 'Republican',
                      'I': 'Independent'}[party.text]
             leg_url = name.xpath('a/@href')[0]
             name = name.text_content().strip()
@@ -52,7 +52,8 @@ class ILLegislatorScraper(LegislatorScraper):
                 self.save_legislator(leg)
                 continue
 
-            photo_url = leg_doc.xpath('//img[contains(@src, "/members/")]/@src')[0]
+            photo_url = leg_doc.xpath(
+                '//img[contains(@src, "/members/")]/@src')[0]
             photo_url_parsed = urlparse(photo_url)
             encoded_path = quote(photo_url_parsed.path)
             photo_url = photo_url_parsed._replace(path=encoded_path).geturl()
@@ -88,10 +89,12 @@ class ILLegislatorScraper(LegislatorScraper):
                                    address=addr.strip(), phone=phone, fax=fax)
 
             # extract both offices from tables
-            table = leg_doc.xpath('//table[contains(string(), "Springfield Office")]')
+            table = leg_doc.xpath(
+                '//table[contains(string(), "Springfield Office")]')
             if table:
                 _table_to_office(table[3], 'capitol', 'Springfield Office')
-            table = leg_doc.xpath('//table[contains(string(), "District Office")]')
+            table = leg_doc.xpath(
+                '//table[contains(string(), "District Office")]')
             if table:
                 _table_to_office(table[3], 'district', 'District Office')
 

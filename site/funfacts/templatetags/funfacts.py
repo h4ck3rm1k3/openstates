@@ -6,6 +6,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.simple_tag
 def funfact(abbr, data={}):
     try:
@@ -16,4 +17,3 @@ def funfact(abbr, data={}):
         return ''
     facts = filter(None, facts.splitlines())
     return random.choice(facts)
-

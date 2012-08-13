@@ -17,7 +17,7 @@ _categorizer_rules = (
 
     Rule(r'Read first time\.', 'bill:reading:1'),
     Rule(r'Read second time and amended',
-          ['bill:reading:2']),
+         ['bill:reading:2']),
     Rule(r'Read third time', 'bill:reading:3'),
     Rule(r'Read third time. Refused passage\.',
          'bill:failed'),
@@ -43,7 +43,7 @@ _categorizer_rules = (
     Rule(r'Adopted', 'bill:passed'),
     Rule(r'Read', 'bill:reading:1'),
     Rule(r'^From committee: Be adopted', 'committee:passed:favorable'),
-    )
+)
 
 
 class CACategorizer(BaseCategorizer):

@@ -4,6 +4,7 @@ from operator import itemgetter
 
 from utils import CachedAttr
 
+
 class Trie(dict):
 
     @CachedAttr
@@ -12,6 +13,7 @@ class Trie(dict):
 
 
 class PseudoMatch(object):
+
     '''A fake match object that provides the same basic interface
     as _sre.SRE_Match.'''
 
@@ -62,8 +64,8 @@ def trie_add(trie, seq_value_2tuples, terminus=0):
 
 
 def trie_scan(trie, s,
-         _match=PseudoMatch,
-         second=itemgetter(1)):
+              _match=PseudoMatch,
+              second=itemgetter(1)):
     '''
     Finds all matches for `s` in `trie`.
     '''
@@ -156,8 +158,8 @@ def trie_scan(trie, s,
 #                     pseudo_match = _match(group=''.join(map(second, match)),
 #                                           start=start, end=end)
 
-#                     # Don't yeild a match if this match is contained in a
-#                     # larger match.
+# Don't yeild a match if this match is contained in a
+# larger match.
 #                     _break = False
 #                     for _start, _end in spans:
 #                         if (_start <= start) and (end <= _end):

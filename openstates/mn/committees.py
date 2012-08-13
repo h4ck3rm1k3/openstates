@@ -5,8 +5,10 @@ from billy.scrape import NoDataForPeriod
 from billy.scrape.committees import Committee, CommitteeScraper
 import lxml.html
 
+
 def fix_whitespace(s):
     return re.sub(r'\s+', ' ', s)
+
 
 class MNCommitteeScraper(CommitteeScraper):
     jurisdiction = 'mn'
@@ -72,7 +74,8 @@ class MNCommitteeScraper(CommitteeScraper):
         doc = lxml.html.fromstring(html)
 
         for com in doc.xpath('//h2[@class="commhighlight"]'):
-            members_url = com.xpath('following-sibling::p[1]/a[text()="Members"]/@href')[0]
+            members_url = com.xpath(
+                'following-sibling::p[1]/a[text()="Members"]/@href')[0]
 
             com = Committee('lower', com.text)
             com.add_source(members_url)

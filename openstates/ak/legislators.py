@@ -65,7 +65,6 @@ class AKLegislatorScraper(LegislatorScraper):
             leg.add_office(addr_type, addr_name, address=address.strip(),
                            **kwargs)
 
-
     def scrape_legislator(self, chamber, term, name, url):
         page = self.urlopen(url)
         page = lxml.html.fromstring(page)
@@ -76,9 +75,12 @@ class AKLegislatorScraper(LegislatorScraper):
 
         district = re.search(r'District ([\w\d]+)', info)
         if district is None:
-            maddr = page.xpath("//div[@id='fullpage']//a[contains(@href, 'mailto')]")
+            maddr = page.xpath(
+                "//div[@id='fullpage']//a[contains(@href, 'mailto')]")
             if maddr == []:
-                return   # Needed for http://senate.legis.state.ak.us/senator.php?id=cog ..
+                # Needed for http://senate.legis.state.ak.us/senator.php?id=cog
+                # ..
+                return
             maddr = maddr[0]
             district = maddr.getnext().tail
             # This hack needed for http://house.legis.state.ak.us/rep.php?id=dru

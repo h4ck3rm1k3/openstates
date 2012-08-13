@@ -8,6 +8,7 @@ from billy.scrape.events import EventScraper, Event
 
 
 class AZEventScraper(EventScraper):
+
     """
     Arizona Event Scraper, gets interim committee, agendas, floor calendars
     and floor activity events
@@ -53,15 +54,15 @@ class AZEventScraper(EventScraper):
         """
         # could use &ShowAll=ON doesn't seem to work though
         url = 'http://www.azleg.gov/CommitteeAgendas.asp?Body=%s' % \
-                                          self._chamber_short[chamber]
+            self._chamber_short[chamber]
         html_ = self.urlopen(url)
         doc = html.fromstring(html_)
         if chamber == 'upper':
             event_table = doc.xpath('//table[@id="body"]/tr/td/table[2]/tr'
-                                     '/td/table/tr/td/table')[0]
+                                    '/td/table/tr/td/table')[0]
         else:
             event_table = doc.xpath('//table[@id="body"]/tr/td/table[2]/tr'
-                                     '/td/table/tr/td/table/tr/td/table')[0]
+                                    '/td/table/tr/td/table/tr/td/table')[0]
         for row in event_table.xpath('tr')[2:]:
             # Agenda Date, Committee, Revised, Addendum, Cancelled, Time, Room,
             # HTML Document, PDF Document for house
@@ -86,8 +87,8 @@ class AZEventScraper(EventScraper):
                 when = datetime.datetime.strptime(when, '%m/%d/%Y')
 
             title = "Committee Meeting:\n%s %s %s\n" % (
-                                              self._chamber_long[chamber],
-                                              committee, room)
+                self._chamber_long[chamber],
+                committee, room)
             agenda_info = self.parse_agenda(chamber, link)
 
             description = agenda_info['description']
@@ -136,7 +137,7 @@ class AZEventScraper(EventScraper):
         xpaths = (
             '//div[@class="Section1"]',
             '//div[@class="WordSection1"]',
-            )
+        )
         for xpath in xpaths:
             try:
                 div = doc.xpath(xpath)[0]
@@ -180,24 +181,24 @@ class AZEventScraper(EventScraper):
             members = members.getnext()
         description = ""
         agenda_items = div.xpath('//p[contains(a/@name, "AgendaItems")]'
-                                '/following-sibling::table[1]')
+                                 '/following-sibling::table[1]')
         if agenda_items:
             agenda_items = [tr.text_content().strip().replace("\r\n", "")
                             for tr in agenda_items[0].getchildren()
                             if tr.text_content().strip()]
             description = ",\n".join(agenda_items)
         bill_list = div.xpath('//p[contains(a/@name, "Agenda_Bills")]'
-                                '/following-sibling::table[1]')
+                              '/following-sibling::table[1]')
         if bill_list:
             try:
                 bill_list = [tr[1].text_content().strip() + " " +
-                         tr[3].text_content().strip().replace("\r\n", "")
-                         for tr in bill_list[0].xpath('tr')
-                         if tr.text_content().strip()]
+                             tr[3].text_content().strip().replace("\r\n", "")
+                             for tr in bill_list[0].xpath('tr')
+                             if tr.text_content().strip()]
             except IndexError:
                 bill_list = [tr.text_content().strip().replace("\r\n", "")
-                            for tr in bill_list[0].getchildren()
-                            if tr.text_content().strip()]
+                             for tr in bill_list[0].getchildren()
+                             if tr.text_content().strip()]
 
             bill_list = ",\n".join(bill_list)
             description = description + bill_list

@@ -45,7 +45,7 @@ class TNCommitteeScraper(CommitteeScraper):
         else:
             self.scrape_house_committees(url)
 
-    #Scrapes all the Senate committees
+    # Scrapes all the Senate committees
     def scrape_senate_committees(self, url):
 
         page = self.urlopen(url)
@@ -61,7 +61,7 @@ class TNCommitteeScraper(CommitteeScraper):
         for committee_name, link in links:
             self.scrape_senate_committee(committee_name, link)
 
-    #Scrapes the individual Senate committee
+    # Scrapes the individual Senate committee
     def scrape_senate_committee(self, committee_name, link):
         """Scrape individual committee page and add members"""
 
@@ -85,7 +85,7 @@ class TNCommitteeScraper(CommitteeScraper):
         if com['members']:
             self.save_committee(com)
 
-    #Scrapes all the House Committees
+    # Scrapes all the House Committees
     def scrape_house_committees(self, url):
         # Committees are listed in h3 w/ no attributes.
         # Only indicator is a div w/ 2 classes
@@ -101,7 +101,7 @@ class TNCommitteeScraper(CommitteeScraper):
         for a in links:
             self.scrape_house_committee(a.text.strip(), a.get('href'))
 
-    #Scrapes the individual House Committee
+    # Scrapes the individual House Committee
     def scrape_house_committee(self, committee_name, link):
         """Scrape individual committee page and add members"""
 
@@ -130,7 +130,7 @@ class TNCommitteeScraper(CommitteeScraper):
         if com['members']:
             self.save_committee(com)
 
-    #Scrapes joint committees
+    # Scrapes joint committees
     def scrape_joint_committees(self):
         main_url = 'http://www.capitol.tn.gov/joint/'
 
@@ -140,12 +140,12 @@ class TNCommitteeScraper(CommitteeScraper):
         for el in page.xpath("//div[@class='col2']/ul/li/a"):
             com_name = el.text
             com_link = el.attrib["href"]
-            #cleaning up links
+            # cleaning up links
             if '..' in com_link:
                 com_link = self.base_href + com_link[2:len(com_link)]
             self.scrape_joint_committee(com_name, com_link)
 
-    #Scrapes the individual joint committee - most of it is special case
+    # Scrapes the individual joint committee - most of it is special case
     def scrape_joint_committee(self, committee_name, url):
         com = Committee('joint', 'Joint ' + committee_name)
         page = self.urlopen(url)
@@ -165,11 +165,13 @@ class TNCommitteeScraper(CommitteeScraper):
         elif 'gov-opps' in url:
             links = ['senate', 'house']
             for link in links:
-                chamber_link = self.base_href + '/' + link + '/committees/gov-opps.html'
+                chamber_link = self.base_href + '/' + \
+                    link + '/committees/gov-opps.html'
                 chamber_page = self.urlopen(chamber_link)
                 chamber_page = lxml.html.fromstring(chamber_page)
                 for mem in chamber_page.xpath("//div[@class='col1']/ul[position() <= 2]/li/a"):
-                    member = [item.strip() for item in mem.text_content().split(',', 1)]
+                    member = [item.strip()
+                              for item in mem.text_content().split(',', 1)]
                     if len(member) > 1:
                         member_name, role = member
                     else:
@@ -178,12 +180,15 @@ class TNCommitteeScraper(CommitteeScraper):
                         com.add_member(member_name, role)
                 com.add_source(chamber_link)
         else:
-            # If the member sections all state "TBA", skip saving this committee.
-            li_text = page.xpath("//div[@class='col1']/ul[position() <= 3]/li/text()")
+            # If the member sections all state "TBA", skip saving this
+            # committee.
+            li_text = page.xpath(
+                "//div[@class='col1']/ul[position() <= 3]/li/text()")
             if set(li_text) == set(['TBA']):
                 return
             for el in page.xpath("//div[@class='col1']/ul[position() <= 3]/li/a"):
-                member = [item.strip() for item in el.text_content().split(',', 1)]
+                member = [item.strip()
+                          for item in el.text_content().split(',', 1)]
                 if len(member) > 1:
                     member_name, role = member
                 else:

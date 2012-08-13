@@ -128,9 +128,10 @@ class IABillScraper(InvalidHTTPSScraper, BillScraper):
                                  mimetype='text/html')
         else:
             bill.add_version('Introduced',
-                sidebar.xpath('//a[contains(string(.), "PDF")]/@href')[0],
+                             sidebar.xpath(
+                                 '//a[contains(string(.), "PDF")]/@href')[0],
                              mimetype='application/pdf'
-                            )
+                             )
 
         sponsors = page.xpath("string(//table[2]/tr[3])").strip()
         sponsor_re = r'[\w-]+(?:, [A-Z]\.)?(?:,|(?: and)|\.$)'
@@ -171,7 +172,8 @@ class IABillScraper(InvalidHTTPSScraper, BillScraper):
                     if '-' in anchor.text:
                         url = anchor.attrib['href']
                         if url not in version_urls:
-                            bill.add_version(anchor.text, url, mimetype='text/html')
+                            bill.add_version(
+                                anchor.text, url, mimetype='text/html')
                             version_urls.add(url)
 
             if 'S.J.' in action or 'SCS' in action:
@@ -216,7 +218,7 @@ class IABillScraper(InvalidHTTPSScraper, BillScraper):
                 atype = 'bill:passed'
             elif (action.startswith('Committee report') and
                   action.endswith('passage.')):
-                  atype = 'committee:passed'
+                atype = 'committee:passed'
             elif action.startswith('Withdrawn'):
                 atype = 'bill:withdrawn'
             else:

@@ -42,7 +42,7 @@ from jsonjinja.utils import get_runtime_javascript
 #     </li>
 #     {% endfor %}
 # {% endif %}
-# #}
+# }
 
 
 # {% if committee %}
@@ -104,4 +104,5 @@ print get_runtime_javascript()
 print 'jsonjinja.addTemplates('
 env.compile_javascript_templates(stream=sys.stdout)
 print ');'
-# print 'document.write(jsonjinja.getTemplate("test.html").render({seq: ["cow", 2, 33, "pig"], title: "Jab"}));'
+# print 'document.write(jsonjinja.getTemplate("test.html").render({seq:
+# ["cow", 2, 33, "pig"], title: "Jab"}));'

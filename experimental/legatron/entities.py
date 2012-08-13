@@ -19,11 +19,9 @@ from trie_utils import Trie, trie_add, trie_scan
 from utils import cd, cartcat, clean_html
 
 
-
 # ---------------------------------------------------------------------------
 #
 # ---------------------------------------------------------------------------
-
 host = settings.MONGO_HOST
 port = settings.MONGO_PORT
 
@@ -32,6 +30,7 @@ feed_db = conn.newsblogs
 
 
 class BogusEntry(Exception):
+
     '''Raised when an entry lacks a required attribute, like 'link'.'''
 
 
@@ -77,13 +76,13 @@ class Extractor(object):
             [u' {legislator[last_name]}',
              u' {legislator[full_name]}'])
 
-            + [u' {legislator[first_name]} {legislator[last_name]}'],
+        + [u' {legislator[first_name]} {legislator[last_name]}'],
 
         'bills': [
             ('bill_id', lambda s: s.upper().replace('.', ''))
-            ]
+        ]
 
-        }
+    }
 
     def __init__(self, abbr):
         self.entrycount = 0
@@ -207,8 +206,8 @@ class Extractor(object):
                                          [collection_name, record['_id']])
                         trie_data.append(trie_add_args)
 
-            self.logger.info('adding %d %s terms to the trie' % \
-                (len(trie_data), collection_name))
+            self.logger.info('adding %d %s terms to the trie' %
+                             (len(trie_data), collection_name))
 
             trie = trie_add(trie, trie_data)
 
@@ -219,15 +218,15 @@ class Extractor(object):
             records = db.committees.find({'state': abbr},
                                          {'committee': 1, 'subcommittee': 1,
                                           'chamber': 1})
-            self.logger.info('Computing name variations for %d records' % \
-                                                            records.count())
+            self.logger.info('Computing name variations for %d records' %
+                             records.count())
             for c in records:
                 for variation in committee_variations(c):
                     trie_add_args = (variation, ['committees', c['_id']])
                     trie_data.append(trie_add_args)
 
-        self.logger.info('adding %d \'committees\' terms to the trie' % \
-                                                            len(trie_data))
+        self.logger.info('adding %d \'committees\' terms to the trie' %
+                         len(trie_data))
 
         trie = trie_add(trie, trie_data)
         self._trie = trie

@@ -8,6 +8,7 @@ from billy.scrape.utils import convert_pdf
 
 import re
 
+
 def clean_spaces(s):
     """ remove \xa0, collapse spaces, strip ends """
     if s is not None:
@@ -29,18 +30,18 @@ class PRCommitteeScraper(CommitteeScraper):
 
     def scrape_upper_committee(self, url):
         filename, resp = self.urlretrieve(url)
-        root = lxml.etree.fromstring( convert_pdf(filename,'xml'))
+        root = lxml.etree.fromstring(convert_pdf(filename, 'xml'))
         for link in root.xpath('/pdf2xml/page'):
             comm = None
             for line in link.findall('text'):
                 text = line.findtext('b')
                 if text is not None and text.startswith('Comisi'):
-                    comm = Committee('upper',text);
+                    comm = Committee('upper', text)
                     comm.add_source(url)
                 else:
                     if line.text and line.text.startswith('Hon.'):
-                        line_text = line.text.replace(u'–','-')
-                        name_split = line_text.split(u'-',1)
+                        line_text = line.text.replace(u'–', '-')
+                        name_split = line_text.split(u'-', 1)
                         title = 'member'
 #           print name_split
                         if len(name_split) >= 2:
@@ -54,9 +55,10 @@ class PRCommitteeScraper(CommitteeScraper):
 #           if title != 'member':
 #               print name_split[0]
                         if name_split[0] != 'VACANTE':
-                            comm.add_member(name_split[0].replace('Hon.',''),title)
+                            comm.add_member(
+                                name_split[0].replace('Hon.', ''), title)
             self.save_committee(comm)
-        os.remove(filename);
+        os.remove(filename)
 
     def scrape_lower(self):
         url = 'http://www.camaraderepresentantes.org/comisiones.asp'
@@ -76,10 +78,13 @@ class PRCommitteeScraper(CommitteeScraper):
         contact, directiva, reps = doc.xpath('//div[@class="sbox"]/div[2]')
         # all members are tails of images (they use img tags for bullets)
         # first three members are in the directiva div
-        chair = directiva.xpath('b[text()="Presidente:"]/following-sibling::img[1]')
-        vchair = directiva.xpath('b[text()="Vice Presidente:"]/following-sibling::img[1]')
-        sec = directiva.xpath('b[text()="Secretario(a):"]/following-sibling::img[1]')
-        member = 0;
+        chair = directiva.xpath(
+            'b[text()="Presidente:"]/following-sibling::img[1]')
+        vchair = directiva.xpath(
+            'b[text()="Vice Presidente:"]/following-sibling::img[1]')
+        sec = directiva.xpath(
+            'b[text()="Secretario(a):"]/following-sibling::img[1]')
+        member = 0
         if chair and chair[0].tail is not None:
             chair = chair[0].tail
             com.add_member(clean_spaces(chair), 'chairman')

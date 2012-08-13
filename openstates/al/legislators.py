@@ -3,13 +3,15 @@ from billy.scrape.legislators import LegislatorScraper, Legislator
 
 import lxml.html
 
+
 class ALLegislatorScraper(LegislatorScraper):
     jurisdiction = 'al'
 
     def scrape(self, chamber, term):
-        urls = {'upper': 'http://www.legislature.state.al.us/senate/senators/senateroster_alpha.html',
-                'lower': 'http://www.legislature.state.al.us/house/representatives/houseroster_alpha.html'}
-        party_dict = {'(D)': 'Democratic', '(R)': 'Republican', 
+        urls = {
+            'upper': 'http://www.legislature.state.al.us/senate/senators/senateroster_alpha.html',
+            'lower': 'http://www.legislature.state.al.us/house/representatives/houseroster_alpha.html'}
+        party_dict = {'(D)': 'Democratic', '(R)': 'Republican',
                       '(I)': 'Independent'}
 
         url = urls[chamber]
@@ -27,7 +29,8 @@ class ALLegislatorScraper(LegislatorScraper):
                 name = name.text_content().strip()
 
                 party = party_dict[party.text_content().strip()]
-                district = district.text_content().strip().replace('(', '').replace(')', '')
+                district = district.text_content().strip().replace(
+                    '(', '').replace(')', '')
                 office = office.text_content().strip()
                 phone = phone.text_content().strip()
                 leg_url = link[0].get('href')
@@ -57,9 +60,11 @@ class ALLegislatorScraper(LegislatorScraper):
             leg['email'] = email[0].strip('mailto:')
 
         # find lis after the strong (or p) containing Committees
-        coms = doc.xpath('//strong[contains(text(), "Committees")]/following::li')
+        coms = doc.xpath(
+            '//strong[contains(text(), "Committees")]/following::li')
         if not coms:
-            coms = doc.xpath('//p[contains(text(), "Committees")]/following::li')
+            coms = doc.xpath(
+                '//p[contains(text(), "Committees")]/following::li')
         if not coms:
             self.warning('no committees?')
         for com in coms:
@@ -71,7 +76,7 @@ class ALLegislatorScraper(LegislatorScraper):
                 position = 'member'
             com = com.replace('Committee', '')
             # fix their nonsense
-            com = com.replace(" No.","")
+            com = com.replace(" No.", "")
             com = com.replace("Veterans Affairs", "Veterans' Affairs")
             com = com.replace("Boards, Agencies, and", "Boards, Agencies and")
             com = com.replace("Means / Education", "Means Education")

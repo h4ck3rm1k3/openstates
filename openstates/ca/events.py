@@ -65,7 +65,8 @@ class CAEventScraper(EventScraper):
             # Dereference the committee_nr number and get display name.
             msg = 'More than one committee meeting at (location, date) %r'
             msg = msg % ((location, date),)
-            assert len(set(hearing.committee_nr for hearing in hearings)) == 1, msg
+            assert len(set(hearing.committee_nr for hearing in hearings)
+                       ) == 1, msg
             committee_name = _committee_nr[hearings.pop().committee_nr]
 
             desc = 'Committee Meeting: ' + committee_name
@@ -143,4 +144,4 @@ _committee_nr = {
     72L: u'Senate Public Safety',
     73L: u'Senate Governance and Finance',
     74L: u'Senate Human Services'
- }
+}

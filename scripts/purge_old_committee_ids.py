@@ -12,13 +12,14 @@ def main():
 
     for abbr in abbrs:
         spec = {settings.LEVEL_FIELD: abbr}
-        committee_ids = [c['_id'] for c in db.committees.find(spec, fields=['_id'])]
+        committee_ids = [c['_id']
+                         for c in db.committees.find(spec, fields=['_id'])]
 
         # Events with committee participants.
         spec = {
             settings.LEVEL_FIELD: abbr,
             'participants.committee_id': {'$nin': committee_ids}
-            }
+        }
         for event in db.events.find(spec):
             old_ids = set()
             count = 0
@@ -47,7 +48,7 @@ def main():
         spec = {
             settings.LEVEL_FIELD: abbr,
             'actions.related_entities.type': 'committee'
-            }
+        }
         for bill in db.bills.find(spec):
             old_ids = set()
             count = 0
@@ -74,7 +75,7 @@ def main():
         spec = {
             settings.LEVEL_FIELD: abbr,
             'old_roles': {'$exists': True}
-            }
+        }
         for leg in db.legislators.find(spec):
             old_ids = set()
             count = 0
@@ -87,7 +88,8 @@ def main():
                         count += 1
                         old_ids.add(_id)
                         msg = 'Removing id %r from old_role in %r'
-                        logger.info(msg % (role['committee_id'], leg['full_name']))
+                        logger.info(msg %
+                                    (role['committee_id'], leg['full_name']))
                         # Set the id to None.
                         role['committee_id'] = None
             if found:
@@ -99,7 +101,7 @@ def main():
         spec = {
             settings.LEVEL_FIELD: abbr,
             'entity_ids': {'$ne': None}
-            }
+        }
         for entry in feeds_db.entries.find(spec):
             old_ids = set()
             count = 0
@@ -126,7 +128,7 @@ def main():
         spec = {
             settings.LEVEL_FIELD: abbr,
             'sponsors.committee_id': {'$nin': committee_ids}
-            }
+        }
         for bill in db.bills.find(spec):
             count = 0
             found = False

@@ -7,6 +7,7 @@ from billy.scrape import NoDataForPeriod
 
 import lxml.html
 
+
 class MNLegislatorScraper(LegislatorScraper):
     jurisdiction = 'mn'
     latest_only = True
@@ -71,7 +72,8 @@ class MNLegislatorScraper(LegislatorScraper):
         leg_data = defaultdict(dict)
 
         # get all the tds in a certain div
-        tds = doc.xpath('//div[@id="hide_show_alpha_all"]//td[@style="vertical-align:top;"]')
+        tds = doc.xpath(
+            '//div[@id="hide_show_alpha_all"]//td[@style="vertical-align:top;"]')
         for td in tds:
             # each td has 2 <a>s- site & email
             main_link, email = td.xpath('.//a')
@@ -79,11 +81,13 @@ class MNLegislatorScraper(LegislatorScraper):
             name = main_link.text_content().split(' (')[0]
             leg = leg_data[name]
             leg['leg_url'] = main_link.get('href')
-            leg['photo_url'] = td.xpath('./preceding-sibling::td/a/img/@src')[0]
+            leg['photo_url'] = td.xpath(
+                './preceding-sibling::td/a/img/@src')[0]
             if 'mailto:' in email.get('href'):
                 leg['email'] = email.get('href').replace('mailto:', '')
 
-        self.info('collected preliminary data on %s legislators', len(leg_data))
+        self.info('collected preliminary data on %s legislators',
+                  len(leg_data))
         assert leg_data
 
         # use CSV for most of data
@@ -100,12 +104,12 @@ class MNLegislatorScraper(LegislatorScraper):
                              first_name=row['First Name'],
                              last_name=row['Last Name'],
                              **leg_data[name]
-                            )
+                             )
             row['rmnum'] = row['Rm. Number']
             leg.add_office('capitol', 'Capitol Office',
-                           address='{rmnum} {Office Building}\n{Office Address}\n{City}, {State} {Zipcode}'.format(**row),
+                           address='{rmnum} {Office Building}\n{Office Address}\n{City}, {State} {Zipcode}'.format(
+                               **row),
                            phone='%s-%s' % (row['Area Code'], row['Office Phone']))
-
 
             leg.add_source(csv_url)
             leg.add_source(index_url)

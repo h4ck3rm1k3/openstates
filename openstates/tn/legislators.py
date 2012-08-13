@@ -12,7 +12,7 @@ class TNLegislatorScraper(LegislatorScraper):
                    'CCR': 'Carter County Republican',
                    'I': 'Independent'}
 
-        #testing for chamber
+        # testing for chamber
         if chamber == 'upper':
             url_chamber_name = 'senate'
             abbr = 's'
@@ -40,12 +40,12 @@ class TNLegislatorScraper(LegislatorScraper):
             address = row.xpath('td[5]')[0].text_content()
             # 301 6th Avenue North Suite
             address = address.replace('LP',
-                              'Legislative Plaza\nNashville, TN 37243')
+                                      'Legislative Plaza\nNashville, TN 37243')
             address = address.replace('WMB',
-                              'War Memorial Building\nNashville, TN 37243')
+                                      'War Memorial Building\nNashville, TN 37243')
             address = '301 6th Avenue North\nSuite ' + address
             phone = row.xpath('td[6]')[0].text
-            #special case for Karen D. Camper
+            # special case for Karen D. Camper
             if phone == None:
                 phone = row.xpath('td[6]/div')[0].text
             phone = '615-' + phone.split()[0]

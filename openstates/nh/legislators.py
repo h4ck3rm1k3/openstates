@@ -30,7 +30,8 @@ class NHLegislatorScraper(LegislatorScraper):
         url = 'http://gencourt.state.nh.us/downloads/Members.txt'
 
         option_map = {}
-        html = self.urlopen('http://www.gencourt.state.nh.us/house/members/memberlookup.aspx')
+        html = self.urlopen(
+            'http://www.gencourt.state.nh.us/house/members/memberlookup.aspx')
         doc = lxml.html.fromstring(html)
         for opt in doc.xpath('//option'):
             option_map[opt.text] = opt.get('value')
@@ -73,11 +74,13 @@ class NHLegislatorScraper(LegislatorScraper):
                            phone=office_phone or None, fax=fax or None)
 
             if chamber == 'upper':
-                leg['url'] = 'http://www.gencourt.state.nh.us/Senate/members/webpages/district%02d.aspx' % int(district_num)
+                leg['url'] = 'http://www.gencourt.state.nh.us/Senate/members/webpages/district%02d.aspx' % int(
+                    district_num)
             elif chamber == 'lower':
                 code = option_map.get('{0}, {1}'.format(last, first))
                 if code:
-                    leg['url'] = 'http://www.gencourt.state.nh.us/house/members/member.aspx?member=' + code
+                    leg['url'] = 'http://www.gencourt.state.nh.us/house/members/member.aspx?member=' + \
+                        code
 
             romans = r'(?i)\s([IXV]+)(?:\s|$)'
             for com in (com1, com2, com3, com4, com5, com6, com7):
@@ -87,7 +90,7 @@ class NHLegislatorScraper(LegislatorScraper):
                     com_name = re.sub(romans, lambda m: m.group().upper(),
                                       com_name)
                     leg.add_role('committee member', term=term,
-                                  chamber=chamber, committee=com_name)
+                                 chamber=chamber, committee=com_name)
 
             if 'url' in leg:
                 leg['photo_url'] = self.get_photo(leg['url'], chamber)

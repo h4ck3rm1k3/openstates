@@ -31,7 +31,7 @@ class LABillScraper(BillScraper):
     def do_post_back(self, page, event_target, event_argument):
         form = page.xpath("//form[@id='aspnetForm']")[0]
         block = {name: value for name, value in [(obj.name, obj.value)
-                    for obj in form.xpath(".//input")]}
+                                                 for obj in form.xpath(".//input")]}
         block['__EVENTTARGET'] = event_target
         block['__EVENTARGUMENT'] = event_argument
         ret = lxml.html.fromstring(self.urlopen(form.action,
@@ -74,7 +74,6 @@ class LABillScraper(BillScraper):
                                           session,
                                           bill.attrib['href'],
                                           bill_type)
-
 
     def get_one_xpath(self, page, xpath):
         ret = page.xpath(xpath)
@@ -229,7 +228,6 @@ class LABillScraper(BillScraper):
         except IndexError:
             # Some bills don't have any votes
             pass
-
 
         for action in actions:
             date, chamber, page, text = [x.text for x in action.xpath(".//td")]

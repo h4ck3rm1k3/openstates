@@ -49,16 +49,16 @@ metadata = {
          'start_year': 2011, 'end_year': 2012},
         {'name': '2013-2014',
          'sessions': ['2013 Regular Session', 'October 2013 Special Session',
-                      'December 2013 Special Session', 'January 2014 Special Session' ],
+                      'December 2013 Special Session', 'January 2014 Special Session'],
          'start_year': 2013, 'end_year': 2014},
     ],
     'session_details': {
-        '2009 Regular Session': {'start_date': datetime.date(2009,1,13),
-                                 'end_date': datetime.date(2011,1,3),
+        '2009 Regular Session': {'start_date': datetime.date(2009, 1, 13),
+                                 'end_date': datetime.date(2011, 1, 3),
                                  'type': 'primary',
                                  'display_name': '2009 Regular Session',
                                  '_scraped_name': '2009 Regular Session',
-                                },
+                                 },
         'June 2009 Special Session': {
             'type': 'special', 'site_id': 'jn9',
             'display_name': 'Jun 2009 Special Session',
@@ -69,12 +69,12 @@ metadata = {
             'display_name': 'Dec 2009 Special Session',
             '_scraped_name': 'Dec 2009 Special Session',
         },
-        '2011 Regular Session': {'start_date': datetime.date(2011,1,11),
-                                 'end_date': datetime.date(2013,1,7),
+        '2011 Regular Session': {'start_date': datetime.date(2011, 1, 11),
+                                 'end_date': datetime.date(2013, 1, 7),
                                  'type': 'primary',
                                  'display_name': '2011 Regular Session',
                                  '_scraped_name': '2011 Regular Session',
-                                },
+                                 },
         'January 2011 Special Session': {
             'type': 'special', 'site_id': 'jr1',
             'display_name': 'Jan 2011 Special Session',
@@ -85,12 +85,12 @@ metadata = {
             'display_name': 'Sep 2011 Special Session',
             '_scraped_name': 'Sept 2011 Special Session',
         },
-        '2013 Regular Session': {'start_date': datetime.date(2013,1,7),
-                                 'end_date': datetime.date(2014,1,13),
+        '2013 Regular Session': {'start_date': datetime.date(2013, 1, 7),
+                                 'end_date': datetime.date(2014, 1, 13),
                                  'type': 'primary',
                                  'display_name': '2013 Regular Session',
                                  '_scraped_name': '2013 Regular Session',
-                                },
+                                 },
         'October 2013 Special Session': {
             'type': 'special',
             'display_name': 'Oct 2013 Special Session',
@@ -126,11 +126,13 @@ metadata = {
 
 }
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
-    sessions = url_xpath( 'http://legis.wisconsin.gov/',
-        "//select[@name='ctl00$PlaceHolderLeftNavBar$ctl01$ctl00$ddlPropSess']/option/text()" )
+    sessions = url_xpath('http://legis.wisconsin.gov/',
+                         "//select[@name='ctl00$PlaceHolderLeftNavBar$ctl01$ctl00$ddlPropSess']/option/text()")
     return [session.strip() for session in sessions]
+
 
 def extract_text(doc, data):
     is_pdf = (doc['mimetype'] == 'application/pdf' or

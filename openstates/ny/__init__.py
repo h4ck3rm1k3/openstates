@@ -17,7 +17,7 @@ metadata = dict(
     # unfortunate - there isn't a decent combined site
     legislature_url='http://public.leginfo.state.ny.us/',
 
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'Assembly', 'title': 'Assembly Member'},
     },
@@ -28,7 +28,7 @@ metadata = dict(
              sessions=['2011-2012']),
         dict(name='2013-2014', start_year=2013, end_year=2014,
              sessions=['2013-2014'])
-        ],
+    ],
     session_details={
         '2009-2010': {
             'display_name': '2009 Regular Session',
@@ -49,10 +49,12 @@ metadata = dict(
     requests_per_minute=30,
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://open.nysenate.gov/legislation/advanced/',
                      '//select[@name="session"]/option/text()')
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

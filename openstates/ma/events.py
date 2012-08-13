@@ -9,11 +9,12 @@ import lxml.html
 
 urls = "http://www.malegislature.gov/Events/%s"
 pages = {
-    "upper" : [ urls % "SenateSessions" ],
-    "lower" : [ urls % "HouseSessions" ],
-    "other" : [ urls % "JointSessions",
-                urls % "Hearings", urls % "SpecialEvents" ]
+    "upper": [urls % "SenateSessions"],
+    "lower": [urls % "HouseSessions"],
+    "other": [urls % "JointSessions",
+              urls % "Hearings", urls % "SpecialEvents"]
 }
+
 
 class MAEventScraper(EventScraper):
     jurisdiction = 'ma'
@@ -56,7 +57,7 @@ class MAEventScraper(EventScraper):
         for tr in trs:
             # Alright. Let's snag some stuff.
             cells = {
-                "num" : "agendaItemNum",
+                "num": "agendaItemNum",
                 "bill_id": "agendaBillNum",
                 "title": "agendaBillTitle",
                 "spons": "agendaBillSponsor"
@@ -66,15 +67,14 @@ class MAEventScraper(EventScraper):
                 metainf[cell] = tr.xpath(".//td[@class='" + cells[cell] + "']")
             if metainf['bill_id'] == []:
                 return
-            kwargs = { "type" : "consideration" }
+            kwargs = {"type": "consideration"}
             # Alright. We can assume we have at least the bill ID.
             bill_id = metainf['bill_id'][0].text_content().strip()
             if cells['title'] != []:
                 kwargs['description'] = metainf['title'][0].text_content(
-                    ).strip()
+                ).strip()
             # XXX: Add sponsors.
             event.add_related_bill(bill_id, **kwargs)
-
 
     def parse_row(self, row, session, chamber):
         dates = row.xpath("./td[@class='dateCell']")
@@ -131,7 +131,8 @@ class MAEventScraper(EventScraper):
                       location_url=loc_url)
         event.add_participant("host", metainf['event'].text_content().strip(),
                               'committee', chamber=chamber)
-        self.add_agenda(event, metainf['event'].xpath(".//a")[0].attrib['href'])
+        self.add_agenda(event, metainf['event']
+                        .xpath(".//a")[0].attrib['href'])
         return event
 
     def scrape(self, chamber, session):
@@ -139,7 +140,8 @@ class MAEventScraper(EventScraper):
         self.year = dt.datetime.now().year
         for site in scrape_list:
             page = self.lxmlize(site)
-            rows = page.xpath("//tbody[not(contains(@id, 'noDates'))]/tr[contains(@class, 'dataRow')]")
+            rows = page.xpath(
+                "//tbody[not(contains(@id, 'noDates'))]/tr[contains(@class, 'dataRow')]")
             for row in rows:
                 event = self.parse_row(row, session, chamber)
                 if event:

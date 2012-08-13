@@ -13,23 +13,23 @@ metadata = dict(
     capitol_timezone='America/Los_Angeles',
     legislature_name='California State Legislature',
     legislature_url='http://www.legislature.ca.gov/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'Assembly', 'title': 'Assemblymember'},
     },
     terms=[
         {'name': '20092010',
          'sessions': [
-                '20092010',
-                '20092010 Special Session 1',
-                '20092010 Special Session 2',
-                '20092010 Special Session 3',
-                '20092010 Special Session 4',
-                '20092010 Special Session 5',
-                '20092010 Special Session 6',
-                '20092010 Special Session 7',
-                '20092010 Special Session 8',
-                ],
+             '20092010',
+             '20092010 Special Session 1',
+             '20092010 Special Session 2',
+             '20092010 Special Session 3',
+             '20092010 Special Session 4',
+             '20092010 Special Session 5',
+             '20092010 Special Session 6',
+             '20092010 Special Session 7',
+             '20092010 Special Session 8',
+         ],
          'start_year': 2009, 'end_year': 2010,
          'start_date': datetime.date(2008, 12, 1),
          },
@@ -38,12 +38,12 @@ metadata = dict(
          'start_year': 2011, 'end_year': 2012,
          'start_date': datetime.date(2010, 12, 6),
          },
-         {'name': '20132014',
+        {'name': '20132014',
          'sessions': ['20132014 Special Session 1', '20132014'],
          'start_year': 2013, 'end_year': 2014,
          # 'start_date': datetime.date(2013, ??, ?),
          },
-        ],
+    ],
     session_details={
         '20092010': {
             'start_date': datetime.date(2008, 12, 1),
@@ -104,7 +104,7 @@ metadata = dict(
     },
     feature_flags=['subjects', 'influenceexplorer'],
 
-    _ignored_scraped_sessions = [
+    _ignored_scraped_sessions=[
         '2013-2014',
         '2011-2012',
         '2009-2010',
@@ -116,7 +116,7 @@ metadata = dict(
         '1997-1998',
         '1995-1996',
         '1993-1994'
-        ]
+    ]
 )
 
 
@@ -124,9 +124,9 @@ def session_list():
     from billy.scrape.utils import url_xpath
     import re
     sessions = url_xpath('http://www.leginfo.ca.gov/bilinfo.html',
-        "//select[@name='sess']/option/text()")
+                         "//select[@name='sess']/option/text()")
     sessions = [
-        re.findall('\(.*\)', session)[0][1:-1] \
+        re.findall('\(.*\)', session)[0][1:-1]
         for session in sessions
     ]
     return sessions

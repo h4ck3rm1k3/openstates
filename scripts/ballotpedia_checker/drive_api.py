@@ -31,54 +31,54 @@ def get_service():
 
 
 def retrieve_all_files(service):
-  """Retrieve a list of File resources.
+    """Retrieve a list of File resources.
 
-  Args:
-    service: Drive API service instance.
-  Returns:
-    List of File resources.
-  """
-  result = []
-  page_token = None
-  while True:
-    try:
-      param = {}
-      if page_token:
-        param['pageToken'] = page_token
-      files = service.files().list(**param).execute()
+    Args:
+      service: Drive API service instance.
+    Returns:
+      List of File resources.
+    """
+    result = []
+    page_token = None
+    while True:
+        try:
+            param = {}
+            if page_token:
+                param['pageToken'] = page_token
+            files = service.files().list(**param).execute()
 
-      result.extend(files['items'])
-      page_token = files.get('nextPageToken')
-      if not page_token:
-        break
-    except errors.HttpError, error:
-      print 'An error occurred: %s' % error
-      break
-  return result
+            result.extend(files['items'])
+            page_token = files.get('nextPageToken')
+            if not page_token:
+                break
+        except errors.HttpError, error:
+            print 'An error occurred: %s' % error
+            break
+    return result
 
 
 def download_csv(service, drive_file):
-  """Download a file's content.
+    """Download a file's content.
 
-  Args:
-    service: Drive API service instance.
-    drive_file: Drive File instance.
+    Args:
+      service: Drive API service instance.
+      drive_file: Drive File instance.
 
-  Returns:
-    File's content if successful, None otherwise.
-  """
-  # Get the csv download link.
-  download_url = drive_file['exportLinks']['application/pdf']
-  download_url = re.sub(r'=pdf$', '=csv', download_url)
+    Returns:
+      File's content if successful, None otherwise.
+    """
+    # Get the csv download link.
+    download_url = drive_file['exportLinks']['application/pdf']
+    download_url = re.sub(r'=pdf$', '=csv', download_url)
 
-  if download_url:
-    resp, content = service._http.request(download_url)
-    if resp.status == 200:
-      print 'Status: %s' % resp
-      return content
+    if download_url:
+        resp, content = service._http.request(download_url)
+        if resp.status == 200:
+            print 'Status: %s' % resp
+            return content
+        else:
+            print 'An error occurred: %s' % resp
+            return None
     else:
-      print 'An error occurred: %s' % resp
-      return None
-  else:
-    # The file doesn't have any content stored on Drive.
-    return None
+        # The file doesn't have any content stored on Drive.
+        return None

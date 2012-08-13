@@ -38,11 +38,11 @@ class NMLegislatorScraper(LegislatorScraper):
             'addr_street': "lblAddress",
             'office_phone': ["lblCapitolPhone", "lblOfficePhone"],
             'home_phone': "lblHomePhone",
-#            '': "",
-#            '': "",
-#            '': "",
-#            '': "",
-            }
+            #            '': "",
+            #            '': "",
+            #            '': "",
+            #            '': "",
+        }
 
         for key, value in properties.iteritems():
             if isinstance(value, list):
@@ -70,8 +70,10 @@ class NMLegislatorScraper(LegislatorScraper):
                 return
 
         # image & email are a bit different
-        properties['photo_url'] = doc.xpath('//img[@id="ctl00_mainCopy_formViewLegislator_imgLegislator"]/@src')[0]
-        email = doc.get_element_by_id('ctl00_mainCopy_formViewLegislator_linkEmail').text
+        properties['photo_url'] = doc.xpath(
+            '//img[@id="ctl00_mainCopy_formViewLegislator_imgLegislator"]/@src')[0]
+        email = doc.get_element_by_id(
+            'ctl00_mainCopy_formViewLegislator_linkEmail').text
         if email:
             properties['email'] = email.strip()
 
@@ -117,7 +119,7 @@ class NMLegislatorScraper(LegislatorScraper):
             else:
                 role = role.lower()
             leg.add_role('committee member', term, committee=committee,
-                          position=role, chamber=chamber)
+                         position=role, chamber=chamber)
 
         # Already have the photo url.
         try:

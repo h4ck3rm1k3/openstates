@@ -55,8 +55,8 @@ class Lexer(Lexer):
 
             # Lower case name fragments.
             ('Fragment', '[a-z]+'),
-            ],
-        }
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -125,4 +125,3 @@ class VoteVisitor(Visitor):
             self.vote.yes(voter_name)
         if vote_value in 'XP':
             self.vote.other(voter_name)
-

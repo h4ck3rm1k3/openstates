@@ -8,7 +8,7 @@ from .events import TNEventScraper
 
 settings = dict(SCRAPELIB_TIMEOUT=600)
 
-#start date of each session is the first tuesday in January after new years
+# start date of each session is the first tuesday in January after new years
 
 metadata = dict(
     name='Tennessee',
@@ -57,7 +57,7 @@ def session_list():
     # Solution is to scrape special session as part of regular session
     from billy.scrape.utils import url_xpath
     return url_xpath('http://www.capitol.tn.gov/legislation/archives.html',
-        "//div[@class='col1']/ul/li[@class='show']/text()")
+                     "//div[@class='col1']/ul/li[@class='show']/text()")
 
 
 def extract_text(doc, data):

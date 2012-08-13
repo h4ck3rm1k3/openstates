@@ -174,6 +174,7 @@ class DocumentMeta(object):
 
 
 class BillDocuments(object):
+
     '''The new IN site has lots of documents for each bill. Sorting them
     out from the kooky accordian view on the site is messy, so lives in
     this separate class.
@@ -207,7 +208,8 @@ class BillDocuments(object):
                 data = DocumentMeta(self.scraper, a).get_doc_meta()
             except BogusDocument as exc:
                 self.scraper.logger.warning(exc)
-                self.scraper.logger.warning('Skipping document: %r.' % (a.attrib,))
+                self.scraper.logger.warning(
+                    'Skipping document: %r.' % (a.attrib,))
                 continue
             meta.append(data)
         return meta

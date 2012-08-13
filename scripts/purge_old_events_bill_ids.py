@@ -20,7 +20,7 @@ def main():
         spec = {
             settings.LEVEL_FIELD: abbr,
             'related_bills': {'$exists': True, '$ne': []},
-            }
+        }
         for event in db.events.find(spec):
             fixed = []
             for bill in event['related_bills']:

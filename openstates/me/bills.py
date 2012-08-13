@@ -46,6 +46,7 @@ def unescape(text):
 
 
 class BillNotFound(Exception):
+
     'Raised if bill is not found on their site.'
 
 

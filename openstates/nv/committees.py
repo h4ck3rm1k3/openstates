@@ -24,7 +24,7 @@ class NVCommitteeScraper(CommitteeScraper):
             sessionsuffix = 'rd'
         insert = str(session) + sessionsuffix + str(term[0:4])
 
-        chamber_letter = {'lower':'A', 'upper':'S'}[chamber]
+        chamber_letter = {'lower': 'A', 'upper': 'S'}[chamber]
 
         url = 'http://www.leg.state.nv.us/Session/%s/Committees/%s_Committees/' % (
             insert, chamber_letter)

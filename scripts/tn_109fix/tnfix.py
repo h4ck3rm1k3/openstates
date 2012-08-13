@@ -24,9 +24,9 @@ def main(state):
     for obj in db.votes.find(spec):
         index.add_object(obj)
 
-    import pdb; pdb.set_trace()
+    import pdb
+    pdb.set_trace()
 
 
 if __name__ == "__main__":
     main(*sys.argv[1:])
-

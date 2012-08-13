@@ -97,6 +97,7 @@ from collections import defaultdict
 import re
 HOUSE_VOTE_RE = re.compile('([YNE ])\s+([A-Z][a-z\'].+?)(?=\s[\sNYE])')
 
+
 def check_regex_against_vote(vote, y, n, a, e):
     counts = defaultdict(int)
     for v in HOUSE_VOTE_RE.findall(vote):
@@ -107,7 +108,7 @@ def check_regex_against_vote(vote, y, n, a, e):
     if counts['Y'] != y or counts['N'] != n or counts[' '] != a or counts['E'] != e:
         print counts
         for x in HOUSE_VOTE_RE.findall(vote):
-            print ' ',x
+            print ' ', x
     else:
         print '  good'
 

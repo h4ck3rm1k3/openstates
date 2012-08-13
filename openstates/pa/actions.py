@@ -31,7 +31,7 @@ _categorizer_rules = (
     Rule(r'^First consideration', 'bill:reading:1'),
     Rule(r'Second consideration', 'bill:reading:2'),
     Rule(r'Third consideration', 'bill:reading:3'),
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

@@ -3,6 +3,7 @@ from billy.scrape.legislators import Legislator, LegislatorScraper
 import re
 import lxml.html
 
+
 class VALegislatorScraper(LegislatorScraper):
     jurisdiction = 'va'
 
@@ -46,9 +47,9 @@ class VALegislatorScraper(LegislatorScraper):
             action, date = match.groups()
             name = name.rsplit('-')[0]
             if action == 'Resigned':
-                pass # TODO: set end date
+                pass  # TODO: set end date
             elif action == 'Member':
-                pass # TODO: set start date
+                pass  # TODO: set start date
 
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)

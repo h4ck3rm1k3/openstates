@@ -21,12 +21,12 @@ class Lexer(RegexLexer):
             (r'of ', t.Of),
             (r'(?i)respectively', t.Respectively),
             include('junk'),
-            ],
+        ],
 
         'impact': [
             (r'(?:are|is) (creat|amend|renumber|add|repeal)ed( to )?',
                 bygroups(t.ImpactVerb)),
-            ],
+        ],
 
         'nodetypes': [
 
@@ -41,7 +41,7 @@ class Lexer(RegexLexer):
 
             # Match singular path elements.
             (r'(?i)%s' % enumerations.regex, bygroups(t.NodeType), 'path'),
-            ],
+        ],
 
         'path': [
             include('impact'),
@@ -58,17 +58,17 @@ class Lexer(RegexLexer):
             include('_conjunctions'),
             include('nodetypes'),
             (r'\(?([^ \),]+)\)?', bygroups(t.NodeEnum)),
-            ],
+        ],
 
         '_conjunctions': [
             (r',? and ', t.And),
             (r', ', t.Comma),
-            ],
+        ],
 
         'junk': [
             (r'to read:', t.Error),
             (r'read:', t.Error),
-            ]
+        ]
     }
 
 
@@ -88,7 +88,8 @@ class Parser(parser.Parser):
             if self.stream.exhausted:
                 break
 
-            section_code_verb = self.expect_seq(t.SectionEnum, t.Code, t.ImpactVerb)
+            section_code_verb = self.expect_seq(
+                t.SectionEnum, t.Code, t.ImpactVerb)
             with section_code_verb as tokens:
                 if tokens:
                     section_enum, code, impact = tokens
@@ -115,7 +116,8 @@ class Parser(parser.Parser):
                     self.expect_one(t.Of) as of, node_path as path:
                     if nodetype and tokens and of and path:
                         a = 1
-                        import pdb;pdb.set_trace()
+                        import pdb
+                        pdb.set_trace()
                         b = 2
                         continue
 

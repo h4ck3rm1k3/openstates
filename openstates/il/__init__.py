@@ -29,66 +29,66 @@ metadata = {
         {'name': '98th', 'sessions': ['98th'],
          'start_year': 2013, 'end_year': 2014},
     ],
-    'feature_flags': [ 'events', 'influenceexplorer' ],
+    'feature_flags': ['events', 'influenceexplorer'],
     'session_details': {
         '98th': {'display_name': '98th Regular Session (2013-2014)',
                  '_scraped_name': '',
                  'speaker': 'Madigan',
                  'president': 'Cullerton',
-                 'params': { 'GA': '98', 'SessionId': '85' },
+                 'params': {'GA': '98', 'SessionId': '85'},
 
-        },
+                 },
         '97th': {'display_name': '97th Regular Session (2011-2012)',
                  '_scraped_name': '',
-                 'params': { 'GA': '97', 'SessionId': '84' },
+                 'params': {'GA': '97', 'SessionId': '84'},
                  'speaker': 'Madigan',
                  'president': 'Cullerton',
 
-        },
+                 },
         '96th': {'display_name': '96th Regular Session (2009-2010)',
                  '_scraped_name': '96   (2009-2010)',
-                 'params': { 'GA': '96', 'SessionId': '76' },
+                 'params': {'GA': '96', 'SessionId': '76'},
                  'speaker': 'Madigan',
                  'president': 'Cullerton',
 
-        },
+                 },
         'Special_96th': {'display_name': '96th Special Session (2009-2010)',
-                         'params': { 'GA': '96', 'SessionId': '82', 'SpecSess': '1' },
+                         'params': {'GA': '96', 'SessionId': '82', 'SpecSess': '1'},
                          'speaker': 'Madigan',
                          'president': 'Cullerton',
 
-        },
+                         },
         '95th': {'display_name': '95th Regular Session (2007-2008)',
                  '_scraped_name': '95   (2007-2008)',
-                 'params': { 'GA': '95', 'SessionId': '51' },
+                 'params': {'GA': '95', 'SessionId': '51'},
                  'speaker': 'Madigan',
                  'president': 'Jones, E.',
 
-        },
+                 },
         'Special_95th': {'display_name': '95th Special Session (2007-2008)',
-                         'params': { 'GA': '95', 'SessionId': '52', 'SpecSess': '1' },
+                         'params': {'GA': '95', 'SessionId': '52', 'SpecSess': '1'},
                          'speaker': 'Madigan',
                          'president': 'Jones, E.',
 
-        },
+                         },
         '94th': {'display_name': '94th Regular Session (2005-2006)',
                  '_scraped_name': '94   (2005-2006)',
-                 'params': { 'GA': '94', 'SessionId': '50' },
+                 'params': {'GA': '94', 'SessionId': '50'},
                  'speaker': 'Madigan',
                  'president': 'Jones, E.',
 
-        },
+                 },
         '93rd': {'display_name': '93rd Regular Session (2003-2004)',
                  '_scraped_name': '93   (2003-2004)',
-                 'params': { 'GA': '93', 'SessionId': '3' },
+                 'params': {'GA': '93', 'SessionId': '3'},
                  'speaker': 'Madigan',
                  'president': 'Jones, E.',
-        },
+                 },
         'Special_93rd': {'display_name': '93rd Special Session (2003-2004)',
-                         'params': { 'GA': '93', 'SessionID': '14', 'SpecSess': '1' },
+                         'params': {'GA': '93', 'SessionID': '14', 'SpecSess': '1'},
                          'speaker': 'Madigan',
                          'president': 'Jones, E.',
-        },
+                         },
     },
     '_ignored_scraped_sessions': [
         '97   (2011-2012)',
@@ -111,10 +111,12 @@ metadata = {
 
 }
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
     return url_xpath('http://ilga.gov/PreviousGA.asp',
                      '//option/text()')
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

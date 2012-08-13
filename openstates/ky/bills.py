@@ -39,7 +39,6 @@ class KYBillScraper(BillScraper):
                 for bill in sdoc.xpath('//table[@id="table2"]//a/text()'):
                     self._subjects[bill.replace(' ', '')].append(subject)
 
-
     def scrape(self, chamber, session):
         self.scrape_subjects(session)
         self.scrape_session(chamber, session)
@@ -47,7 +46,8 @@ class KYBillScraper(BillScraper):
             self.scrape_session(chamber, sub)
 
     def scrape_session(self, chamber, session):
-        bill_url = session_url(session) + "bills_%s.htm" % chamber_abbr(chamber)
+        bill_url = session_url(session) + \
+            "bills_%s.htm" % chamber_abbr(chamber)
         self.scrape_bill_list(chamber, session, bill_url)
 
         resolution_url = session_url(session) + "res_%s.htm" % (
@@ -82,7 +82,8 @@ class KYBillScraper(BillScraper):
         try:
             short_bill_id = re.sub(r'(H|S)([JC])R', r'\1\2', bill_id)
 
-            version_link = page.xpath("//a[contains(@href, '%s/bill.doc')]" % short_bill_id)[0]
+            version_link = page.xpath(
+                "//a[contains(@href, '%s/bill.doc')]" % short_bill_id)[0]
         except IndexError:
             # Bill withdrawn
             return
@@ -94,7 +95,8 @@ class KYBillScraper(BillScraper):
         else:
             title = pars[0].getprevious().tail
             if not title:
-                self.warning('walking backwards to get bill title, error prone!')
+                self.warning(
+                    'walking backwards to get bill title, error prone!')
                 title = pars[0].getprevious().getprevious()
                 while not title.tail:
                     title = title.getprevious()
@@ -127,7 +129,7 @@ class KYBillScraper(BillScraper):
         for line in action_p.xpath("string()").split("\n"):
             action = line.strip()
             if (not action or action == 'last action' or
-                'Prefiled' in action or 'vetoed' in action):
+                    'Prefiled' in action or 'vetoed' in action):
                 continue
 
             # add year onto date
@@ -196,7 +198,8 @@ class KYBillScraper(BillScraper):
                 break
         for action in bill['actions'][:i]:
             if action['date'] > intro_date:
-                action['date'] = action['date'].replace(year=action['date'].year-1)
+                action['date'] = action['date'].replace(
+                    year=action['date'].year - 1)
                 self.debug('corrected year for %s', action['action'])
 
         self.save_bill(bill)

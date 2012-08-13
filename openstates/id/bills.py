@@ -8,79 +8,84 @@ import lxml.html
 BILLS_URL = 'http://legislature.idaho.gov/legislation/%s/minidata.htm'
 BILL_URL = 'http://legislature.idaho.gov/legislation/%s/%s.htm'
 
-_CHAMBERS = {'upper':'Senate', 'lower':'House'}
+_CHAMBERS = {'upper': 'Senate', 'lower': 'House'}
 
-_BILL_TYPES = {'CR':'concurrent resolution',
-              'JM': 'joint memorial', 'JR': 'joint resolution',
-              'P': 'proclamation', 'R': 'resolution'}
-_COMMITTEES = { 'lower': {'Loc Gov':'Local Government',
-                     'Jud':'Judiciary, Rules and Administration',
-                     'Res/Con':'Resources and Conservation',
-                     'Com/HuRes':'Commerce and Human Resources',
-                     'Transp':'Transportation and Defense',
-                     'St Aff': 'State Affairs',
-                     'Rev/Tax':'Revenues and Taxation',
-                     'Health/Wel':'Health and Welfare',
-                     'Env':'Environment, Energy and Technology',
-                     'Bus':'Business', 'Educ':'Education',
-                     'Agric Aff':'Agricultural Affairs',
-                     'Approp': 'Appropriations','W/M': 'Ways and Means'},
-                'upper': {'Agric Aff': 'Agricultural Affairs',
-                     'Com/HuRes':'Commerce and Human Resources',
-                     'Educ': 'Education', 'Fin':'Finance',
-                     'Health/Wel':'Health and Welfare',
-                     'Jud': 'Judiciary and Rules',
-                     'Loc Gov': 'Local Government and Taxation',
-                     'Res/Env': 'Resources and Environment',
-                     'St Aff': 'State Affairs', 'Transp': 'Transportation'}
-                }
+_BILL_TYPES = {'CR': 'concurrent resolution',
+               'JM': 'joint memorial', 'JR': 'joint resolution',
+               'P': 'proclamation', 'R': 'resolution'}
+_COMMITTEES = {'lower': {'Loc Gov': 'Local Government',
+                         'Jud': 'Judiciary, Rules and Administration',
+                         'Res/Con': 'Resources and Conservation',
+                         'Com/HuRes': 'Commerce and Human Resources',
+                         'Transp': 'Transportation and Defense',
+                         'St Aff': 'State Affairs',
+                         'Rev/Tax': 'Revenues and Taxation',
+                         'Health/Wel': 'Health and Welfare',
+                         'Env': 'Environment, Energy and Technology',
+                         'Bus': 'Business', 'Educ': 'Education',
+                         'Agric Aff': 'Agricultural Affairs',
+                         'Approp': 'Appropriations', 'W/M': 'Ways and Means'},
+               'upper': {'Agric Aff': 'Agricultural Affairs',
+                         'Com/HuRes': 'Commerce and Human Resources',
+                         'Educ': 'Education', 'Fin': 'Finance',
+                         'Health/Wel': 'Health and Welfare',
+                         'Jud': 'Judiciary and Rules',
+                         'Loc Gov': 'Local Government and Taxation',
+                         'Res/Env': 'Resources and Environment',
+                         'St Aff': 'State Affairs', 'Transp': 'Transportation'}
+               }
 
 # a full list of the abbreviations and definitions can be found at:
 # http://legislature.idaho.gov/sessioninfo/glossary.htm
 # background on bill to law can be found at:
 # http://legislature.idaho.gov/about/jointrules.htm
 _ACTIONS = (
-     # bill:reading:1
-     (r'(\w+) intro - (\d)\w+ rdg - to (\w+/?\s?\w+\s?\w+)',
-      lambda mch, ch: ["bill:introduced", "bill:reading:1", "committee:referred"] \
-                        if mch.groups()[2] in _COMMITTEES[ch] else ["bill:introduced", "bill:reading:1"] ),
-     # committee actions
-     (r'rpt prt - to\s(\w+/?\s?\w+)',
-      lambda mch, ch: ["committee:referred"] if mch.groups()[0] in _COMMITTEES[ch] \
-                                             else "other"),
-     # it is difficult to figure out which committee passed/reported out a bill
-     # but i guess we at least know that only committees report out
-     (r'rpt out - rec d/p', "committee:passed:favorable"),
-     (r'^rpt out', 'committee:passed'),
+    # bill:reading:1
+    (r'(\w+) intro - (\d)\w+ rdg - to (\w+/?\s?\w+\s?\w+)',
+     lambda mch, ch: ["bill:introduced",
+                      "bill:reading:1", "committee:referred"]
+     if mch.groups(
+     )[2] in _COMMITTEES[ch] else ["bill:introduced", "bill:reading:1"]),
+    # committee actions
+    (r'rpt prt - to\s(\w+/?\s?\w+)',
+     lambda mch, ch: ["committee:referred"] if mch.groups()[0] in _COMMITTEES[ch]
+     else "other"),
+    # it is difficult to figure out which committee passed/reported out a bill
+    # but i guess we at least know that only committees report out
+    (r'rpt out - rec d/p', "committee:passed:favorable"),
+    (r'^rpt out', 'committee:passed'),
 
-     # I dont recall seeing a 2nd rdg by itself
-     (r'^1st rdg - to 2nd rdg', "bill:reading:2"),
-     # second to third will count as a third read if there is no
-     # explicit third reading action
-     (r'2nd rdg - to 3rd rdg', "bill:reading:3"),
-     (r'^3rd rdg$', "bill:reading:3"),
-     (r'.*Third Time.*PASSED.*', ["bill:reading:3", "bill:passed"]),
-     # bill:reading:3, bill:passed
-     (r'^3rd rdg as amen - (ADOPTED|PASSED)', ["bill:reading:3", "bill:passed"]),
-     (r'^3rd rdg - (ADOPTED|PASSED)', ["bill:reading:3", "bill:passed"]),
-     (r'^Read Third Time in Full .* (ADOPTED|PASSED).*', [
-         "bill:reading:3", "bill:passed"]),
-     (r'^.*read three times - (ADOPTED|PASSED).*', [
-         "bill:reading:3", "bill:passed"]),
-     (r'^.*Read in full .* (ADOPTED|PASSED).*', [
-         "bill:reading:3", "bill:passed"]),
-     # bill:reading:3, bill:failed
-     (r'^3rd rdg as amen - (FAILED)', ["bill:reading:3", "bill:failed"]),
-     (r'^3rd rdg - (FAILED)', ["bill:reading:3", "bill:failed"]),
-     # rules suspended
-     (r'^Rls susp - (ADOPTED|PASSED|FAILED)', lambda mch, ch: {
-                                                       'ADOPTED': "bill:passed",
-                                                        'PASSED': "bill:passed",
-                                                        'FAILED': "bill:failed"
-                                                   }[mch.groups()[0]]),
-     (r'^to governor', "governor:received"),
-     (r'^Governor signed', "governor:signed"),
+    # I dont recall seeing a 2nd rdg by itself
+    (r'^1st rdg - to 2nd rdg', "bill:reading:2"),
+    # second to third will count as a third read if there is no
+    # explicit third reading action
+    (r'2nd rdg - to 3rd rdg', "bill:reading:3"),
+    (r'^3rd rdg$', "bill:reading:3"),
+    (r'.*Third Time.*PASSED.*', ["bill:reading:3", "bill:passed"]),
+    # bill:reading:3, bill:passed
+    (r'^3rd rdg as amen - (ADOPTED|PASSED)',
+     ["bill:reading:3", "bill:passed"]),
+    (r'^3rd rdg - (ADOPTED|PASSED)', ["bill:reading:3", "bill:passed"]),
+    (r'^Read Third Time in Full .* (ADOPTED|PASSED).*', [
+        "bill:reading:3", "bill:passed"]),
+    (r'^.*read three times - (ADOPTED|PASSED).*', [
+        "bill:reading:3", "bill:passed"]),
+    (r'^.*Read in full .* (ADOPTED|PASSED).*', [
+        "bill:reading:3", "bill:passed"]),
+    # bill:reading:3, bill:failed
+    (r'^3rd rdg as amen - (FAILED)', ["bill:reading:3", "bill:failed"]),
+    (r'^3rd rdg - (FAILED)', ["bill:reading:3", "bill:failed"]),
+    # rules suspended
+    (r'^Rls susp - (ADOPTED|PASSED|FAILED)', lambda mch, ch: {
+        'ADOPTED': "bill:passed",
+        'PASSED': "bill:passed",
+        'FAILED': "bill:failed"
+    }[mch.groups()[0]]),
+    (r'^to governor', "governor:received"),
+    (r'^Governor signed', "governor:signed"),
 )
+
+
 def get_action(actor, text):
     # the biggest issue with actions is that some lines seem to indicate more
     # than one action
@@ -95,12 +100,14 @@ def get_action(actor, text):
                 return action
     return "other"
 
+
 def get_bill_type(bill_id):
     suffix = bill_id.split(' ')[0]
     if len(suffix) == 1:
         return 'bill'
     else:
         return _BILL_TYPES[suffix[1:]]
+
 
 class IDBillScraper(BillScraper):
     jurisdiction = 'id'
@@ -112,7 +119,6 @@ class IDBillScraper(BillScraper):
     nays = False
     other = False
     last_date = None
-
 
     def scrape_subjects(self, session):
         self._subjects = defaultdict(list)
@@ -130,7 +136,6 @@ class IDBillScraper(BillScraper):
             # if anchor is a link to a bill, save that reference
             elif 'legislation' in a.get('href'):
                 self._subjects[a.text].append(subject)
-
 
     def scrape(self, chamber, session):
         """
@@ -152,12 +157,12 @@ class IDBillScraper(BillScraper):
         # I check for rows with an id that contains 'bill' and startswith
         # 'H' or 'S' to make sure I dont get any links from the menus
         # might not be necessary
-        bill_rows = html.xpath('//tr[contains(@id, "bill") and '\
-                               'starts-with(descendant::td/a/text(), "%s")]'\
+        bill_rows = html.xpath('//tr[contains(@id, "bill") and '
+                               'starts-with(descendant::td/a/text(), "%s")]'
                                % _CHAMBERS[chamber][0])
         for row in bill_rows:
             matches = re.match(r'([A-Z]*)([0-9]+)',
-                                        row[0].text_content().strip())
+                               row[0].text_content().strip())
             bill_id = " ".join(matches.groups()).strip()
             short_title = row[1].text_content().strip()
             self.scrape_bill(chamber, session, bill_id, short_title)
@@ -176,7 +181,8 @@ class IDBillScraper(BillScraper):
             if matches:
                 bill_id = " ".join(matches.groups())
                 short_title = link.tail[:link.tail.index('..')]
-                self.scrape_pre_2009_bill(chamber, session, bill_id, short_title)
+                self.scrape_pre_2009_bill(
+                    chamber, session, bill_id, short_title)
 
     def scrape_bill(self, chamber, session, bill_id, short_title=None):
         """
@@ -186,7 +192,8 @@ class IDBillScraper(BillScraper):
         url = BILL_URL % (session, bill_id.replace(' ', ''))
         bill_page = self.urlopen(url)
         html = lxml.html.fromstring(bill_page)
-        html.make_links_absolute('http://legislature.idaho.gov/legislation/%s/' % session)
+        html.make_links_absolute(
+            'http://legislature.idaho.gov/legislation/%s/' % session)
         bill_tables = html.xpath('./body/table/tr/td[2]')[0].xpath('.//table')
         title = bill_tables[1].text_content().strip()
         bill_type = get_bill_type(bill_id)
@@ -232,7 +239,7 @@ class IDBillScraper(BillScraper):
             else:
                 date = last_date
 
-            date = datetime.datetime.strptime(date+ '/' + session[0:4],
+            date = datetime.datetime.strptime(date + '/' + session[0:4],
                                               "%m/%d/%Y")
             if action.startswith('House'):
                 actor = 'lower'
@@ -261,13 +268,15 @@ class IDBillScraper(BillScraper):
     def scrape_pre_2009_bill(self, chamber, session, bill_id, short_title=''):
         """bills from 2008 and below are in a 'pre' element and is simpler to
         parse them as text"""
-        url = 'http://legislature.idaho.gov/legislation/%s/%s.html' % (session, bill_id.replace(' ', ''))
+        url = 'http://legislature.idaho.gov/legislation/%s/%s.html' % (session,
+                                                                       bill_id.replace(' ', ''))
         bill_page = self.urlopen(url)
         html = lxml.html.fromstring(bill_page)
         text = html.xpath('//pre')[0].text.split('\r\n')
 
         # title
-        title = " - ".join([ x.strip() for x in text[1].split('-') if x.isupper() ])
+        title = " - ".join([x.strip()
+                           for x in text[1].split('-') if x.isupper()])
         # bill type
         bill_type = get_bill_type(bill_id)
 
@@ -278,23 +287,24 @@ class IDBillScraper(BillScraper):
             bill.add_sponsor('primary', sponsor)
 
         actor = chamber
-        self.flag() # clear last bills vote flags
-        self.vote = None #
+        self.flag()  # clear last bills vote flags
+        self.vote = None
 
         for line in text:
 
             if re.match(r'^\d\d/\d\d', line):
-                date = date = datetime.datetime.strptime(line[0:5] + '/' + session[0:4],
-                                              "%m/%d/%Y")
+                date = date = datetime.datetime.strptime(
+                    line[0:5] + '/' + session[0:4],
+                    "%m/%d/%Y")
                 self.last_date = date
                 action_text = line[5:].strip()
                 # actor
                 if action_text.lower().startswith('house') or \
                    action_text.lower().startswith('senate'):
-                    actor = {'H':'lower', 'S':'upper'}[action_text[0]]
+                    actor = {'H': 'lower', 'S': 'upper'}[action_text[0]]
 
                 action = get_action(actor, action_text)
-                bill.add_action(actor,action_text, date, type=action)
+                bill.add_action(actor, action_text, date, type=action)
                 if "bill:passed" in action or "bill:failed" in action:
                     passed = False if 'FAILED' in action_text else True
                     votes = re.search(r'(\d+)-(\d+)-(\d+)', action_text)
@@ -302,7 +312,7 @@ class IDBillScraper(BillScraper):
                         yes, no, other = votes.groups()
                         self.in_vote = True
                         self.vote = Vote(chamber, date, action_text, passed,
-                                     int(yes), int(no), int(other))
+                                         int(yes), int(no), int(other))
             else:
                 date = self.last_date
                 # nothing to do if its not a vote
@@ -347,21 +357,22 @@ class IDBillScraper(BillScraper):
         """
         spans = row.xpath('.//span')
         motion = row.text
-        passed, yes_count, no_count, other_count = spans[0].text_content().split('-')
-        yes_votes = [ name for name in
-                      spans[1].tail.replace(u'\xa0--\xa0', '').split(',')
-                      if name ] if spans[1].tail else []
+        passed, yes_count, no_count, other_count = spans[
+            0].text_content().split('-')
+        yes_votes = [name for name in
+                     spans[1].tail.replace(u'\xa0--\xa0', '').split(',')
+                     if name] if spans[1].tail else []
 
-        no_votes = [ name for name in
-                     spans[2].tail.replace(u'\xa0--\xa0', '').split(',')
-                     if name ]
+        no_votes = [name for name in
+                    spans[2].tail.replace(u'\xa0--\xa0', '').split(',')
+                    if name]
         other_votes = []
         for span in spans[3:]:
             if span.text.startswith(('Absent', 'Excused')):
                 other_votes += [name.strip() for name in
                                 span.tail.replace(u'\xa0--\xa0', '').split(',')
                                 if name]
-        for key, val in {'adopted': True, 'passed': True, 'failed':False}.items():
+        for key, val in {'adopted': True, 'passed': True, 'failed': False}.items():
             if key in passed.lower():
                 passed = val
                 break

@@ -7,17 +7,18 @@ from billy.scrape.events import Event, EventScraper
 import pytz
 import lxml.html
 
-exclude_slugs = [ "TBA" ]
+exclude_slugs = ["TBA"]
 formats = [
     "%b %d %A %I:%M %p %Y",
     "%B %d %A %I:%M %p %Y"
 ]
 
 replacements = {
-    "Sept" : "Sep"
+    "Sept": "Sep"
 }
 
 now = datetime.datetime.now()
+
 
 class AKEventScraper(EventScraper):
     jurisdiction = 'ak'
@@ -108,7 +109,6 @@ class AKEventScraper(EventScraper):
                 bills += cur_node.xpath(
                     ".//a[contains(@href, 'get_complete_bill')]/text()")
                 cur_node = cur_node.getnext()
-
 
             event = Event(session, when, 'committee:meeting',
                           description, location=where)

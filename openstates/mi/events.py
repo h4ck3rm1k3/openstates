@@ -8,6 +8,7 @@ import pytz
 
 mi_events = "http://legislature.mi.gov/doc.aspx?CommitteeMeetings"
 
+
 class MIEventScraper(EventScraper):
     jurisdiction = 'mi'
 

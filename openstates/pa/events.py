@@ -64,7 +64,7 @@ class PAEventScraper(EventScraper):
                     o = urlparse.urlparse(u)
                     qs = urlparse.parse_qs(o.query)
                     bills.append({
-                        "bill_id": "%sB %s" % ( qs['body'][0], qs['bn'][0] ),
+                        "bill_id": "%sB %s" % (qs['body'][0], qs['bn'][0]),
                         "bill_num": qs['bn'][0],
                         "bill_chamber": qs['body'][0],
                         "session": qs['syear'][0],

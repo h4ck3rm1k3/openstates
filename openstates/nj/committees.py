@@ -17,7 +17,7 @@ class NJCommitteeScraper(CommitteeScraper, MDBMixin):
 
         comm_dictionary = {}
 
-        #Committe Info Database
+        # Committe Info Database
         for rec in info_csv:
             abrv = rec["Code"]
             comm_name = rec["Description"]
@@ -30,12 +30,12 @@ class NJCommitteeScraper(CommitteeScraper, MDBMixin):
             elif abrv[0] == "S":
                 chamber = "upper"
 
-            comm = Committee(chamber, comm_name, comm_type = comm_type,
-                             aide = aide, contact_info = contact_info)
+            comm = Committee(chamber, comm_name, comm_type=comm_type,
+                             aide=aide, contact_info=contact_info)
             comm.add_source('http://www.njleg.state.nj.us/downloads.asp')
             comm_dictionary[abrv] = comm
 
-        #Committee Member Database
+        # Committee Member Database
         POSITIONS = {
             'C': 'chair',
             'V': 'vice-chair',

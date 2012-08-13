@@ -7,8 +7,10 @@ import scrapelib
 from billy.scrape.bills import BillScraper, Bill
 from billy.scrape.votes import Vote
 
+
 def extract_int(text):
     return int(text.replace(u'\xc2', '').strip())
+
 
 def convert_date(text):
     long_date = re.findall('\d{1,2}-\d{1,2}-\d{4}', text)
@@ -28,7 +30,8 @@ class DCBillScraper(BillScraper):
     jurisdiction = 'dc'
 
     def scrape_bill(self, bill):
-        bill_url = 'http://dcclims1.dccouncil.us/lims/legislation.aspx?LegNo=' + bill['bill_id']
+        bill_url = 'http://dcclims1.dccouncil.us/lims/legislation.aspx?LegNo=' + \
+            bill['bill_id']
 
         bill.add_source(bill_url)
 
@@ -69,7 +72,8 @@ class DCBillScraper(BillScraper):
             ('Final Vote', 'DateFinalVote', 'bill:reading:3'),
             ('Third Vote', 'DateThirdVote', ['bill:reading:3']),
             ('Reconsideration', 'DateReconsideration', 'other'),
-            ('Transmitted to Mayor', 'DateTransmittedMayor', 'governor:received'),
+            ('Transmitted to Mayor',
+             'DateTransmittedMayor', 'governor:received'),
             ('Signed by Mayor', 'DateSigned', 'governor:signed'),
             ('Returned by Mayor', 'DateReturned', 'other'),
             ('Veto Override', 'DateOverride', 'bill:veto_override:passed'),
@@ -82,8 +86,10 @@ class DCBillScraper(BillScraper):
         subactions = (
             ('WITHDRAWN BY', 'Withdrawn', 'bill:withdrawn'),
             ('TABLED', 'Tabled', 'other'),
-            ('DEEMED APPROVED', 'Deemed approved without council action', 'bill:passed'),
-            ('DEEMED DISAPPROVED', 'Deemed disapproved without council action', 'bill:failed'),
+            ('DEEMED APPROVED',
+             'Deemed approved without council action', 'bill:passed'),
+            ('DEEMED DISAPPROVED',
+             'Deemed disapproved without council action', 'bill:failed'),
         )
 
         for action, elem_id, atype in actions:
@@ -102,7 +108,7 @@ class DCBillScraper(BillScraper):
                 # actions that mean nothing happened
                 else:
                     if date not in ('Not Signed', 'NOT CONSIDERED',
-                                  'NOTCONSIDERED'):
+                                    'NOTCONSIDERED'):
                         actor = ('mayor' if action.endswith('by Mayor')
                                  else 'upper')
                         date = convert_date(date)
@@ -124,9 +130,8 @@ class DCBillScraper(BillScraper):
             except scrapelib.HTTPError as e:
                 self.warning(str(e))
 
-        bill['actions'] = sorted(bill['actions'], key=lambda b:b['date'])
+        bill['actions'] = sorted(bill['actions'], key=lambda b: b['date'])
         self.save_bill(bill)
-
 
     def scrape_vote(self, bill, vote_type_id, vote_type):
         base_url = 'http://dcclims1.dccouncil.us/lims/voting.aspx?VoteTypeID=%s&LegID=%s'
@@ -172,7 +177,8 @@ class DCBillScraper(BillScraper):
         bill.add_vote(vote)
 
     def scrape(self, session, chambers):
-        url = 'http://dcclims1.dccouncil.us/lims/print/list.aspx?FullPage=True&Period=' + session
+        url = 'http://dcclims1.dccouncil.us/lims/print/list.aspx?FullPage=True&Period=' + \
+            session
 
         html = self.urlopen(url)
         doc = lxml.html.fromstring(html)

@@ -21,7 +21,7 @@ class LACommitteeScraper(CommitteeScraper):
             'Standing': 'http://senate.legis.state.la.us/Committees/default.asp',
             'Select': 'http://senate.louisiana.gov/committees/default.asp?type=Select'
         }
-        
+
         for name, url in committee_types.items():
             text = self.urlopen(url)
             page = lxml.html.fromstring(text)
@@ -34,7 +34,6 @@ class LACommitteeScraper(CommitteeScraper):
                 name = link.xpath('string()')
                 url = link.attrib['href']
                 self.scrape_senate_committee(name, url)
-        
 
     def scrape_senate_committee(self, name, url):
         url = url.replace('Default.asp', 'Assignments.asp')
@@ -102,7 +101,6 @@ class LACommitteeScraper(CommitteeScraper):
                     mtype = 'interim'
                     comm_name = comm_name.replace(", Interim Member", "")
 
-
                 if comm_name.startswith('Joint'):
                     chamber = 'joint'
                 else:
@@ -126,29 +124,29 @@ class LACommitteeScraper(CommitteeScraper):
 
         for committee in comm_cache.values():
             self.save_committee(committee)
-            
+
     def scrape_house_special(self, scraped_committees):
         url = 'http://house.louisiana.gov/H_Reps/H_Reps_SpecialCmtes.asp'
         text = self.urlopen(url)
         page = lxml.html.fromstring(text)
         page.make_links_absolute('http://house.louisiana.gov')
-        
+
         committees = {}
         for el in page.xpath("//a[contains(@href,'../H_Cmtes/')]"):
             comm_name = el.xpath('normalize-space(string())')
             comm_name = self.normalize_committee_name(comm_name)
-            
-            # skip committees that have already been scraped from 
+
+            # skip committees that have already been scraped from
             # http://house.louisiana.gov/H_Reps/H_Reps_CmtesFull.asp
-            if comm_name not in scraped_committees:    
-                comm_url = el.get('href').replace('../','')
+            if comm_name not in scraped_committees:
+                comm_url = el.get('href').replace('../', '')
                 committees[comm_name] = comm_url
 
         for name, url in committees.items():
             chamber = 'joint' if name.startswith('Joint') else 'lower'
             committee = Committee(chamber, name)
             committee.add_source(url)
-            
+
             text = self.urlopen(url)
             page = lxml.html.fromstring(text)
             page.make_links_absolute('http://house.louisiana.gov')
@@ -159,22 +157,22 @@ class LACommitteeScraper(CommitteeScraper):
                 mtype = member_info[1].xpath('normalize-space(string())')
                 if mtype == 'Chairman':
                     mtype = 'chairman'
-                elif mtype  == 'Co-Chairmain':
+                elif mtype == 'Co-Chairmain':
                     mtype = 'co-chairmain'
-                elif mtype ==  'Vice Chair':
+                elif mtype == 'Vice Chair':
                     mtype = 'vice chair'
-                elif mtype  == 'Ex Officio':
+                elif mtype == 'Ex Officio':
                     mtype = 'ex officio'
                 elif mtype == 'Interim Member':
                     mtype = 'interim'
                 else:
                     mtype = 'member'
                 committee.add_member(mname, mtype)
-            
+
             committees[name] = committee
-        
+
         return committees
-        
+
     def normalize_committee_name(self, name):
         committees = {
             'House Executive Cmte': 'House Executive Committee',

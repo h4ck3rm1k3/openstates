@@ -7,6 +7,7 @@ import operator
 
 
 class CachedAttr(object):
+
     '''Computes attr value and caches it in the instance.'''
 
     def __init__(self, method, name=None):

@@ -8,6 +8,7 @@ for each 2013 bill, if id starts with "H " or "S ",
 import pymongo
 from billy.core import db
 
+
 def action2tuple(action):
     ac = map(action.get, ['action', 'actor', 'date'])
     ac.append('-'.join(action['type']))
@@ -48,7 +49,8 @@ def main():
 
             if not len(same_actions) == 1:
                 print "CRAAAAAP"
-                import pdb; pdb.set_trace()
+                import pdb
+                pdb.set_trace()
             else:
                 mergebill = same_actions.pop()
 
@@ -62,14 +64,5 @@ def main():
             print("Not merging %s" % dupe['bill_id'])
 
 
-
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-

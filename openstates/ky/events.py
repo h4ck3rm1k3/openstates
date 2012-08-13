@@ -31,9 +31,11 @@ class KYEventScraper(EventScraper):
                 continue
             when = "%s %s" % (date, time)
             try:
-                when = datetime.datetime.strptime(when, "%A, %B %d, %Y %I:%M%p")
+                when = datetime.datetime.strptime(
+                    when, "%A, %B %d, %Y %I:%M%p")
             except ValueError:
-                when = datetime.datetime.strptime(when, "%A, %B %d, %Y %I:%M %p")
+                when = datetime.datetime.strptime(
+                    when, "%A, %B %d, %Y %I:%M %p")
 
             when = self._tz.localize(when)
 

@@ -26,18 +26,19 @@ committee_urls = {
     'lower': {
         2011: 'http://leg.mt.gov/css/House/house-committees-2011.asp',
         2013: 'http://leg.mt.gov/content/Committees/Session/2013%20house%20committees%20-%20columns.pdf',
-        },
+    },
 
     'upper': {
         2011: 'http://leg.mt.gov/css/Senate/senate%20committees-2011.asp',
         2013: 'http://leg.mt.gov/content/Committees/Session/2013%20senate%20committees%20-%20columns.pdf',
-        },
+    },
 
     'joint': {
         2011: 'http://leg.mt.gov/css/Sessions/62nd/joint%20subcommittees.asp',
-        # 2013: 'http://leg.mt.gov/css/Sessions/62nd/joint%20subcommittees.asp',
-        }
+        # 2013:
+        # 'http://leg.mt.gov/css/Sessions/62nd/joint%20subcommittees.asp',
     }
+}
 
 
 class MTCommitteeScraper(CommitteeScraper):
@@ -82,7 +83,7 @@ class MTCommitteeScraper(CommitteeScraper):
 
             ('Federal Relations, Energy,\sand\sTelecommunications',
              'Federal Relations, Energy, and Telecommunications')
-            ):
+        ):
             text = re.sub(hotgarbage, replacement, text)
 
         lines = iter(text.splitlines())
@@ -97,7 +98,7 @@ class MTCommitteeScraper(CommitteeScraper):
                 'committee', ' and ', 'business', 'resources',
                 'legislative', 'administration', 'government',
                 'local', 'planning', 'judicial', 'natural',
-                'resources', 'general', 'health', 'human'):
+                    'resources', 'general', 'health', 'human'):
                 if s in line.lower():
                     return True
             if line.istitle() and len(line.split()) == 1:
@@ -181,7 +182,8 @@ def scrape_committees_html(year, chamber, doc):
                 if c not in cache:
                     cache.append(c)
 
-                    # These are subcommittees, so a quick switcheroo of the names:
+                    # These are subcommittees, so a quick switcheroo of the
+                    # names:
                     c['subcommittee'] = c['committee']
                     c['committee'] = 'Appropriations'
                     yield name_dict, c

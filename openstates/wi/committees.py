@@ -2,6 +2,7 @@ from billy.scrape.committees import CommitteeScraper, Committee
 
 import lxml.html
 
+
 class WICommitteeScraper(CommitteeScraper):
     jurisdiction = 'wi'
 
@@ -30,7 +31,6 @@ class WICommitteeScraper(CommitteeScraper):
             com.add_member(leg, role)
 
         self.save_committee(com)
-
 
     def scrape(self, term, chambers):
         for chamber in chambers:

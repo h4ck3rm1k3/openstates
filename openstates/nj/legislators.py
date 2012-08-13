@@ -8,6 +8,7 @@ from .utils import clean_committee_name, MDBMixin
 
 import scrapelib
 
+
 class NJLegislatorScraper(LegislatorScraper, MDBMixin):
     jurisdiction = 'nj'
 
@@ -28,7 +29,8 @@ class NJLegislatorScraper(LegislatorScraper, MDBMixin):
             middle_name = rec["MidName"]
             last_name = rec["LastName"]
             suffix = rec["Suffix"]
-            full_name = first_name + " " + middle_name + " " + last_name + " " + suffix
+            full_name = first_name + " " + middle_name + \
+                " " + last_name + " " + suffix
             full_name = full_name.replace('  ', ' ')
             full_name = full_name[0: len(full_name) - 1]
 

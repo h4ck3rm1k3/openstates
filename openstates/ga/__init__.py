@@ -20,7 +20,7 @@ metadata = {
          'sessions': ['2011_12', '2011_ss']},
         {'name': '2013-2014', 'start_year': 2013, 'end_year': 2014,
          'sessions': ['2013_14']}
-     ],
+    ],
     'session_details': {
         '2013_14': {
             'display_name': '2013-2014 Regular Session',
@@ -65,7 +65,7 @@ def extract_text(doc, data):
     # take off everything before one of the headers
     for header in headers:
         if header in lines:
-            text = '\n'.join(lines[lines.index(header)+1:])
+            text = '\n'.join(lines[lines.index(header) + 1:])
             break
     else:
         text = ' '.join(lines)

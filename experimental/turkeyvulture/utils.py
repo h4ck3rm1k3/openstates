@@ -38,4 +38,4 @@ def humanize_bytes(bytes, precision=1):
             break
     return '%.*f %s' % (precision, bytes / factor, suffix)
 
-## end of http://code.activestate.com/recipes/577081/ }}}
+# end of http://code.activestate.com/recipes/577081/ }}}

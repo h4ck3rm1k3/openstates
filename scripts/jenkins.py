@@ -78,7 +78,7 @@ states = {
 urls = {'data': ('http://jenkins.openstates.org/job/'
                  '{state}/ws/data/{abbr}/*zip*/in.zip'),
         'cache': ('http://jenkins.openstates.org/job/'
-                 '{state}/ws/cache/*zip*/cache.zip')}
+                  '{state}/ws/cache/*zip*/cache.zip')}
 
 # Logging config
 logger = logging.getLogger('billy.janky-import')
@@ -155,8 +155,8 @@ if __name__ == "__main__":
                         nargs='+')
 
     parser.add_argument('--cache', dest='cache', action='store_const',
-                       default=False, const='cache',
-                       help='Download latest cache build for a state.')
+                        default=False, const='cache',
+                        help='Download latest cache build for a state.')
     parser.add_argument('--data', dest='data', action='store_const',
                         default=True, const='data',
                         help='Download latest data build for a state.')

@@ -13,12 +13,13 @@ bill_type_map = {'B': 'bill',
                  'CR': 'concurrent resolution',
                  'JR': 'joint resolution',
                  'CO': 'concurrent order'
-                }
+                 }
 action_classifiers = [
     ('Ought to Pass', ['bill:passed']),
     ('Passed by Third Reading', ['bill:reading:3', 'bill:passed']),
     ('.*Ought to Pass', ['committee:passed:favorable']),
-    ('Introduced(.*) and (R|r)eferred', ['bill:introduced', 'committee:referred']),
+    ('Introduced(.*) and (R|r)eferred',
+     ['bill:introduced', 'committee:referred']),
     ('.*Inexpedient to Legislate', ['committee:passed:unfavorable']),
     ('Proposed(.*) Amendment', 'amendment:introduced'),
     ('Amendment .* Adopted', 'amendment:passed'),
@@ -84,7 +85,8 @@ class NHBillScraper(BillScraper):
                 elif expanded_bill_id.startswith('PET'):
                     bill_type = 'petition'
                 else:
-                    bill_type = bill_type_map[expanded_bill_id.split(' ')[0][1:]]
+                    bill_type = bill_type_map[
+                        expanded_bill_id.split(' ')[0][1:]]
 
                 if title.startswith('('):
                     title = title.split(')', 1)[1].strip()
@@ -121,11 +123,11 @@ class NHBillScraper(BillScraper):
                 sp_type = 'primary' if primary == '1' else 'cosponsor'
                 try:
                     self.bills[lsr].add_sponsor(sp_type,
-                                        self.legislators[employee]['name'],
-                                        _code=self.legislators[employee]['seat'])
+                                                self.legislators[
+                                                    employee]['name'],
+                                                _code=self.legislators[employee]['seat'])
                 except KeyError:
                     self.warning("Error, can't find person %s" % employee)
-
 
         # actions
         for line in self.zf.open('tbldocket.txt').readlines():
@@ -139,7 +141,7 @@ class NHBillScraper(BillScraper):
             if session_yr == session and lsr in self.bills:
                 actor = 'lower' if body == 'H' else 'upper'
                 time = dt.datetime.strptime(timestamp,
-                                                  '%m/%d/%Y %H:%M:%S %p')
+                                            '%m/%d/%Y %H:%M:%S %p')
                 action = action.strip()
                 atype = classify_action(action)
                 self.bills[lsr].add_action(actor, action, time, type=atype)
@@ -154,7 +156,6 @@ class NHBillScraper(BillScraper):
         for bill in self.bills.values():
             bill.add_source(zip_url)
             self.save_bill(bill)
-
 
     def scrape_votes(self, session):
         votes = {}
@@ -186,18 +187,19 @@ class NHBillScraper(BillScraper):
             if session_yr == session and bill_id in self.bills_by_id:
                 actor = 'lower' if body == 'H' else 'upper'
                 time = dt.datetime.strptime(timestamp,
-                                                  '%m/%d/%Y %I:%M:%S %p')
+                                            '%m/%d/%Y %I:%M:%S %p')
                 # TODO: stop faking passed somehow
                 passed = yeas > nays
                 vote = Vote(actor, time, motion, passed, yeas, nays,
                             other_count=0)
-                votes[body+vote_num] = vote
+                votes[body + vote_num] = vote
                 self.bills_by_id[bill_id].add_vote(vote)
 
         for line in self.zf.open('tblrollcallhistory.txt'):
-            # 2012    | H   | 2    | 330795  | HB309  | Yea |1/4/2012 8:27:03 PM
+            # 2012    | H   | 2    | 330795  | HB309  | Yea |1/4/2012 8:27:03
+            # PM
             session_yr, body, v_num, employee, bill_id, vote, date \
-                    = line.split('|')
+                = line.split('|')
 
             if not bill_id:
                 continue
@@ -210,16 +212,16 @@ class NHBillScraper(BillScraper):
                     continue
 
                 vote = vote.strip()
-                if not body+v_num in votes:
+                if not body + v_num in votes:
                     self.warning("Skipping processing this vote:")
-                    self.warning("Bad ID: %s" % ( body+v_num ) )
+                    self.warning("Bad ID: %s" % (body + v_num))
                     continue
 
                 #code = self.legislators[employee]['seat']
                 if vote == 'Yea':
-                    votes[body+v_num].yes(leg)
+                    votes[body + v_num].yes(leg)
                 elif vote == 'Nay':
-                    votes[body+v_num].no(leg)
+                    votes[body + v_num].no(leg)
                 else:
-                    votes[body+v_num].other(leg)
-                    votes[body+v_num]['other_count'] += 1
+                    votes[body + v_num].other(leg)
+                    votes[body + v_num]['other_count'] += 1

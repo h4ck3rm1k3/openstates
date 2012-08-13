@@ -8,9 +8,9 @@ import pytz
 
 agenda_url = "http://status.rilin.state.ri.us/agendas.aspx"
 column_order = {
-    "upper" : 1,
-    "other" : 2,
-    "lower" : 0
+    "upper": 1,
+    "other": 2,
+    "lower": 0
 }
 
 all_day = [  # ugh, hack
@@ -19,17 +19,18 @@ all_day = [  # ugh, hack
     "Rise of the House & Senate"
 ]
 replace = {
-    "House Joint Resolution No." : "HJR",
-    "House Resolution No." : "HR",
-    "House Bill No." : "HB",
+    "House Joint Resolution No.": "HJR",
+    "House Resolution No.": "HR",
+    "House Bill No.": "HB",
 
-    "Senate Joint Resolution No." : "SJR",
-    "Senate Resolution No." : "SR",
-    "Senate Bill No." : "SB",
-    u"\xa0" : " ",
-    "SUB A" : "",
+    "Senate Joint Resolution No.": "SJR",
+    "Senate Resolution No.": "SR",
+    "Senate Bill No.": "SB",
+    u"\xa0": " ",
+    "SUB A": "",
     "SUB A as amended": ""
 }
+
 
 class RIEventScraper(EventScraper):
     jurisdiction = 'ri'
@@ -67,17 +68,17 @@ class RIEventScraper(EventScraper):
         if time in all_day:
             datetime = date
         else:
-            datetime = "%s %s" % ( date, time )
+            datetime = "%s %s" % (date, time)
         if "CANCELLED" in datetime:
             # XXX: Do something more advanced.
             return
 
         transtable = {
-            "P.M" : "PM",
-            "PM." : "PM",
-            "P.M." : "PM",
-            "A.M." : "AM",
-            "POSTPONED" : "",
+            "P.M": "PM",
+            "PM.": "PM",
+            "P.M.": "PM",
+            "A.M.": "AM",
+            "POSTPONED": "",
             "RESCHEDULED": "",
             "and Rise of the Senate": "",
         }
@@ -103,14 +104,14 @@ class RIEventScraper(EventScraper):
             event.add_document(bill.text_content(), bill_ft, type="full-text",
                                mimetype="application/pdf")
             root = bill.xpath('../../*')
-            root = [ x.text_content() for x in root ]
+            root = [x.text_content() for x in root]
             bill_id = "".join(root)
 
             if "SCHEDULED FOR" in bill_id:
                 continue
 
             descr = bill.getparent().getparent().getparent().getnext().getnext(
-                ).text_content()
+            ).text_content()
 
             for thing in replace:
                 bill_id = bill_id.replace(thing, replace[thing])
@@ -120,9 +121,9 @@ class RIEventScraper(EventScraper):
                                    type='consideration')
         committee = page.xpath("//span[@id='lblSession']")[0].text_content()
         chambers = {
-            "house" : "lower",
-            "joint" : "joint",
-            "senate" : "upper"
+            "house": "lower",
+            "joint": "joint",
+            "senate": "upper"
         }
         chamber = "other"
         for key in chambers:

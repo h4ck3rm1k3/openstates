@@ -12,6 +12,7 @@ event_page = "http://www.leg.wa.gov/legislature/pages/showagendas.aspx?chamber=%
 # 2ed arg: start date (5/1/2012)
 # 3ed arg: end date (5/31/2012)
 
+
 class WAEventScraper(EventScraper):
     jurisdiction = 'wa'
 
@@ -50,9 +51,9 @@ class WAEventScraper(EventScraper):
     def scrape(self, chamber, session):
 
         cha = {
-            "upper" : "senate",
-            "lower" : "house",
-            "other" : "joint"
+            "upper": "senate",
+            "lower": "house",
+            "other": "joint"
         }[chamber]
 
         print_format = "%m/%d/%Y"
@@ -92,7 +93,7 @@ class WAEventScraper(EventScraper):
                 header = event[0]
                 body = event[1]
                 whowhen = header.xpath(".//h2")[0].text_content()
-                blocks = [ x.strip() for x in whowhen.rsplit("-", 1) ]
+                blocks = [x.strip() for x in whowhen.rsplit("-", 1)]
                 who = blocks[0]
                 when = blocks[1].replace(u'\xa0', ' ')
                 if "TBA" in when:
@@ -105,7 +106,6 @@ class WAEventScraper(EventScraper):
                     cancel = True
                 else:
                     cancel = False
-
 
                 descr = body.xpath(".//*")
                 flush = False
@@ -141,6 +141,5 @@ class WAEventScraper(EventScraper):
                         description=descr,
                         type="consideration"
                     )
-
 
                 self.save_event(event)

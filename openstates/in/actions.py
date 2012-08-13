@@ -56,7 +56,7 @@ _categorizer_rules = (
 
     # Governor.
     Rule(r'Signed by the Governor', 'governor:signed'),
-    )
+)
 
 
 class Categorizer(BaseCategorizer):

@@ -6,6 +6,7 @@ import lxml.html
 
 from billy.scrape.bills import BillScraper, Bill
 
+
 class NCBillScraper(BillScraper):
 
     jurisdiction = 'nc'
@@ -52,7 +53,8 @@ class NCBillScraper(BillScraper):
         letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
         for letter in letters:
-            url = 'http://www.ncga.state.nc.us/gascripts/Reports/keywords.pl?Letter=' + letter
+            url = 'http://www.ncga.state.nc.us/gascripts/Reports/keywords.pl?Letter=' + \
+                letter
             html = self.urlopen(url)
             doc = lxml.html.fromstring(html)
             for td in doc.xpath('//td[@class="tableText"]'):
@@ -77,13 +79,14 @@ class NCBillScraper(BillScraper):
 
         bill_detail_url = 'http://www.ncga.state.nc.us/gascripts/'\
             'BillLookUp/BillLookUp.pl?Session=%s&BillID=%s' % (
-            session, bill_id)
+                session, bill_id)
 
         # parse the bill data page, finding the latest html text
         data = self.urlopen(bill_detail_url)
         doc = lxml.html.fromstring(data)
 
-        title_div_txt = doc.xpath('//td[@style="text-align: center; white-space: nowrap; width: 60%; font-weight: bold; font-size: x-large;"]/text()')[0]
+        title_div_txt = doc.xpath(
+            '//td[@style="text-align: center; white-space: nowrap; width: 60%; font-weight: bold; font-size: x-large;"]/text()')[0]
         if 'Joint Resolution' in title_div_txt:
             bill_type = 'joint resolution'
             bill_id = bill_id[0] + 'JR ' + bill_id[1:]
@@ -115,7 +118,8 @@ class NCBillScraper(BillScraper):
                              mimetype='text/html', on_duplicate='use_new')
 
         # sponsors
-        spon_td = doc.xpath('//th[text()="Sponsors:"]/following-sibling::td')[0]
+        spon_td = doc.xpath(
+            '//th[text()="Sponsors:"]/following-sibling::td')[0]
         for leg in spon_td.xpath('a'):
             type = 'primary' if 'Primary' in leg.tail else 'cosponsor'
             name = leg.text_content().replace(u'\xa0', ' ')
@@ -164,7 +168,7 @@ class NCBillScraper(BillScraper):
         chamber = {'lower': 'House', 'upper': 'Senate'}[chamber]
         url = 'http://www.ncga.state.nc.us/gascripts/SimpleBillInquiry/'\
             'displaybills.pl?Session=%s&tab=Chamber&Chamber=%s' % (
-            session, chamber)
+                session, chamber)
 
         data = self.urlopen(url)
         doc = lxml.html.fromstring(data)

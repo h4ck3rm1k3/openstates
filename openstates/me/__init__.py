@@ -35,13 +35,16 @@ metadata = dict(
 
 )
 
+
 def session_list():
     from billy.scrape.utils import url_xpath
-    sessions =  url_xpath('http://www.mainelegislature.org/LawMakerWeb/advancedsearch.asp',
-                          '//select[@name="LegSession"]/option/text()')
+    sessions = url_xpath(
+        'http://www.mainelegislature.org/LawMakerWeb/advancedsearch.asp',
+        '//select[@name="LegSession"]/option/text()')
     sessions.remove('jb-Test')
     sessions.remove('2001-2002')
     return sessions
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

@@ -21,7 +21,9 @@ SPONSOR_TYPES = {'P': ('primary', 'P'),
 hot_garbage_404_fail = ('The Requested Document Has Not Been '
                         'Posted To The Web Site Yet.')
 
+
 class AZBillScraper(BillScraper):
+
     def accept_response(self, response):
         normal = super(AZBillScraper, self).accept_response(response)
         return normal or response.status_code == 500
@@ -30,6 +32,7 @@ class AZBillScraper(BillScraper):
     Arizona Bill Scraper.
     """
     jurisdiction = 'az'
+
     def get_session_id(self, session):
         """
         returns the session id for a given session
@@ -43,7 +46,7 @@ class AZBillScraper(BillScraper):
         """
         session_id = self.get_session_id(session)
         url = BASE_URL + 'DocumentsForBill.asp?Bill_Number=%s&Session_ID=%s' % (
-                                           bill_id.replace(' ', ''), session_id)
+            bill_id.replace(' ', ''), session_id)
 
         docs_for_bill = self.urlopen(url)
 
@@ -54,7 +57,7 @@ class AZBillScraper(BillScraper):
 
         root = html.fromstring(docs_for_bill)
         bill_title = root.xpath(
-                        '//div[@class="ContentPageTitle"]')[1].text.strip()
+            '//div[@class="ContentPageTitle"]')[1].text.strip()
         b_type = utils.get_bill_type(bill_id)
         bill = Bill(session, chamber, bill_id, bill_title, type=b_type)
         bill.add_source(url)
@@ -71,16 +74,16 @@ class AZBillScraper(BillScraper):
                                  on_duplicate='use_old',
                                  mimetype='application/pdf')
 
-        #fact sheets and summary
+        # fact sheets and summary
         rows = root.xpath(link_path2 % '/summary/')
         for row in rows:
             tds = row.xpath('td')
             fact_sheet = tds[1].text_content().strip()
             fact_sheet_url = tds[1].xpath('string(font/a/@href)') or \
-                             tds[2].xpath('string(font/a/@href)')
+                tds[2].xpath('string(font/a/@href)')
             bill.add_document(fact_sheet, fact_sheet_url, type="summary")
 
-        #agendas
+        # agendas
         # skipping revised, cancelled, date, time and room from agendas
         # but how to get the agenda type cleanly? meaning whether it is
         # house or senate?
@@ -139,7 +142,9 @@ class AZBillScraper(BillScraper):
         """
         ses_num = utils.legislature_to_number(session)
         bill_id = bill['bill_id'].replace(' ', '')
-        action_url = BASE_URL + 'FormatDocument.asp?inDoc=/legtext/%s/bills/%so.asp' % (ses_num, bill_id.lower())
+        action_url = BASE_URL + \
+            'FormatDocument.asp?inDoc=/legtext/%s/bills/%so.asp' % (ses_num,
+                                                                    bill_id.lower())
         action_page = self.urlopen(action_url)
 
         if hot_garbage_404_fail in action_page:
@@ -156,16 +161,17 @@ class AZBillScraper(BillScraper):
         # common xpaths
         table_path = '//table[contains(tr/td/b/text(), "%s")]'
 
-        #sponsors
+        # sponsors
         sponsors = base_table.xpath('//sponsor')
         for sponsor in sponsors:
             name = sponsor.text.strip()
             # sponsor.xpath('string(ancestor::td[1]/following-sibling::td[1]/text())').strip()
-            s_type = sponsor.getparent().getparent().getnext().text_content().strip()
+            s_type = sponsor.getparent().getparent(
+            ).getnext().text_content().strip()
             s_type, o_type = SPONSOR_TYPES[s_type]
             bill.add_sponsor(s_type, name, official_type=o_type)
 
-        #titles
+        # titles
         table = base_table.xpath(table_path % 'TITLE')
         if table:
             for row in table[0].iterchildren('tr'):
@@ -178,7 +184,7 @@ class AZBillScraper(BillScraper):
             if action == '':
                 action = table.xpath('string(tr[1])').strip()
             if (action.endswith('FIRST READ:') or
-                action.endswith('SECOND READ:') or 'WAIVED' in action):
+                    action.endswith('SECOND READ:') or 'WAIVED' in action):
 
                 rows = table.xpath('tr')
                 for row in rows:
@@ -187,7 +193,7 @@ class AZBillScraper(BillScraper):
                     date = utils.get_date(row[1])
                     # bill:introduced
                     if (action.endswith('FIRST READ') or
-                        action.endswith('FIRST WAIVED')):
+                            action.endswith('FIRST WAIVED')):
                         if actor == chamber:
                             a_type = ['bill:introduced', 'bill:reading:1']
                         else:
@@ -204,14 +210,17 @@ class AZBillScraper(BillScraper):
                 for row in rows:
                     # First add the committee assigned action
                     meta_tag = row.xpath('.//meta')[0]
-                    h_or_s = meta_tag.get('name')[0] # @name is HCOMMITTEE OR SCOMMITTEE
-                    committee = meta_tag.get('content') # @content is committee abbrv
-                    #actor is house or senate referring the bill to committee
+                    # @name is HCOMMITTEE OR SCOMMITTEE
+                    h_or_s = meta_tag.get('name')[0]
+                    # @content is committee abbrv
+                    committee = meta_tag.get('content')
+                    # actor is house or senate referring the bill to committee
                     actor = 'lower' if h_or_s.lower() == 'h' else 'upper'
                     act = 'assigned to committee: ' + \
                         utils.get_committee_name(committee, actor)
                     date = utils.get_date(row[1])
-                    bill.add_action(actor, act, date, type='committee:referred')
+                    bill.add_action(actor, act, date,
+                                    type='committee:referred')
                     # now lets see if there is a vote
                     vote_url = row[0].xpath('string(a/@href)')
                     if vote_url:
@@ -220,12 +229,13 @@ class AZBillScraper(BillScraper):
                         a_type = get_action_type(act, 'COMMITTEES:')
                         act = get_verbose_action(act)
                         bill.add_action(actor,
-                                        utils.get_committee_name(committee, actor) + ":" + act,
+                                        utils.get_committee_name(
+                                            committee, actor) + ":" + act,
                                         date, type=a_type, abbrv=committee)
                         self.scrape_votes(actor, vote_url, bill, date,
-                                            motion='committee: ' + act,
-                                            committees=committee,
-                                            type='other')
+                                          motion='committee: ' + act,
+                                          committees=committee,
+                                          type='other')
                     elif len(row) == 5:
                         # probably senate rules committee
                         date = utils.get_date(row[3])
@@ -280,13 +290,14 @@ class AZBillScraper(BillScraper):
                 else:
                     act = rows[1][2].text_content().strip()
                     date = utils.get_date(rows[1][1])
-                action = action + " " + get_verbose_action(act) # COW ACTION 1 DPA
+                # COW ACTION 1 DPA
+                action = action + " " + get_verbose_action(act)
                 bill.add_action(actor, action, date, type='other')
                 if rows[1][0].text_content().strip() == 'Vote Detail':
                     vote_url = rows[1][0].xpath('string(a/@href)')
                     self.scrape_votes(actor, vote_url, bill, date,
-                                            motion=action, type='other',
-                                            extra=act)
+                                      motion=action, type='other',
+                                      extra=act)
                 continue
             # AMENDMENTS
             elif 'AMENDMENTS' in action:
@@ -320,7 +331,7 @@ class AZBillScraper(BillScraper):
                         bill.add_action(actor, action, date, type=a_type)
                         self.scrape_votes(actor, vote_url, bill, date,
                                           motion='motion to reconsider',
-                                            type='other')
+                                          type='other')
                     else:
                         action = table[-1][1].text_content().strip()
                         bill.add_action(actor, action, date, type='other')
@@ -352,14 +363,14 @@ class AZBillScraper(BillScraper):
                         # from scrape votes and pass ammended and emergency
                         # as kwargs to sort them in scrap_votes
                         pass_fail = {'PASSED': 'bill:passed',
-                                        'FAILED': 'bill:failed'}[passed]
+                                     'FAILED': 'bill:failed'}[passed]
                         a_type.append(pass_fail)
                         bill.add_action(actor, action, vote_date,
                                         type=a_type)
                         row['type'] = 'passage'
                         self.scrape_votes(actor, vote_url, bill, vote_date,
-                                            passed=passed, motion=action,
-                                            **row)
+                                          passed=passed, motion=action,
+                                          **row)
                     else:
                         date = utils.get_date(row.pop('DATE'))
                         if date:
@@ -398,7 +409,7 @@ class AZBillScraper(BillScraper):
                                         chaptered_version=version)
                     else:
                         bill.add_action(sent_to.lower(), act, date,
-                                            type=a_type)
+                                        type=a_type)
                 continue
 
         # this is probably only important for historical legislation
@@ -415,13 +426,13 @@ class AZBillScraper(BillScraper):
             session_id = self.get_session_id(session)
         except KeyError:
             raise NoDataForPeriod(session)
-        view = {'lower':'allhouse', 'upper':'allsenate'}[chamber]
+        view = {'lower': 'allhouse', 'upper': 'allsenate'}[chamber]
         url = BASE_URL + 'Bills.asp?view=%s&Session_ID=%s' % (view, session_id)
 
         bills_index = self.urlopen(url)
         root = html.fromstring(bills_index)
         bill_links = root.xpath('//div/table/tr[3]/td[4]/table/tr/td/' +
-                    'table[2]/tr[2]/td/table/tr/td[2]/table/tr/td//a')
+                                'table[2]/tr[2]/td/table/tr/td[2]/table/tr/td//a')
         for link in bill_links:
             bill_id = link.text.strip()
             bill_id = " ".join(re.split('([A-Z]*)([0-9]*)', bill_id)).strip()
@@ -440,7 +451,7 @@ class AZBillScraper(BillScraper):
         this depends on the chamber and the committee
         """
         o_args = {}
-        passed = '' # to test if we need to compare vote counts later
+        passed = ''  # to test if we need to compare vote counts later
         v_type = kwargs.pop('type')
         if 'passed' in kwargs:
             passed = {'PASSED': True, 'FAILED': False}[kwargs.pop('passed')]
@@ -453,13 +464,16 @@ class AZBillScraper(BillScraper):
         if '2/3 VOTE' in kwargs and kwargs['2/3 VOTE'].text_content().strip():
             o_args['2/3 VOTE'] = kwargs.pop('2/3 VOTE').text_content().strip()
         if 'committee' in kwargs:
-            o_args['committee'] = utils.get_committee_name(kwargs.pop('committee'),
-                                                            chamber)
+            o_args[
+                'committee'] = utils.get_committee_name(kwargs.pop('committee'),
+                                                        chamber)
 
         vote_page = self.urlopen(url)
         root = html.fromstring(vote_page)
-        vote_table = root.xpath('/html/body/div/table/tr[3]/td[4]/table/tr/td/table/tr/td/table')[0]
-        vote_count = vote_table.xpath('following-sibling::p/following-sibling::text()')
+        vote_table = root.xpath(
+            '/html/body/div/table/tr[3]/td[4]/table/tr/td/table/tr/td/table')[0]
+        vote_count = vote_table.xpath(
+            'following-sibling::p/following-sibling::text()')
         vote_string = vote_count[0].replace(u'\xa0', '').strip()
         v_count = re.compile(r'\b[A-Z]*\s*[A-z]*:\s\d*')
         v_list = v_count.findall(vote_string)
@@ -474,7 +488,7 @@ class AZBillScraper(BillScraper):
             elif k == 'nays':
                 no_count = int(v)
             else:
-                o_args.update({str(k):v})
+                o_args.update({str(k): v})
                 o_count += int(v)
         if passed == '':
             passed = yes_count > no_count
@@ -496,7 +510,7 @@ class AZBillScraper(BillScraper):
         # grab all the tables descendant tds
         tds = vote_table.xpath('descendant::td')
         # pair 'em up
-        matched = [ tds[y:y+2] for y in range(0, len(tds), 2) ]
+        matched = [tds[y:y + 2] for y in range(0, len(tds), 2)]
         for name, v in iter(matched):
             v = v.text_content().strip()
             name = name.text_content().strip()
@@ -540,7 +554,6 @@ class AZBillScraper(BillScraper):
                 action_date = action['date']
             action['action'] = action['action'].lower()
         action_date = actions_list[0]['date']
-
 
         for action in actions_list:
             # this takes care of the actions in beween

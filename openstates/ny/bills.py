@@ -57,7 +57,8 @@ class NYBillScraper(BillScraper):
                 vote = Vote(
                     chamber='upper',
                     date=self.date_from_timestamp(vote_data['voteDate']),
-                    motion=vote_data['description'] or '[No motion available.]',
+                    motion=vote_data[
+                        'description'] or '[No motion available.]',
                     passed=False,
                     yes_votes=[],
                     no_votes=[],
@@ -126,7 +127,6 @@ class NYBillScraper(BillScraper):
         return (senate_url, assembly_url, bill_chamber, bill_type, bill_id,
                 title, (letter, number, is_amd))
 
-
     def yield_api_bills(self):
         '''Yield individual versions. The caller can get all versions
         for a particular ID, process the group, then throw everything
@@ -147,7 +147,7 @@ class NYBillScraper(BillScraper):
                 url = (
                     'http://open.nysenate.gov/legislation/2.0/search.json'
                     '?term=otype:bill AND year:2013&pageSize=20&pageIdx=%d'
-                    )
+                )
                 url = url % index
                 self.logger.info('GET ' + url)
                 resp = self.get(url)
@@ -181,5 +181,3 @@ class NYBillScraper(BillScraper):
                 versions = []
             versions.append((bill, details))
             prev_key = key
-
-

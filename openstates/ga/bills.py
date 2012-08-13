@@ -110,7 +110,7 @@ class GABillScraper(BillScraper):
 
                     vote.add_source(self.vsource)
 
-                    methods = {"Yea": vote.yes, "Nay": vote.no,}
+                    methods = {"Yea": vote.yes, "Nay": vote.no, }
 
                     for vdetail in vote_['Votes'][0]:
                         whom = vdetail['Member']
@@ -122,7 +122,6 @@ class GABillScraper(BillScraper):
                         m(whom['Name'])
 
                     bill.add_vote(vote)
-
 
             types = {
                 "HI": ["other"],
@@ -213,10 +212,11 @@ class GABillScraper(BillScraper):
                 if any(('committee' in x for x in _types)):
                     committees = [str(x) for x in ccommittees.get(chamber, [])]
 
-                bill.add_action(chamber, action['action'], action['date'], _types,
-                                committees=committees,
-                                _code=action['code'],
-                                _code_id=action['_guid'])
+                bill.add_action(
+                    chamber, action['action'], action['date'], _types,
+                    committees=committees,
+                    _code=action['code'],
+                    _code_id=action['_guid'])
 
             sponsors = []
             if instrument['Authors']:
@@ -232,7 +232,7 @@ class GABillScraper(BillScraper):
                 name = "{First} {Last}".format(**dict(sponsor['Name']))
                 bill.add_sponsor(
                     'primary' if 'Author' in typ else 'seconday',
-                     name
+                    name
                 )
 
             for version in instrument['Versions']['DocumentDescription']:

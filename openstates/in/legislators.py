@@ -79,4 +79,3 @@ class INLegislatorScraper(LegislatorScraper):
             type='district', phone=phone)
 
         self.save_legislator(leg)
-

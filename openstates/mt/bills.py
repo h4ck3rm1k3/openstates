@@ -27,11 +27,11 @@ actor_map = {
     '(S)': 'upper',
     '(H)': 'lower',
     '(C)': 'clerk',
-    }
+}
 
 sponsor_map = {
     'Primary Sponsor': 'primary'
-    }
+}
 
 vote_passage_indicators = ['Adopted',
                            'Appointed',
@@ -60,7 +60,7 @@ vote_ambiguous_indicators = [
 
 
 class MTBillScraper(BillScraper):
-    #must set state attribute as the state's abbreviated name
+    # must set state attribute as the state's abbreviated name
     jurisdiction = 'mt'
 
     def __init__(self, *args, **kwargs):
@@ -81,7 +81,8 @@ class MTBillScraper(BillScraper):
         self.versions_dict = self._versions_dict(year)
 
         base_bill_url = 'http://data.opi.mt.gov/bills/%d/BillHtml/' % year
-        index_page = ElementTree(lxml.html.fromstring(self.urlopen(base_bill_url)))
+        index_page = ElementTree(
+            lxml.html.fromstring(self.urlopen(base_bill_url)))
 
         bill_urls = []
         for bill_anchor in index_page.findall('//a'):
@@ -89,9 +90,11 @@ class MTBillScraper(BillScraper):
             if bill_anchor.text.find("govlineveto") == -1:
                 # House bills start with H, Senate bills start with S
                 if chamber == 'lower' and bill_anchor.text.startswith('H'):
-                    bill_urls.append("%s%s" % (base_bill_url, bill_anchor.text))
+                    bill_urls.append("%s%s" %
+                                     (base_bill_url, bill_anchor.text))
                 elif chamber == 'upper' and bill_anchor.text.startswith('S'):
-                    bill_urls.append("%s%s" % (base_bill_url, bill_anchor.text))
+                    bill_urls.append("%s%s" %
+                                     (base_bill_url, bill_anchor.text))
 
         for bill_url in bill_urls:
             bill = self.parse_bill(bill_url, session, chamber)
@@ -114,9 +117,11 @@ class MTBillScraper(BillScraper):
 
         for anchor in bill_page.findall('//a'):
             if (anchor.text_content().startswith('status of') or
-                anchor.text_content().startswith('Detailed Information (status)')):
-                status_url = anchor.attrib['href'].replace("\r", "").replace("\n", "")
-                bill = self.parse_bill_status_page(status_url, bill_url, session, chamber)
+                    anchor.text_content().startswith('Detailed Information (status)')):
+                status_url = anchor.attrib['href'].replace(
+                    "\r", "").replace("\n", "")
+                bill = self.parse_bill_status_page(
+                    status_url, bill_url, session, chamber)
 
         if bill is None:
             # No bill was found.  Maybe something like HB0790 in the 2005 session?
@@ -124,10 +129,13 @@ class MTBillScraper(BillScraper):
             page_name = bill_url.split("/")[-1].split(".")[0]
             bill_type = page_name[0:2]
             bill_number = page_name[2:]
-            laws_year = self.metadata['session_details'][session]['years'][0] % 100
+            laws_year = self.metadata['session_details'][
+                session]['years'][0] % 100
 
-            status_url = self.search_url_template % (laws_year, bill_type, bill_number)
-            bill = self.parse_bill_status_page(status_url, bill_url, session, chamber)
+            status_url = self.search_url_template % (
+                laws_year, bill_type, bill_number)
+            bill = self.parse_bill_status_page(
+                status_url, bill_url, session, chamber)
 
         # Get versions on the detail page.
         versions = [a['action'] for a in bill['actions']]
@@ -261,14 +269,17 @@ class MTBillScraper(BillScraper):
 
         for action in reversed(status_page.xpath('//div/form[3]/table[1]/tr')[1:]):
             try:
-                actor = actor_map[action.xpath("td[1]")[0].text_content().split(" ")[0]]
-                action_name = action.xpath("td[1]")[0].text_content().replace(actor, "")[4:].strip()
+                actor = actor_map[
+                    action.xpath("td[1]")[0].text_content().split(" ")[0]]
+                action_name = action.xpath(
+                    "td[1]")[0].text_content().replace(actor, "")[4:].strip()
             except KeyError:
                 action_name = action.xpath("td[1]")[0].text_content().strip()
                 actor = 'clerk' if action_name == 'Chapter Number Assigned' else ''
 
             action_name = action_name.replace("&nbsp", "")
-            action_date = datetime.strptime(action.xpath("td[2]")[0].text, '%m/%d/%Y')
+            action_date = datetime.strptime(
+                action.xpath("td[2]")[0].text, '%m/%d/%Y')
             action_type = actions.categorize(action_name)
 
             if 'by senate' in action_name.lower():

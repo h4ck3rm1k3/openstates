@@ -6,6 +6,7 @@ import re
 
 logger = logging.getLogger('openstates')
 
+
 class NDLegislatorScraper(LegislatorScraper):
     jurisdiction = 'nd'
 
@@ -30,7 +31,6 @@ class NDLegislatorScraper(LegislatorScraper):
         page.make_links_absolute(main_url)
         for person in page.xpath("//div[contains(@class, 'all-members')]//a"):
             self.scrape_legislator_page(term, person.attrib['href'])
-
 
     def scrape_legislator_page(self, term, url):
         page = self.urlopen(url)
@@ -106,12 +106,11 @@ class NDLegislatorScraper(LegislatorScraper):
             if key in metainf:
                 kwargs[leg_key] = metainf[key]
 
-
         leg.add_office('district',
                        'District Office',
                        **kwargs)
 
-        #for committee in committees:
+        # for committee in committees:
         #    leg.add_role('committee member',
         #                 term=term,
         #                 chamber=chamber,

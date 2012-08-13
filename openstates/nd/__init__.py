@@ -6,37 +6,37 @@ from .committees import NDCommitteeScraper
 from .votes import NDVoteScraper
 
 metadata = dict(
-    name = 'North Dakota',
-    abbreviation = 'nd',
-    legislature_name = 'North Dakota Legislative Assembly',
+    name='North Dakota',
+    abbreviation='nd',
+    legislature_name='North Dakota Legislative Assembly',
     legislature_url='http://www.legis.nd.gov/',
     capitol_timezone='America/North_Dakota/Center',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
-    terms = [
+    terms=[
         {'name': '62', 'sessions': ['62'],
          'start_year': 2011, 'end_year': 2012},
         # 2013 term is already there, but we avoid scraping it
         {'name': '63', 'sessions': ['63'],
          'start_year': 2013, 'end_year': 2014},
-#        {'name': '64', 'sessions': ['64'],
-#         'start_year': 2015, 'end_year': 2016},
+        #        {'name': '64', 'sessions': ['64'],
+        #         'start_year': 2015, 'end_year': 2016},
     ],
     session_details={
-        '62' : {'start_date' : datetime.date(2011, 1, 4),
-                'display_name' : '62nd Legislative Assembly (2011-2012)',
-                '_scraped_name': '62nd Legislative Assembly (2011-12)',
+        '62': {'start_date': datetime.date(2011, 1, 4),
+               'display_name': '62nd Legislative Assembly (2011-2012)',
+               '_scraped_name': '62nd Legislative Assembly (2011-12)',
                },
-        '63' : {'start_date': datetime.date(2013, 1, 8),
-                'display_name' : '63rd Legislative Assembly (2013-2014)',
-                '_scraped_name': '63rd Legislative Assembly (2013-14)',
+        '63': {'start_date': datetime.date(2013, 1, 8),
+               'display_name': '63rd Legislative Assembly (2013-2014)',
+               '_scraped_name': '63rd Legislative Assembly (2013-14)',
                },
-#        '64' : {'start_date': datetime.date(2015, 1, 8),
-#                'display_name' : '64th Legislative Assembly (2015-2016)',
-#                '_scraped_name': '64th Legislative Assembly (2015-16)',
-#               },
+        #        '64' : {'start_date': datetime.date(2015, 1, 8),
+        #                'display_name' : '64th Legislative Assembly (2015-2016)',
+        #                '_scraped_name': '64th Legislative Assembly (2015-16)',
+        #               },
     },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=[
@@ -56,6 +56,7 @@ metadata = dict(
         '49th Legislative Assembly (1985-86)'
     ]
 )
+
 
 def session_list():
     import scrapelib

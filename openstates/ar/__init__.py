@@ -11,7 +11,7 @@ metadata = dict(
     legislature_name='Arkansas General Assembly',
     legislature_url='http://www.arkleg.state.ar.us/',
     capitol_timezone='America/Chicago',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -24,7 +24,7 @@ metadata = dict(
          'start_year': 2013,
          'end_year': 2014,
          'sessions': ['2013', '2013S1', '2014', '2014F']}
-        ],
+    ],
     session_details={
         '2011': {'start_date': datetime.date(2011, 1, 10),
                  'end_date': datetime.date(2011, 4, 27),
@@ -32,38 +32,38 @@ metadata = dict(
                  '_scraped_name': 'Regular Session, 2011',
                  'type': 'primary',
                  'slug': '2011R',
-                },
+                 },
         '2012F': {'start_date': datetime.date(2012, 2, 13),
-                 'display_name': '2012 Fiscal Session',
-                 '_scraped_name': 'Fiscal Session 2012',
-                 'type': 'special',
-                 'slug': '2012F',
-                },
+                  'display_name': '2012 Fiscal Session',
+                  '_scraped_name': 'Fiscal Session 2012',
+                  'type': 'special',
+                  'slug': '2012F',
+                  },
         '2013': {'start_date': datetime.date(2013, 1, 14),
                  'display_name': '2013 Regular Session',
                  '_scraped_name': 'Regular Session, 2013',
                  'type': 'primary',
                  'slug': '2013R',
-                },
+                 },
         '2014': {'start_date': datetime.date(2014, 2, 10),
                  'display_name': '2014 Regular Session',
                  '_scraped_name': 'Regular Session, 2014',
                  'type': 'primary',
                  'slug': '2014R',
-                },
+                 },
         '2014F': {'start_date': datetime.date(2014, 2, 10),
-                 'display_name': '2014 Fiscal Session',
-                 '_scraped_name': 'Fiscal Session, 2014',
-                 'type': 'special',
-                 'slug': '2014F',
-                },
+                  'display_name': '2014 Fiscal Session',
+                  '_scraped_name': 'Fiscal Session, 2014',
+                  'type': 'special',
+                  'slug': '2014F',
+                  },
         '2013S1': {'start_date': datetime.date(2013, 10, 18),
-                 'display_name': '2013 First Extraordinary Session',
-                 '_scraped_name': 'First Extraordinary Session, 2013',
-                 'type': 'special',
-                 'slug': '2013S1',
-                }
-        },
+                   'display_name': '2013 First Extraordinary Session',
+                   '_scraped_name': 'First Extraordinary Session, 2013',
+                   'type': 'special',
+                   'slug': '2013S1',
+                   }
+    },
     feature_flags=['influenceexplorer'],
     _ignored_scraped_sessions=['Regular Session, 2009',
                                'Fiscal Session, 2010',
@@ -97,14 +97,16 @@ metadata = dict(
                                'Second Extraordinary Session, 1987',
                                'Third Extraordinary Session, 1987',
                                'Fourth Extraordinary Session, 1987']
-    )
+)
+
 
 def session_list():
     from billy.scrape.utils import url_xpath
     links = url_xpath(
         'http://www.arkleg.state.ar.us/assembly/2013/2013R/Pages/Previous%20Legislatures.aspx',
         '//a')
-    sessions = [a.text_content() for a in links if 'Session' in a.attrib.get('title', '')]
+    sessions = [a.text_content()
+                for a in links if 'Session' in a.attrib.get('title', '')]
     return sessions
 
 

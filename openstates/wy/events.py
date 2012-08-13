@@ -5,6 +5,7 @@ import lxml.html
 
 from billy.scrape.events import EventScraper, Event
 
+
 class WYEventScraper(EventScraper):
     jurisdiction = 'wy'
     _tz = pytz.timezone('US/Mountain')
@@ -56,14 +57,14 @@ class WYEventScraper(EventScraper):
         if committee == '':
             committee = None
         else:
-            committee = re.sub(r'^[0-9]+-','',committee)
+            committee = re.sub(r'^[0-9]+-', '', committee)
             committee = self.clean_string(committee)
 
         return committee
 
     def get_location(self, meeting_data):
         tr = meeting_data[0].xpath('.//p[@class="MsoNormal"]')
-        room = tr[len(tr)-1].text_content().strip()
+        room = tr[len(tr) - 1].text_content().strip()
 
         room = self.clean_string(room)
         if room == '':
@@ -79,7 +80,7 @@ class WYEventScraper(EventScraper):
             start_at = 0
 
         for tr in meeting_data[start_at:]:
-            description = tr[len(tr)-2].text_content().strip()
+            description = tr[len(tr) - 2].text_content().strip()
             descriptions += ' ' + description
 
         descriptions = self.clean_string(descriptions).strip()
@@ -97,22 +98,22 @@ class WYEventScraper(EventScraper):
                     bill_id = bill.text_content().strip()
                     bill_description = self.clean_string(
                         tr.xpath('.//td[3]/p')[0].text_content().strip())
-                    bill_url = bill.attrib['href'].strip()  #pdf file
+                    bill_url = bill.attrib['href'].strip()  # pdf file
 
                     # dont include bad HTML links for bills. thankfully
                     # they're duplicates and already listed properly
                     if 'href' not in bill_url and '</a>' not in bill_url:
                         bill_data.append({
                             'bill_id': bill_id,
-                            'bill_description' : bill_description,
-                            'bill_url' : bill_url
+                            'bill_description': bill_description,
+                            'bill_url': bill_url
                         })
         return bill_data
 
     def clean_string(self, my_string):
-        my_string = my_string.encode('ascii','ignore')
-        my_string = re.sub(r'(\n|\r\n)',' ', my_string)
-        my_string = re.sub(r'\s{2,}',' ', my_string)
+        my_string = my_string.encode('ascii', 'ignore')
+        my_string = re.sub(r'(\n|\r\n)', ' ', my_string)
+        my_string = re.sub(r'\s{2,}', ' ', my_string)
         my_string = my_string.strip()
 
         return my_string
@@ -142,25 +143,26 @@ class WYEventScraper(EventScraper):
             return
 
         calendar_url = ("http://legisweb.state.wy.us/%s/Calendar/"
-            "CalendarMenu/CommitteeMenu.aspx" % str(session))
+                        "CalendarMenu/CommitteeMenu.aspx" % str(session))
 
         page = self.get_page_from_url(calendar_url)
 
         rows = page.xpath('//table[@id="ctl00_cphContent_gvCalendars"]/tr')
 
-        for i,row in enumerate(rows):
+        for i, row in enumerate(rows):
 
             row_ident = '%02d' % (i + 2)
 
             date_xpath = ('.//span[@id="ctl00_cphContent_gv'
-                'Calendars_ctl%s_lblDate"]' % str(row_ident))
+                          'Calendars_ctl%s_lblDate"]' % str(row_ident))
             date_string = row.xpath(date_xpath)[0].text_content()
 
-            chamber_char = self.metadata['chambers'][chamber]['name'][0].upper()
+            chamber_char = self.metadata['chambers'][
+                chamber]['name'][0].upper()
             meeting_xpath = ('.//a[@id="ctl00_cphContent_gv'
-                'Calendars_ctl%s_hl%scallink"]' % (
-                    str(row_ident), chamber_char
-                ))
+                             'Calendars_ctl%s_hl%scallink"]' % (
+                                 str(row_ident), chamber_char
+                             ))
             meeting_url = row.xpath(meeting_xpath)
 
             if (len(meeting_url) == 1 and
@@ -180,14 +182,14 @@ class WYEventScraper(EventScraper):
                         meeting_idents.append(meeting_ident)
                     meeting_ident += 1
 
-                for i,meeting_ident in enumerate(meeting_idents):
+                for i, meeting_ident in enumerate(meeting_idents):
 
                     if len(meeting_idents) == 1 or i + 1 == len(meeting_idents):
                         ident_start, ident_end = [meeting_ident, 0]
                         meeting_data = meetings[ident_start:]
                     else:
                         ident_start, ident_end = [
-                            meeting_ident, meeting_idents[i+1] - 1
+                            meeting_ident, meeting_idents[i + 1] - 1
                         ]
 
                         if ident_end - ident_start == 1:

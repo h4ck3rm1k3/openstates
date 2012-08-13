@@ -3,6 +3,7 @@ from billy.scrape.committees import CommitteeScraper, Committee
 import lxml.html
 import re
 
+
 class NDCommitteeScraper(CommitteeScraper):
     jurisdiction = 'nd'
 
@@ -10,8 +11,8 @@ class NDCommitteeScraper(CommitteeScraper):
         page = self.urlopen(href)
         page = lxml.html.fromstring(page)
         page.make_links_absolute(href)
-        members =page.xpath("//div[@class='view-content']"
-                            "//a[contains(@href, 'members')]")
+        members = page.xpath("//div[@class='view-content']"
+                             "//a[contains(@href, 'members')]")
 
         if '/joint/' in href:
             chamber = 'joint'

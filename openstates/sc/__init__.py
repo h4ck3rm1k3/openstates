@@ -12,7 +12,7 @@ metadata = dict(
     capitol_timezone='America/New_York',
     legislature_name='South Carolina Legislature',
     legislature_url='http://www.scstatehouse.gov/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'House', 'title': 'Representative'},
     },
@@ -23,7 +23,7 @@ metadata = dict(
         {'name': '2013-2014',
          'sessions': ['2013-2014'],
          'start_year': 2013, 'end_year': 2014},
-        ],
+    ],
     session_details={
         '119': {
             'start_date': datetime.date(2010, 11, 17), 'type': 'primary',
@@ -53,8 +53,9 @@ metadata = dict(
 
 def session_list():
     from billy.scrape.utils import url_xpath
-    return url_xpath( 'http://www.scstatehouse.gov/billsearch.php',
-        "//select[@id='session']/option/text()" )
+    return url_xpath('http://www.scstatehouse.gov/billsearch.php',
+                     "//select[@id='session']/option/text()")
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

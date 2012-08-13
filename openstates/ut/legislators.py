@@ -13,7 +13,6 @@ class UTLegislatorScraper(LegislatorScraper):
         else:
             self.scrape_upper(term)
 
-
     def scrape_lower(self, term):
         url = 'http://le.utah.gov/house2/representatives.jsp'
         html = self.urlopen(url)
@@ -61,7 +60,6 @@ class UTLegislatorScraper(LegislatorScraper):
             leg.add_source(url)
             leg.add_source(leg_url)
             self.save_legislator(leg)
-
 
     def scrape_upper(self, term):
         url = 'http://www.utahsenate.org/aspx/roster.aspx'

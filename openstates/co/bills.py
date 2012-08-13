@@ -15,6 +15,7 @@ CO_URL_BASE = "http://www.leg.state.co.us"
 
 
 class COBillScraper(BillScraper):
+
     """
     This scraper is a bit bigger then some of the others, but it's just
     a standard billy scraper. Methods are documented just because this
@@ -76,7 +77,7 @@ class COBillScraper(BillScraper):
                     #        FINAL ACTION: PASS
                     #
                     to_parse = to_parse.replace("FINAL ACTION",
-                        "FINAL_ACTION").replace(":", "")
+                                                "FINAL_ACTION").replace(":", "")
                     if re.match("^FINAL.*", to_parse):
                         to_parse = to_parse[len("FINAL"):]
 
@@ -189,7 +190,8 @@ class COBillScraper(BillScraper):
         }
 
         pdfs = bill_versions_page.xpath("//a/font[contains(text(), 'pdf')]")
-        cur_version = bill_versions_page.xpath("//a//font[contains(text(), 'Current PDF')]")
+        cur_version = bill_versions_page.xpath(
+            "//a//font[contains(text(), 'Current PDF')]")
         return [{
             "name": x.text,
             "mimetype": "application/pdf",
@@ -198,7 +200,7 @@ class COBillScraper(BillScraper):
                     "_doClick\('(?P<slug>.+)'",
                     x.getparent().attrib['onclick']
                 )[0]
-            )
+                )
         } for x in cur_version + pdfs]
 
     def parse_history(self, bill_history_url):
@@ -338,7 +340,7 @@ class COBillScraper(BillScraper):
 
             for version in versions:
                 b.add_version(version['name'], version['link'],
-                    mimetype=version['mimetype'])
+                              mimetype=version['mimetype'])
 
             bill_history_href = bill[index["history"]][0][0].attrib['href']
 
@@ -389,7 +391,7 @@ class COBillScraper(BillScraper):
                 )
                 # It's now like: 04/01/2011 02:10:14 PM
                 pydate = dt.datetime.strptime(composite_time,
-                    "%m/%d/%Y %I:%M:%S %p")
+                                              "%m/%d/%Y %I:%M:%S %p")
                 hasHouse = "House" in passage['x-parent-ctty']
                 hasSenate = "Senate" in passage['x-parent-ctty']
 
@@ -409,7 +411,7 @@ class COBillScraper(BillScraper):
                         local_other = local_other + 1
 
                 if local_other != other:
-                    self.warning( \
+                    self.warning(
                         "XXX: !!!WARNING!!! - resetting the 'OTHER' VOTES")
                     self.warning(" -> Old: %s // New: %s" % (
                         other, local_other

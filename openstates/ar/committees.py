@@ -86,7 +86,7 @@ class ARCommitteeScraper(CommitteeScraper):
                 'PUBLIC HEALTH\s*-',
                 'STATE AGENCIES & GOV. AFFAIRS\s*-',
                 'TRANSPORTATION\s*-',
-                ]
+            ]
 
         if parent:
             junk += [parent]

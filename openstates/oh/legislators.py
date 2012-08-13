@@ -16,18 +16,18 @@ SUBCOMMITTEES = {
     "Education Finance Subcommittee": "Education",
     "Medicaid Finance Subcommittee": "Medicaid, Health And Human Services",
     "General Government Finance Subcommittee":
-            "State Government Oversight And Reform",
+    "State Government Oversight And Reform",
     "Shared Services and Government Efficiency Subcommittee":
-            "Public Safety, Local Government And Veterans Affairs",
+    "Public Safety, Local Government And Veterans Affairs",
     "Higher Education Subcommittee": "Education",
     "Health and Human Services Subcommittee":
-            "Medicaid, Health And Human Services",
+    "Medicaid, Health And Human Services",
     "Transportation Subcommittee": "Transportation",
     "Agriculture and Development Subcommittee":
-            "Agriculture And Natural Resources",
+    "Agriculture And Natural Resources",
     "Primary and Secondary Education Subcommittee": "Education",
     "Tax Reform Ways and Means Subcommittee":
-            "Ways and Means",
+    "Ways and Means",
 }
 
 committee_cache = {}
@@ -116,7 +116,7 @@ class OHLegislatorScraper(LegislatorScraper):
         page.make_links_absolute(url)
 
         for legislator in page.xpath("//div[contains(concat(' ', "
-                "normalize-space(@class), ' '), ' memberModule ')]"):
+                                     "normalize-space(@class), ' '), ' memberModule ')]"):
 
             img = legislator.xpath(
                 ".//div[@class='thumbnail']//img")[0].attrib['src']
@@ -134,7 +134,7 @@ class OHLegislatorScraper(LegislatorScraper):
             if len(h3):
                 h3 = h3[0]
                 district = h3.xpath("./br")[0].tail.replace("District", ""
-                                                           ).strip()
+                                                            ).strip()
             else:
                 district = re.findall(
                     "\d+\.png",

@@ -31,11 +31,12 @@ packages = {
         python-dev
         libxslt1-dev
         git'''.split(),
-        
-    }
+
+}
 
 # ---------------------------------------------------------------------------
 # Utility functions
+
 
 def run(command, check=False):
     logger.info('running "%s"' % command)
@@ -80,7 +81,7 @@ def create_virtualenv(ENV):
          '/virtualenv-1.7.tar.gz#md5=dcc105e5a3907a9dcaa978f813a4f526'),
         'tar -zxvf virtualenv-1.7.tar.gz ',
         'python virtualenv-1.7/virtualenv.py %s' % ENV,
-        )
+    )
 
 
 def gitclone(repo, setup_arg='install'):
@@ -128,7 +129,7 @@ def setup_mysql():
     package_ensure('mysql-server')
     run("sudo apt-get build-dep python-mysqldb")
     run("pip install MySQL-python")
-        
+
 
 if __name__ == "__main__":
 
@@ -148,5 +149,3 @@ if __name__ == "__main__":
     python = join(ENV, 'bin', 'python')
 
     setup_openstates()
-
-

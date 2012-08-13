@@ -10,17 +10,20 @@ from billy.scrape.bills import BillScraper, Bill
 from billy.scrape.votes import Vote
 from billy.scrape.utils import convert_pdf
 
+
 def group(lst, n):
-    # from http://code.activestate.com/recipes/303060-group-a-list-into-sequential-n-tuples/
+    # from
+    # http://code.activestate.com/recipes/303060-group-a-list-into-sequential-n-tuples/
     for i in range(0, len(lst), n):
-        val = lst[i:i+n]
+        val = lst[i:i + n]
         if len(val) == n:
             yield tuple(val)
 
 
 TITLE_REMOVING_PATTERN = re.compile(".*(Rep|Sen). (.+)$")
 
-SPONSOR_REFINE_PATTERN = re.compile(r'^Added (?P<spontype>.+) (?P<title>Rep|Sen)\. (?P<name>.+)')
+SPONSOR_REFINE_PATTERN = re.compile(
+    r'^Added (?P<spontype>.+) (?P<title>Rep|Sen)\. (?P<name>.+)')
 SPONSOR_TYPE_REFINEMENTS = {
     'Chief Co-Sponsor': 'cosponsor',
     'as Chief Co-Sponsor': 'cosponsor',
@@ -46,7 +49,7 @@ DOC_TYPES = {
     'JRCA': 'constitutional amendment',
 }
 
-_action_classifiers = ( # see http://openstates.org/categorization/
+_action_classifiers = (  # see http://openstates.org/categorization/
     (re.compile(r'Amendment No. \d+ Filed'), 'amendment:introduced'),
     (re.compile(r'Amendment No. \d+ Tabled'), 'amendment:failed'),
     (re.compile(r'Amendment No. \d+ Adopted'), 'amendment:passed'),
@@ -64,7 +67,8 @@ _action_classifiers = ( # see http://openstates.org/categorization/
     (re.compile(r'Do Pass'), 'committee:passed'),
     (re.compile(r'Recommends Be Adopted'), 'committee:passed:favorable'),
     (re.compile(r'Be Adopted'), 'committee:passed:favorable'),
-    (re.compile(r'Third Reading .+? Passed'), ['bill:reading:3', 'bill:passed']),
+    (re.compile(r'Third Reading .+? Passed'),
+     ['bill:reading:3', 'bill:passed']),
     (re.compile(r'Third Reading .+? Lost'), ['bill:reading:3', 'bill:failed']),
     (re.compile(r'Third Reading'), 'bill:reading:3'),
     (re.compile(r'Resolution Adopted'), 'bill:passed'),
@@ -161,7 +165,7 @@ class ILBillScraper(BillScraper):
 
     def scrape(self, chamber, session):
         for doc_type in DOC_TYPES:
-            doc_type = chamber_slug(chamber)+doc_type
+            doc_type = chamber_slug(chamber) + doc_type
             for bill_url in self.get_bill_urls(chamber, session, doc_type):
                 self.scrape_bill(chamber, session, doc_type, bill_url)
         if chamber == 'upper':
@@ -183,8 +187,10 @@ class ILBillScraper(BillScraper):
         bill_type = bill_type or DOC_TYPES[doc_type[1:]]
         bill_id = doc_type + bill_num
 
-        title = doc.xpath('//span[text()="Short Description:"]/following-sibling::span[1]/text()')[0].strip()
-        summary = doc.xpath('//span[text()="Synopsis As Introduced"]/following-sibling::span[1]/text()')[0].strip()
+        title = doc.xpath(
+            '//span[text()="Short Description:"]/following-sibling::span[1]/text()')[0].strip()
+        summary = doc.xpath(
+            '//span[text()="Synopsis As Introduced"]/following-sibling::span[1]/text()')[0].strip()
 
         bill = Bill(session, chamber, bill_id, title, type=bill_type,
                     summary=summary)
@@ -195,7 +201,8 @@ class ILBillScraper(BillScraper):
         # don't add just yet; we can make them better using action data
 
         # actions
-        action_tds = doc.xpath('//a[@name="actions"]/following-sibling::table[1]/td')
+        action_tds = doc.xpath(
+            '//a[@name="actions"]/following-sibling::table[1]/td')
         for date, actor, action in group(action_tds, 3):
             date = datetime.datetime.strptime(date.text_content().strip(),
                                               "%m/%d/%Y")
@@ -245,7 +252,8 @@ class ILBillScraper(BillScraper):
             elif 'Printer-Friendly' in name:
                 pass
             else:
-                self.warning('unknown document type %s - adding as document' % name)
+                self.warning('unknown document type %s - adding as document' %
+                             name)
                 bill.add_document(name, url)
 
     def scrape_votes(self, session, bill, votes_url):
@@ -270,7 +278,8 @@ class ILBillScraper(BillScraper):
 
             date = datetime.datetime.strptime(date, "%A, %B %d, %Y")
 
-            vote = self.scrape_pdf_for_votes(session, chamber, date, motion.strip(), link.get('href'))
+            vote = self.scrape_pdf_for_votes(
+                session, chamber, date, motion.strip(), link.get('href'))
 
             bill.add_vote(vote)
 
@@ -279,7 +288,8 @@ class ILBillScraper(BillScraper):
     def fetch_pdf_lines(self, href):
         # download the file
         fname, resp = self.urlretrieve(href)
-        pdflines = [line.decode('utf-8') for line in convert_pdf(fname, 'text').splitlines()]
+        pdflines = [line.decode('utf-8')
+                    for line in convert_pdf(fname, 'text').splitlines()]
         os.remove(fname)
         return pdflines
 
@@ -309,13 +319,16 @@ class ILBillScraper(BillScraper):
         vote_lines = []
         for line in pdflines:
             # consider pass/fail as a document property instead of a result of the vote count
-            # extract the vote count from the document instead of just using counts of names
+            # extract the vote count from the document instead of just using
+            # counts of names
             if line.strip() in PASS_FAIL_WORDS:
                 if passed is not None:
-                    raise Exception("Duplicate pass/fail matches in [%s]" % href)
+                    raise Exception(
+                        "Duplicate pass/fail matches in [%s]" % href)
                 passed = PASS_FAIL_WORDS[line.strip()]
             elif COUNT_RE.match(line):
-                yes_count, no_count, present_count = map(int, COUNT_RE.match(line).groups())
+                yes_count, no_count, present_count = map(
+                    int, COUNT_RE.match(line).groups())
                 counts_found = True
             elif counts_found:
                 if line and not line[0].isspace():
@@ -342,18 +355,22 @@ class ILBillScraper(BillScraper):
             no_count = len(no_votes)
         else:  # audit
             if yes_count != len(yes_votes):
-                self.warning("Mismatched yes count [expect: %i] [have: %i]" % (yes_count, len(yes_votes)))
+                self.warning("Mismatched yes count [expect: %i] [have: %i]" %
+                             (yes_count, len(yes_votes)))
                 warned = True
             if no_count != len(no_votes):
-                self.warning("Mismatched no count [expect: %i] [have: %i]" % (no_count, len(no_votes)))
+                self.warning("Mismatched no count [expect: %i] [have: %i]" %
+                             (no_count, len(no_votes)))
                 warned = True
             if present_count != len(present_votes):
-                self.warning("Mismatched present count [expect: %i] [have: %i]" % (present_count, len(present_votes)))
+                self.warning("Mismatched present count [expect: %i] [have: %i]" % (
+                    present_count, len(present_votes)))
                 warned = True
 
         if passed is None:
             if chamber == 'lower':  # senate doesn't have these lines
-                self.warning("No pass/fail word found; fall back to comparing yes and no vote.")
+                self.warning(
+                    "No pass/fail word found; fall back to comparing yes and no vote.")
                 warned = True
             passed = yes_count > no_count
         vote = Vote(chamber, date, motion, passed, yes_count, no_count,
@@ -375,7 +392,8 @@ class ILBillScraper(BillScraper):
         if action.lower().find('removed') != -1:
             return
         if action.startswith('Chief'):
-            self.debug("[%s] Assuming we already caught 'chief' for %s" % (bill_id, action))
+            self.debug("[%s] Assuming we already caught 'chief' for %s" %
+                       (bill_id, action))
             return
         match = SPONSOR_REFINE_PATTERN.match(action)
         if match:
@@ -387,13 +405,18 @@ class ILBillScraper(BillScraper):
                 spontype, sponsor, this_chamber, otype = tup
                 if this_chamber == chamber and sponsor == match.groupdict()['name']:
                     try:
-                        sponsor_list[i] = (SPONSOR_TYPE_REFINEMENTS[match.groupdict()['spontype']], sponsor, this_chamber, match.groupdict()['spontype'])
+                        sponsor_list[i] = (SPONSOR_TYPE_REFINEMENTS[
+                                           match.groupdict()['spontype']], sponsor, this_chamber, match.groupdict()['spontype'])
                     except KeyError:
-                        self.warning('[%s] Unknown sponsor refinement type [%s]' % (bill_id, match.groupdict()['spontype']))
+                        self.warning(
+                            '[%s] Unknown sponsor refinement type [%s]' %
+                            (bill_id, match.groupdict()['spontype']))
                     return
-            self.warning("[%s] Couldn't find sponsor [%s,%s] to refine" % (bill_id, chamber, match.groupdict()['name']))
+            self.warning("[%s] Couldn't find sponsor [%s,%s] to refine" %
+                         (bill_id, chamber, match.groupdict()['name']))
         else:
-            self.debug("[%s] Don't know how to refine [%s]" % (bill_id, action))
+            self.debug("[%s] Don't know how to refine [%s]" %
+                       (bill_id, action))
 
 
 def find_columns_and_parse(vote_lines):
@@ -412,7 +435,7 @@ def find_columns_and_parse(vote_lines):
 def _is_potential_column(line, i):
     for val in VOTE_VALUES:
         test_val = val + ' '
-        if line[i:i+len(test_val)] == test_val:
+        if line[i:i + len(test_val)] == test_val:
             return True
     return False
 
@@ -432,7 +455,9 @@ def find_columns(vote_lines):
         starter.intersection_update(pc)
     last_row_cols = potential_columns[-1]
     if not last_row_cols.issubset(starter):
-        raise Exception("Last row columns [%s] don't align with candidate final columns [%s]" % (last_row_cols, starter))
+        raise Exception(
+            "Last row columns [%s] don't align with candidate final columns [%s]" %
+            (last_row_cols, starter))
     # we should now only have values that appeared in every line
     return sorted(starter)
 

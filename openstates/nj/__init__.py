@@ -16,7 +16,7 @@ metadata = dict(
     capitol_timezone='America/New_York',
     legislature_name='New Jersey Legislature',
     legislature_url='http://www.njleg.state.nj.us/',
-    chambers = {
+    chambers={
         'upper': {'name': 'Senate', 'title': 'Senator'},
         'lower': {'name': 'Assembly', 'title': 'Assembly Member'},
     },
@@ -40,31 +40,33 @@ metadata = dict(
     ],
     session_details={
         '213': {'start_date': datetime.date(2008, 1, 12),
-                             'display_name': '2008-2009 Regular Session',
-                             '_scraped_name': '2008-2009',
-                             },
+                'display_name': '2008-2009 Regular Session',
+                '_scraped_name': '2008-2009',
+                },
         '214': {'start_date': datetime.date(2010, 1, 12),
-                             'display_name': '2010-2011 Regular Session',
-                             '_scraped_name': '2010-2011',
-                             },
+                'display_name': '2010-2011 Regular Session',
+                '_scraped_name': '2010-2011',
+                },
         '215': {'start_date': datetime.date(2012, 1, 10),
-                             'display_name': '2012-2013 Regular Session',
-                             '_scraped_name': '2012-2013',
-                             },
+                'display_name': '2012-2013 Regular Session',
+                '_scraped_name': '2012-2013',
+                },
         '216': {'start_date': datetime.date(2014, 1, 15),
-                             'display_name': '2014-2015 Regular Session',
-                             '_scraped_name': '2014-2015',
-                             },
-                    },
+                'display_name': '2014-2015 Regular Session',
+                '_scraped_name': '2014-2015',
+                },
+    },
     feature_flags=['subjects', 'events', 'influenceexplorer'],
-    _ignored_scraped_sessions = ['2006-2007', '2004-2005', '2002-2003',
-                                 '2000-2001', '1998-1999', '1996-1997'],
+    _ignored_scraped_sessions=['2006-2007', '2004-2005', '2002-2003',
+                               '2000-2001', '1998-1999', '1996-1997'],
 
 )
+
 
 def session_list():
     return url_xpath('http://www.njleg.state.nj.us/',
                      '//select[@name="DBNAME"]/option/text()')
+
 
 def extract_text(doc, data):
     doc = lxml.html.fromstring(data)

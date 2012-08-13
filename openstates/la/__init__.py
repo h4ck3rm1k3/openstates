@@ -17,7 +17,7 @@ metadata = {
                 "2010",
                 "2011 1st Extraordinary Session",
                 "2011"
-                ]
+            ]
         },
         {
             "name": "2012-2015",
@@ -124,8 +124,8 @@ def session_list():
     from billy.scrape.utils import url_xpath
     import re
     return url_xpath(
-                'http://www.legis.la.gov/Legis/SessionInfo/SessionInfo.aspx',
-                '//a[contains(text(), "Session")]/text()')
+        'http://www.legis.la.gov/Legis/SessionInfo/SessionInfo.aspx',
+        '//a[contains(text(), "Session")]/text()')
 
 
 def extract_text(doc, data):

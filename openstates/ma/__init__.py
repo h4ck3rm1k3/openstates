@@ -66,14 +66,15 @@ metadata = {
     'feature_flags': ['events', 'influenceexplorer'],
 }
 
+
 def session_list():
     import re
     from billy.scrape.utils import url_xpath
     sessions = url_xpath('http://www.malegislature.gov/Bills/Search',
-        "//select[@id='Input_GeneralCourtId']/option/text()")
+                         "//select[@id='Input_GeneralCourtId']/option/text()")
     # Ok, this is actually a mess. Let's clean it up.
     # sessions.remove('--Select Value--')  # They removed this.
-    sessions = [ re.sub("\(.*$", "", session).strip() for session in sessions ]
+    sessions = [re.sub("\(.*$", "", session).strip() for session in sessions]
     return sessions
 
 

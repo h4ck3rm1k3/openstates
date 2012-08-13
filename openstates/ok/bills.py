@@ -46,7 +46,7 @@ class OKBillScraper(BillScraper):
         values['lbxTypes'] = lbxTypes
 
         for hidden in form_page.xpath("//input[@type='hidden']"):
-            values[hidden.attrib['name']] =  hidden.attrib['value']
+            values[hidden.attrib['name']] = hidden.attrib['value']
 
         page = self.urlopen(url, "POST", values)
         page = lxml.html.fromstring(page)
@@ -124,7 +124,8 @@ class OKBillScraper(BillScraper):
             name = link.text.strip()
 
             if 'COMMITTEE REPORTS' in version_url:
-                bill.add_document(name, version_url, mimetype='application/pdf')
+                bill.add_document(name, version_url,
+                                  mimetype='application/pdf')
                 continue
 
             bill.add_version(name, version_url, mimetype='application/pdf')
@@ -133,8 +134,8 @@ class OKBillScraper(BillScraper):
             if 'HT_' not in link.attrib['href']:
                 self.scrape_votes(bill, urlescape(link.attrib['href']))
 
-        # # If the bill has no actions and no versions, it's a bogus bill on
-        # # their website, which appears to happen occasionally. Skip.
+        # If the bill has no actions and no versions, it's a bogus bill on
+        # their website, which appears to happen occasionally. Skip.
         has_no_title = (bill['title'] == "Short Title Not Found.")
         if has_no_title:
             # If there's no title, this is an empty page. Skip!

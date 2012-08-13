@@ -15,8 +15,8 @@ TEST_LINES1 = [
     'N   Beaubien       Y   Dugan           Y   Lang             Y   Riley',
     'Y   Beiser         Y   Dunkin          N   Leitch           Y   Rita',
     'E   Bellock        N   Durkin          Y   Lyons            Y   Rose',
- ]
-TEST_LINES2 =  [
+]
+TEST_LINES2 = [
     'Y    Althoff     Y    Dillard     N   Lauzen        NV   Righter',
     'NV   Bivins      Y    Forby       Y   Lightford     P    Risinger',
     'Y    Bomke       Y    Frerichs    Y   Link          Y    Rutherford',
@@ -56,7 +56,9 @@ TEST_LINES1 = map(lambda x: x.decode('utf-8'), TEST_LINES1)
 TEST_LINES2 = map(lambda x: x.decode('utf-8'), TEST_LINES2)
 TEST_LINES3 = map(lambda x: x.decode('utf-8'), TEST_LINES3)
 
+
 class TestVoteParsing(object):
+
     def test_find_and_parse1(self):
         d = find_columns_and_parse(TEST_LINES1)
         eq_('E', d['Acevedo'])
@@ -82,37 +84,33 @@ class TestVoteParsing(object):
         eq_('Y', d['Syverson'])
         eq_('NV', d['Link'])
 
-
-
     def test_find_columns1(self):
         columns = find_columns(TEST_LINES1)
-        eq_(4,len(columns))
-        a,b,c,d = columns
-        eq_(0,a)
-        eq_(19,b)
-        eq_(39,c)
-        eq_(60,d)
+        eq_(4, len(columns))
+        a, b, c, d = columns
+        eq_(0, a)
+        eq_(19, b)
+        eq_(39, c)
+        eq_(60, d)
 
     def test_find_columns2(self):
         columns = find_columns(TEST_LINES2)
-        eq_(4,len(columns))
-        a,b,c,d = columns
-        eq_(0,a)
-        eq_(17,b)
-        eq_(34,c)
-        eq_(52,d)
+        eq_(4, len(columns))
+        a, b, c, d = columns
+        eq_(0, a)
+        eq_(17, b)
+        eq_(34, c)
+        eq_(52, d)
 
     def test_find_columns3(self):
         columns = find_columns(TEST_LINES3)
-        eq_(4,len(columns))
-        a,b,c,d = columns
-        eq_(0,a)
-        eq_(19,b)
-        eq_(38,c)
-        eq_(57,d)
-
+        eq_(4, len(columns))
+        a, b, c, d = columns
+        eq_(0, a)
+        eq_(19, b)
+        eq_(38, c)
+        eq_(57, d)
 
 
 if __name__ == '__main__':
     unittest.main()
-
