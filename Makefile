@@ -1,3 +1,6 @@
+tbilly:
+	PYTHONPATH=billy:. billy/billy/bin/update.py ks
+
 alltests:
 	PYTHONPATH=billy:. python tests/run_all_tests.py
 
