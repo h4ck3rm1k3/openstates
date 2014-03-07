@@ -1,0 +1,2055 @@
+KLISS
+
+Kansas Legislative Information Services System
+
+RESTian Interface
+
+Version 7.0
+January 11th 2012
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+Table of Contents
+1Introduction..............................................................................................................................................5
+2Roadmap for the RESTian API................................................................................................................6
+3API Keys..................................................................................................................................................7
+4API V1Details (Deprecated)....................................................................................................................8
+4.1Bill status (all bills)..........................................................................................................................8
+4.1.1URI Pattern...............................................................................................................................8
+4.1.2Returns......................................................................................................................................8
+4.1.3Example content.......................................................................................................................8
+4.1.4Notes.......................................................................................................................................10
+4.2Bill status/history (individual bills)................................................................................................11
+4.2.1URI Pattern.............................................................................................................................11
+4.2.2Returns....................................................................................................................................11
+4.2.3Example content.....................................................................................................................11
+4.2.4Notes.......................................................................................................................................12
+5API V2 Details (Deprecated).................................................................................................................13
+5.1Differences From API V1...............................................................................................................13
+5.2Bill Status.......................................................................................................................................13
+5.2.1Example Content....................................................................................................................13
+5.2.2Notes.......................................................................................................................................14
+6API V3 Details (Deprecated).................................................................................................................15
+6.1Differences From API V2...............................................................................................................15
+6.2Bill Status.......................................................................................................................................15
+6.2.1Example Content....................................................................................................................15
+6.2.2Notes.......................................................................................................................................16
+7API V4 Details.......................................................................................................................................17
+7.1Difference from API V3.................................................................................................................17
+7.2Bill Status.......................................................................................................................................17
+7.2.1Example Content....................................................................................................................17
+7.2.2Notes.......................................................................................................................................18
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+2/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+8API V5 Details.......................................................................................................................................19
+8.1Revisions........................................................................................................................................19
+8.2Response Format............................................................................................................................19
+8.3Additional Changes........................................................................................................................20
+8.4Bill Status.......................................................................................................................................20
+8.4.1Example..................................................................................................................................21
+8.5Bill Listing......................................................................................................................................22
+8.5.1Example..................................................................................................................................22
+8.6Calendar..........................................................................................................................................23
+8.6.1Example..................................................................................................................................23
+8.7Journal............................................................................................................................................24
+8.7.1Example..................................................................................................................................24
+8.8Committees.....................................................................................................................................25
+8.8.1Committee Listing..................................................................................................................25
+Example.....................................................................................................................................26
+8.8.2Committee Details..................................................................................................................27
+Example.....................................................................................................................................28
+9API V6 Details.......................................................................................................................................31
+9.1API Version....................................................................................................................................31
+9.2Bill Status.......................................................................................................................................31
+9.2.1Example..................................................................................................................................31
+9.3Bill Listing......................................................................................................................................32
+9.3.1Example..................................................................................................................................32
+9.4Members.........................................................................................................................................33
+9.4.1Member Listing......................................................................................................................33
+Example.....................................................................................................................................34
+9.4.2Member Details......................................................................................................................35
+Example.....................................................................................................................................37
+9.5Chamber Status...............................................................................................................................40
+10API V7 Details.....................................................................................................................................41
+10.1Bill Status Updates.......................................................................................................................41
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+3/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+10.2Appointments API........................................................................................................................41
+10.2.1Appointment listing..............................................................................................................41
+Example.....................................................................................................................................41
+10.2.2Appointment Details.............................................................................................................42
+Example.....................................................................................................................................43
+11RSS and Atom Feeds............................................................................................................................44
+11.1Bill Listing Feed...........................................................................................................................44
+11.2Bill Status Feeds...........................................................................................................................44
+11.3Journal Feeds................................................................................................................................44
+11.3.1Chamber Specific Feeds.......................................................................................................44
+11.4Calendar Feeds.............................................................................................................................45
+11.4.1Chamber Specific Feeds.......................................................................................................45
+11.5Committee Feeds..........................................................................................................................45
+11.6Member Feeds..............................................................................................................................45
+12History Element Action Codes
+..................................................................................................................................................................46
+12.1Action Code Listing.....................................................................................................................46
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+4/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+1 Introduction
+This document sets out the RESTian API for the KLISS website http://kslegislature.org.
+As KLISS website functionality is added going forward, extra features will be made available through 
+this RESTian interface.
+The goals of the KLISS RESTian interface are as follows:
+• To provide timely, machine readable information on
+◦ Bills
+◦ Committees
+◦ Members and other items as requested
+• To provide the information in Web 2.0 and Semantic Web compatible formats :
+◦ JSON
+◦ XML
+◦ RDF
+◦ as well as ODT, PDF and XHTML forms of all public documents
+This API will evolve rapidly depending on usage patterns and requirements.To support that whilst 
+retaining backwards compatibility, a simple versioning scheme is used based on URI patterns:
+http://kslegislature.org/li/api/v1 Version 1 API
+http://kslegislature.org/li/api/v2 Version 2 API etc.
+
+Any changes to the v<n> API will be compatible with previous releases of the v<n> API.
+
+Backwards incompatible changes will always be released in a new higher version number.
+
+All versions of the API will be documented in this document. Any API deprecations will also be 
+documented in this document.
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+5/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+2 Roadmap for the RESTian API
+The current version of the API is version 7 and it provides Bill Status information in JSON notation. 
+The details are presented below.
+The features roadmap items currently are as follows. If you would like to see other information 
+provided through the API, please contact us at legislative administrative services 
+(http://skyways.lib.ks.us/government/las/index.html).
+
+• Bill Status Information in CSV
+• Bill Status Information in XML
+• Bill Status Information in RDF/A
+
+• Member information in JSON
+• Member information in XML
+• Member information in CSV
+• Member information in vCard
+• Member information in RDF/A
+
+• Committee information in JSON
+• Committee information in XML
+• Committee information in CSV
+• Committee information in RDF/A
+• Committee meeting schedules in vCalendar
+
+• Chamber calendar information in vCalendar
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+6/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+3 API Keys
+Depending on usage patterns and traffic levels, we may introduce an API key in a future version of the 
+API.
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+7/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+4 API V1Details (Deprecated)
+
+4.1 Bill status (all bills)
+Returns status/history of all bills in the current biennium
+
+4.1.1 URI Pattern
+http://kslegislature.org/li/api/v1/bill_status/
+
+4.1.2 Returns
+HTTP Status: 200 for OK.
+Content will be mime type: application/json 
+
+4.1.3 Example content
+Request: http://kslegislature.org/li/api/v1/bill_status/
+
+Response:
+ [
+    {
+        "bill_number": "HB2001", 
+        "long_title": "AN ACT concerning law enforcement; relating to the local law enforcement training reimbursement fund; amending K.S.A. 
+2010 Supp. 74-5620 and repealing the existing section.", 
+        "short_title": "Local law enforcement training reimbursement fund; expenditures approved by commission on peace officers' standards 
+and training.", 
+        "sponsor_names": [
+            "Representative O'Neal"
+        ], 
+        "history": [
+            {
+                "status": "Referred to", 
+                "chamber": "House", 
+                "journal_page_number": "62", 
+                "occurred_datetime": "2011-01-10 16:59:01", 
+
+Last Modified:  Jan 11, 2012 - 01:54:40 PM
+
+8/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "committee_names": [
+                    "Committee on Corrections and Juvenile Justice"
+                ]
+            }, 
+            {
+                "status": "Introduced", 
+                "chamber": "House", 
+                "journal_page_number": "54", 
+                "occurred_datetime": "2011-01-10 15:13:11"
+            }, 
+            {
+                "status": "Prefiled for Introduction", 
+                "chamber": "House", 
+                "journal_page_number": "54", 
+                "occurred_datetime": "2011-01-07 14:54:39"
+            }
+        ]
+    },
+    {
+        "bill_number": "HB2002", 
+        "long_title": "AN ACT concerning the Kansas expanded lottery act; relating to racetrack gaming facilities; amending K.S.A. 2010 Supp. 
+74-8734, 74-8741, 74-8744, 74-8747, 74-8751 and 74-8768 and repealing the existing sections.", 
+        "short_title": "Amendments to the Kansas expanded lottery act.", 
+        "sponsor_names": [
+            "Representative Grant", 
+            "Representative D. Gatewood"
+        ], 
+        "history": [
+            {
+                "status": "Referred to", 
+                "chamber": "House", 
+                "journal_page_number": "62", 
+                "occurred_datetime": "2011-01-10 16:59:05", 
+                "committee_names": [
+                    "Committee on Federal and State Affairs"
+                ]
+            }, 
+            {
+                "status": "Introduced", 
+                "chamber": "House", 
+
+Last Modified:  Jan 11, 2012 - 01:54:41 PM
+
+9/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "journal_page_number": "54", 
+                "occurred_datetime": "2011-01-10 15:13:59"
+            }, 
+            {
+                "status": "Prefiled for Introduction", 
+                "chamber": "House", 
+                "journal_page_number": "54", 
+                "occurred_datetime": "2011-01-07 14:54:44"
+            }
+        ]
+    },
+
+          <additional bills removed for brevity>
+
+]
+
+4.1.4 Notes
+The order of attributes attributes in a JSON response is not guaranteed and may vary between requests.
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:41 PM
+
+10/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+4.2 Bill status/history (individual bills)
+Returns status/history of the specified bill
+
+4.2.1 URI Pattern
+http://kslegislature.org/li/api/v1/bill_status/<bill_number>/
+
+4.2.2 Returns
+HTTP Status: 200 for OK, 404 for non-existent bill number.
+Content will be mime type: application/json 
+
+4.2.3 Example content
+Request: http://kslegislature.org/li/api/v1/bill_status/sb1/
+
+Response:
+{
+    "bill_number": "SB1", 
+    "long_title": "AN ACT concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be 
+printed on electronically printed sales receipts.", 
+    "short_title": "concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be printed 
+on electronically printed sales receipts.", 
+    "sponsor_names": [
+        "Senator Haley"
+    ], 
+    "history": [
+        {
+            "status": "Referred to", 
+            "chamber": "Senate", 
+            "journal_page_number": "20", 
+            "occurred_datetime": "2011-01-11 12:53:05", 
+            "committee_names": [
+                "Committee on Assessment and Taxation"
+            ]
+        }, 
+        {
+            "status": "Introduced", 
+            "chamber": "Senate", 
+            "journal_page_number": "7", 
+
+Last Modified:  Jan 11, 2012 - 01:54:41 PM
+
+11/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+            "occurred_datetime": "2011-01-10 14:34:41"
+        }, 
+        {
+            "status": "Prefiled for Introduction", 
+            "chamber": "Senate", 
+            "journal_page_number": "", 
+            "occurred_datetime": "2011-01-07 14:03:19"
+        }
+    ]
+}
+
+4.2.4 Notes
+The order of attributes attributes in a JSON response is not guaranteed and may vary between requests.
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:41 PM
+
+12/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+5 API V2 Details (Deprecated)
+
+5.1 Differences From API V1
+Version 2 of the API increments the version number and adds RS numbers to the status of each bill.
+
+5.2 Bill Status
+Bill status objects are the same as in API V1, with the addition of RS numbers.
+
+5.2.1 Example Content
+This example shows a request for a single bill. A request for all bills will consist of a list of objects 
+formatted like the one below.
+Request: 
+http://kslegislature.org/li/api/v2/bill_status/sb1/
+
+Response:
+{
+    "bill_number": "SB1", 
+          "rs_number": "11rs0052", 
+    "long_title": "AN ACT concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be 
+printed on electronically printed sales receipts.", 
+    "short_title": "concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be printed 
+on electronically printed sales receipts.", 
+    "sponsor_names": [
+        "Senator Haley"
+    ], 
+    "history": [
+        {
+            "status": "Referred to", 
+            "chamber": "Senate", 
+            "journal_page_number": "20", 
+            "occurred_datetime": "2011-01-11 12:53:05", 
+            "committee_names": [
+
+Last Modified:  Jan 11, 2012 - 01:54:41 PM
+
+13/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "Committee on Assessment and Taxation"
+            ]
+        }, 
+        {
+            "status": "Introduced", 
+            "chamber": "Senate", 
+            "journal_page_number": "7", 
+            "occurred_datetime": "2011-01-10 14:34:41"
+        }, 
+        {
+            "status": "Prefiled for Introduction", 
+            "chamber": "Senate", 
+            "journal_page_number": "", 
+            "occurred_datetime": "2011-01-07 14:03:19"
+        }
+    ]
+}
+
+5.2.2 Notes
+• The order of attributes attributes in a JSON response is not guaranteed and may vary between 
+requests.
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+14/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+6 API V3 Details (Deprecated)
+
+6.1 Differences From API V2
+Version 3 of the API increments the version number and adds a status code to the status of each bill.
+
+6.2 Bill Status
+Bill status objects are the same as in API V3, with the addition of status codes.
+
+The following three status codes are currently supported:
+
+•
+
+•
+
+•
+
+"introduced" indicates that a bill has been introduced by the legislature
+
+"enacted" indicates that a bill has been enacted by the legislature
+
+"dead" indicates that a bill has been killed by the legislature
+
+6.2.1 Example Content
+This example shows a request for a single bill. A request for all bills will consist of a list of objects 
+formatted like the one below.
+Request: 
+ 3  /bill_status/sb1/
+http://kslegislature.org/li/api/v
+ 
+ 
+ 
+
+Response:
+{
+    "bill_number": "SB1", 
+          "rs_number": "11rs0052", 
+          "status": "introduced",
+    "long_title": "AN ACT concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be 
+printed on electronically printed sales receipts.", 
+    "short_title": "concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be printed 
+on electronically printed sales receipts.", 
+    "sponsor_names": [
+        "Senator Haley"
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+15/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+    ], 
+    "history": [
+        {
+            "status": "Referred to", 
+            "chamber": "Senate", 
+            "journal_page_number": "20", 
+            "occurred_datetime": "2011-01-11 12:53:05", 
+            "committee_names": [
+                "Committee on Assessment and Taxation"
+            ]
+        }, 
+        {
+            "status": "Introduced", 
+            "chamber": "Senate", 
+            "journal_page_number": "7", 
+            "occurred_datetime": "2011-01-10 14:34:41"
+        }, 
+        {
+            "status": "Prefiled for Introduction", 
+            "chamber": "Senate", 
+            "journal_page_number": "", 
+            "occurred_datetime": "2011-01-07 14:03:19"
+        }
+    ]
+}
+
+6.2.2 Notes
+• The order of attributes attributes in a JSON response is not guaranteed and may vary between 
+requests.
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+16/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+7 API V4 Details
+
+7.1 Difference from API V3
+Version 4 of the API  increments the version number, adds the effective date of a bill to the bill status 
+code, and adds action codes to history elements.
+
+7.2 Bill Status
+Bill status objects are the same as in API V3, with the addition of effective dates of a bill, and action 
+codes for history elements. History element action codes can are documented in the supplemental 
+action code reference document.
+
+7.2.1 Example Content
+This example shows a request for a single bill. A request for all bills will consist of a list of objects 
+formatted like the one below.
+Request: 
+ 4  /bill_status/sb1/
+http://kslegislature.org/li/api/v
+ 
+ 
+ 
+
+Response:
+
+{
+
+    "status": "introduced", 
+    "short_title": "Concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be printed 
+on electronically printed sales receipts.", 
+    "rs_number": "11rs0052 ", 
+    "effective_date": "This act shall take effect and be in force from and after its publication in the statute book.", 
+    "bill_number": "SB1", 
+    "long_title": "AN ACT concerning consumer transactions; relating to the Kansas retailers' sales tax act; requiring the cumulative rate to be 
+printed on electronically printed sales receipts.", 
+    "sponsor_names": [
+        "Senator Haley"
+    ], 
+    "history": [
+        {
+            "status": "Referred to", 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+17/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+            "action_code": "ref_rbc_310", 
+            "journal_page_number": "20", 
+            "occurred_datetime": "2011-01-11 12:53:05", 
+            "chamber": "Senate", 
+            "committee_names": [
+                "Committee on Assessment and Taxation"
+            ]
+        }, 
+        {
+            "status": "Introduced", 
+            "chamber": "Senate", 
+            "journal_page_number": "7", 
+            "occurred_datetime": "2011-01-10 14:34:41", 
+            "action_code": "intro_ibc_157"
+        }, 
+        {
+            "status": "Prefiled for Introduction", 
+            "chamber": "Senate", 
+            "journal_page_number": "", 
+            "occurred_datetime": "2011-01-07 14:03:19", 
+            "action_code": "intro_ibc_156"
+        }
+    ]
+}
+
+7.2.2 Notes
+The order of attributes attributes in a JSON response is not guaranteed and may vary between requests.
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+18/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+8 API V5 Details
+Version 5 of the API marks a major change in the structure of the API. The underlying system has been 
+rewritten to make the API considerably faster, and make it easier for us to develop new components.
+
+8.1 Rev isions
+In addition to speed improvements and several new components, version 5 exposes the revision system 
+at the heart of KLISS. All data stored in KLISS has a revision number associated with it. When a 
+resource is changed, its revision number is incremented, and the old version of the resource can be 
+accessed with the older revision number. Previously, the RESTian API queried for data in from the 
+most recent revision, but as of version 5 queries can be performed on older revisions as well.
+Most resource URLs now require that a revision number be specified. For example the bill status API 
+has changed from
+v4/bill_status/
+
+to 
+
+v5/revN/bill_status/
+where N is the revision number you wish to query. If you want the most recent data stored in KLISS, 
+you can use the value -1 in place of N. If you want to look at older data, you can provide a specific 
+revision number.
+
+8.2 Response Format
+The format of a response has changed as well. Previously the response was only the content requested. 
+Now that content is one field of a JSON object, which also provides additional metadata. Currently, the 
+revision number is the only additional metadata, but more metadata may become available in the 
+future.
+If you query:
+v5/rev-1/bill_status/
+Your response will look like:
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+19/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+{
+
+}
+
+"content": […],
+"revno": 121580
+
+given that 121580 is the current head revision.
+
+8.3 Additional Changes
+JSON object keys will now be sorted alphabetically, so we are able to ensure that key ordering will not 
+change from one query to the next. We have also changed the names of several keys throughout the bill 
+status API, to more closely reflect the underlying data stored by KLISS.
+
+8.4 Bill Status
+The bill status API now has the following keys at the top level:
+• BILLNO: The number of the bill.
+SHORTTITLE: The short version of the bill's title.
+•
+• LONGTITLE: The long version of the bill's title.
+• EFFECTIVEDATE: A string describing when the bill will take effect
+• RELATEDRS: An identifier indicating when the bill was requested from the revisor's office.
+SPONSOR_NAMES: A list of the bills sponsors
+•
+• HISTORY: A list of history elements.
+apn: A path indicating where the current version of the bill is stored internally.
+•
+
+History elements have the following keys:
+action_code: An identifier indicating what action this history element relates to. Action codes 
+•
+are documented in chapter 12.
+occurred_datetime: An ISO 8601 formatted representation of the time the event occurred.
+status: A message describing what event occurred.
+chamber: Either "House" or "Senate" depending on which chamber caused the event.
+journal_page_number: Indicates what page of the chamber's journal describes this event.
+*committee_names: The names of any committees involved in this action
+
+•
+•
+•
+•
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+20/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+*conferee_names: The names of any representatives involved in this action.
+•
+* These keys may not be present, depending on the action.
+
+8.4.1 Example
+Querying /li/api/v5/rev-1/bill_status/sb2/ yields the following result:
+
+{
+    "content": [
+        {
+            "BILLNO": "SB2",
+            "EFFECTIVEDATE": "This act shall take effect and be in force from and after its publication in the statute book.",
+            "HISTORY": [
+                {
+                    "action_code": "ref_rbc_310",
+                    "chamber": "Senate",
+                    "committee_names": [
+                        "Committee on Ways and Means"
+                    ],
+                    "journal_page_number": "20",
+                    "occurred_datetime": "2011-01-11T12:53:23",
+                    "status": "Referred to"
+                },
+                {
+                    "action_code": "intro_ibc_157",
+                    "chamber": "Senate",
+                    "journal_page_number": "7",
+                    "occurred_datetime": "2011-01-10T14:35:02",
+                    "status": "Introduced"
+                },
+                {
+                    "action_code": "intro_ibc_156",
+                    "chamber": "Senate",
+                    "journal_page_number": "",
+                    "occurred_datetime": "2010-12-10T00:00:00",
+                    "status": "Prefiled for Introduction"
+                }
+            ],
+            "LONGTITLE": "AN ACT concerning the department of administration; relating to competitive bids; bidding procedures; requiring 
+bidders to sign a statement certifying they will not hire former state employees except as otherwise allowed by law; amending K.S.A. 2010 
+Supp. 75-3739 and repealing the existing section.",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+21/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+            "RELATEDRS": "11rs0053 ",
+            "SHORTTITLE": "Requiring bidders on state contracts to sign a statement they will not hire former state employees that participated 
+in awarding the contract unless otherwise allowed by law.",
+            "SPONSOR_NAMES": [
+                "Joint Committee on Legislative Post Audit"
+            ],
+            "STATUS": "introduced",
+            "apn": "b2011_12/year1/senate/committees/ctte_s_wam_1/referrals/sb_2/sb2_00_0000.odt"
+        }
+    ],
+    "revno": 121602
+}
+
+If no bill is specified (/li/api/v5/rev-1/bill_status/), the content will be a list of all bills will be provided. If a 
+bill number is specified, the content will be a list containing a single bill.
+
+8.5 Bill Listing
+
+The Bill Listing API is a moderate faster API for retrieving only bill numbers and short titles. It has the 
+BILLNO and SHORTTITLE keys described in section 8.4.
+8.5.1 Example
+Querying /li/api/v5/rev-1/bill_listing/ yields the following result:
+{
+    "content": [
+        {
+            "BILLNO": "HB2312",
+            "SHORTTITLE": "Regulated scrap metal; licensing scrap metal dealers; unlawful acts; criminal penalties."
+        },
+        {
+            "BILLNO": "SB101",
+            "SHORTTITLE": "House Substitute for SB 101 by Committee on Local Government -- Municipalities; sprinkler systems, residential 
+housing; changes."
+        },
+        {
+            "BILLNO": "HB2383",
+            "SHORTTITLE": "Appropriations for FY 2011 through FY 2016 for various state agencies."
+        },
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+22/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+<additional bills removed for brevity>
+
+],
+
+    "revno": 121729
+}
+
+8.6 Calendar
+The Calendar API provides a list of all daily calendars from each chamber. A calendar object has the 
+following keys:
+• CHAMBER: Indicates whether the calendars is for the house or the senate
+• DATE: The date of the calendar in YYYY-MM-DD format.
+SESSIONDAY: Indicates which session day the calendar is for.
+•
+apn: A path indicating where the calendar is stored internally.
+•
+
+The URL /li/api/v5/rev-1/calendar/ lists all current calendars. You can filter by chamber by querying 
+/li/api/v5/rev-1/calendar/house/ or 
+/li/api/v5/rev-1/calendar/senate/.
+
+8.6.1 Example
+Querying /li/api/v5/rev-1/calendar/ yields the following result:
+{
+    "content": [
+        {
+            "CHAMBER": "house",
+            "DATE": "2011-01-11",
+            "SESSIONDAY": 2,
+            "apn": "b2011_12/year1/house/ready_for_publication/calendar/daily_calendar_house_20110111.odt"
+        },
+        {
+            "CHAMBER": "senate",
+            "DATE": "2011-01-11",
+            "SESSIONDAY": 2,
+            "apn": "b2011_12/year1/senate/ready_for_publication/calendar/daily_calendar_senate_20110111.odt"
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+23/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+        },
+        {
+            "CHAMBER": "house",
+            "DATE": "2011-01-12",
+            "SESSIONDAY": 3,
+            "apn": "b2011_12/year1/house/ready_for_publication/calendar/daily_calendar_house_20110112.odt"
+        },
+
+< calendars removed for brevity>
+
+],
+    "revno": 121737
+}
+
+8.7 Journal
+The Journal API provides a list of all daily journals from each chamber. A journal object has the 
+following keys:
+• CHAMBER: Indicates whether the journal is for the house or the senate
+STARTSTAMP: The date and time of the journal in "YYYY-MM-DD HH:mm:SS" format.
+•
+PAGENUMBER: Indicates what page of the yearly journal this daily journal begins on.
+•
+apn: A path indicating where the calendar is stored internally.
+•
+
+The URL /li/api/v5/rev-1/journal/ lists all current calendars. You can filter by chamber by querying 
+/li/api/v5/rev-1/journal/house/ or 
+/li/api/v5/rev-1/journal/senate/.
+
+8.7.1 Example
+Querying /li/api/v5/rev-1/journal/ yields the following result:
+{
+    "content": [
+        {
+            "CHAMBER": "House",
+            "PAGENUMBER": 5,
+            "STARTSTAMP": "2011-01-10 00:00:00",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+24/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+            "apn": "b2011_12/year1/house/ready_for_publication/journal/daily_journal_house_20110110.odt"
+        },
+        {
+            "CHAMBER": "Senate",
+            "PAGENUMBER": null,
+            "STARTSTAMP": "2011-01-10 14:45:00",
+            "apn": "b2011_12/year1/senate/ready_for_publication/journal/daily_journal_senate_20110110.odt"
+        },
+        {
+            "CHAMBER": "House",
+            "PAGENUMBER": 5,
+            "STARTSTAMP": "2011-01-11 00:00:00",
+            "apn": "b2011_12/year1/house/ready_for_publication/journal/daily_journal_house_20110111.odt"
+        },
+
+< journals removed for brevity>
+
+],
+    "revno": 121737
+}
+
+8.8 Committees
+There are two parts of the committees API, the committee listing, and the committee details.
+
+8.8.1 Committee Listing
+The committee listing can be queried at /li/api/v5/rev-1/ctte/. The content is a JSON object containing 
+three different lists:
+house_committees: A list of house standing committees
+•
+senate_committees: A list of senate standing committees
+•
+special_committees: A list of commissions, special committees, and joint committees.
+•
+
+Each committee object has the following keys:
+• CHAMBER: Indicates which chamber the committee is associated with (may be null)
+• KPID: A unique identifier for the committee.
+• TITLE: The title of the committees
+• TYPE: The type of the committee.
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+25/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+Example
+Querying /li/api/v5/rev-1/ctte/ yields the following result:
+{
+    "content": {
+        "house_committees": [
+            {
+                "CHAMBER": "House",
+                "KPID": "ctte_h_apprprtns_1",
+                "TITLE": "Appropriations",
+                "TYPE": "Standing"
+            },
+            {
+                "CHAMBER": "House",
+                "KPID": "ctte_h_cal_print_1",
+                "TITLE": "Calendar and Printing",
+                "TYPE": "Standing"
+            },
+            {
+                "CHAMBER": "House",
+                "KPID": "ctte_h_ed_1",
+                "TITLE": "Education",
+                "TYPE": "Standing"
+            },
+
+<house committees removed for brevity>
+],
+
+"senate_committees": [
+
+            {
+                "CHAMBER": "Senate",
+                "KPID": "ctte_s_cmrce_1",
+                "TITLE": "Commerce",
+                "TYPE": "Standing"
+            },
+            {
+                "CHAMBER": "Senate",
+                "KPID": "ctte_s_ethics_electns_1",
+                "TITLE": "Ethics and Elections",
+                "TYPE": "Standing"
+            },
+            {
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+26/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "CHAMBER": "Senate",
+                "KPID": "ctte_s_trnsprt_1",
+                "TITLE": "Transportation",
+                "TYPE": "Standing"
+            },
+
+<senatecommittees removed for brevity>
+],
+        "special_committees": [
+            {
+                "CHAMBER": null,
+                "KPID": "ctte_cap_rest_cmsn_1",
+                "TITLE": "Capitol Restoration Commission",
+
+                "TYPE": "Commission"
+            },
+            {
+                "CHAMBER": null,
+                "KPID": "ctte_dui_cmsn_1",
+                "TITLE": "DUI Commission",
+                "TYPE": "Commission"
+            },
+            {
+                "CHAMBER": null,
+                "KPID": "ctte_emp_pay_plan_ovst_1",
+                "TITLE": "State Employee Pay Plan Oversight",
+                "TYPE": "Commission"
+            },
+
+<special committees removed for brevity>
+
+       ]
+
+    },
+    "revno": 121799
+}
+
+8.8.2 Committee Details
+Using the committee KPIDs from the committee listing, more details about a specific committee can be 
+queried. Each committee has the following keys:
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+27/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+• APPOINTMENTS: A list of appointments the committee is considering.
+• CHAIR: The FULLNAME and KPID of the committee's chair.
+• CHAMBER: Which chamber the committee is associated with
+INCBILLS: A list of bills in the committee. Bills have the keys described in section 8.5.
+•
+INCRESOS: A list of resolutions in the committee. Resolutions have the keys described in 
+•
+section 8.5.
+• KPID: The committee's kpid.
+• MEMBERS: The FULLNAME and KPID of each committee member.
+• MTGDAY: The days on which the committee meets.
+• MTGROOM: The room in which the committee meets.
+• MTGTIME: The time at which a committee meets.
+• RMMEM: The FULLNAME and KPID of the ranking minority member of the committee.
+SBILLS: A list of bills sponsored by the committee. Bills have the keys described in section 8.5.
+•
+SPONSORTITLE: The full title of the committee.
+•
+SRESOS: A list of resolutions sponsored by the committee. Resolutions have the keys described 
+•
+in section 8.5.
+• TITLE: The short title of the committee.
+• TYPE: The type of committee.
+• VICECHAIR: The FULLNAME and KPID of the vice chair of the committee.
+
+Example
+Querying /li/api/v5/rev-1/ctte/ctte_h_cal_print_1/ yields the following result:
+{
+    "content": {
+        "APPOINTMENTS": [],
+        "CHAIR": [
+            {
+                "FULLNAME": "Arlen Siegfreid",
+                "KPID": "rep_siegfreid_arlen_1"
+            }
+        ],
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+28/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+        "CHAMBER": "House",
+        "INCBILLS": [],
+        "INCRESOS": [
+            {
+                "BILLNO": "HCR5008",
+                "SHORTTITLE": "State constitutional amendment relating to the reapportionment of senatorial and representative districts."
+            }
+        ],
+        "KPID": "ctte_h_cal_print_1",
+        "MEMBERS": [
+            {
+                "FULLNAME": "Peggy Mast",
+                "KPID": "rep_mast_peggy_1"
+            },
+            {
+                "FULLNAME": "Jene Vickrey",
+                "KPID": "rep_vickrey_jene_1"
+            },
+            {
+                "FULLNAME": "Barbara Ballard",
+                "KPID": "rep_ballard_barbara_1"
+            }
+        ],
+        "MTGDAY": "On Call",
+        "MTGROOM": "On Call",
+        "MTGTIME": "On Call",
+        "RMMEM": [
+            {
+                "FULLNAME": "Paul Davis",
+                "KPID": "rep_davis_paul_1"
+            }
+        ],
+        "SBILLS": [],
+        "SPONSORTITLE": "Committee on Calendar and Printing",
+        "SRESOS": [],
+        "TITLE": "Calendar and Printing",
+        "TYPE": "Standing",
+        "VICECHAIR": [
+            {
+                "FULLNAME": "Mike O'Neal",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+29/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "KPID": "rep_oneal_michael_1"
+            }
+        ]
+    },
+    "revno": 121878
+}
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+30/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+9 API V6 Details
+Version 6 of the API adds metadata to the top-level response object, and updates the bill status and bill 
+listing APIs. It also adds a members API and a chamber status API.
+
+9.1 API Version
+Every response object now contains an "api_version" key, which indicates which version of the API 
+was used to generate the response's content. In some cases, this may not be the same as the version 
+number specified in the request. For example, version 6 of the API updated the bill status API, but left 
+the journal and calendar APIs unchanged. Thus, a request to api/v6/rev-1/journal/ will have an 
+"api_version" value of 5, because the content has not changed since version 5 of the API.
+
+9.2 Bill Status
+Version 6 adds the "NAME" key at the top level. In many cases, "NAME" will be identical to 
+"BILLNO", but in cases where the bill has been substituted, these values may differ.
+
+9.2.1 Example
+Querying /li/api/v6/rev-1/bill_status/sb111/ yields:
+
+{ 
+    "api_version": 6, 
+    "content": [ 
+        { 
+            "BILLNO": "SB111", 
+            "EFFECTIVEDATE": "This act shall take effect and be in force from and after its publication in the statute book.", 
+            "HISTORY": [ 
+                { 
+                    "action_code": "cr_rsc_292", 
+                    "chamber": "House", 
+                    "committee_names": [ 
+                        "Committee on Appropriations" 
+                    ], 
+                    "journal_page_number": "930", 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+31/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                    "occurred_datetime": "2011-04-28T12:27:40", 
+                    "status": "Committee Report recommending substitute bill be passed by" 
+                }, 
+                <history elements removed for brevity> 
+            ], 
+            "LONGTITLE": "AN ACT concerning school districts; relating to the use of moneys by school districts; relating to special education 
+state aid; amending K.S.A. 2010 Supp. 72-978 and repealing the existing section.", 
+            "NAME": "H Sub for Sub SB 111", 
+            "RELATEDRS": "11rs1246", 
+            "SHORTTITLE": "H Sub for Sub for SB 111 - Expenditures of unencumbered balances in school funds for general operating 
+expenses; postponing effective date of special education state aid provisions.", 
+            "SPONSOR_NAMES": [ 
+                "Committee on Appropriations" 
+            ], 
+            "STATUS": "introduced", 
+            "apn": "b2011_12/year1/house/general_orders/above_line/sb_111/sb111_02_0000.odt" 
+        } 
+    ], 
+    "revno": 133064 
+}
+
+9.3 Bill Listing
+The bill listing API also gains the name attribute.
+
+9.3.1 Example
+Querying /li/api/v6/rev-1/bill_listing/ yields:
+
+{
+    "api_version": 6,
+    "content": [
+        {
+            "BILLNO": "HB2411",
+            "NAME": "HB2411",
+            "SHORTTITLE": "Investment standards and divestment procedures for KPERS related to Iran."
+        },
+        {
+            "BILLNO": "SB111",
+            "NAME": "H Sub for Sub SB 111",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+32/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+            "SHORTTITLE": "H Sub for Sub for SB 111 - Expenditures of unencumbered balances in school funds for general operating 
+expenses; postponing effective date of special education state aid provisions."
+        },
+        {
+            "BILLNO": "HR6028",
+            "NAME": "HR6028",
+            "SHORTTITLE": "A RESOLUTION Congratulating and commending Randy Hearrell."
+        },
+
+< Bills removed for brevity>
+
+    ],
+    "revno": 133064
+}
+
+9.4 Members
+
+There are two parts of the members API, the listing, and the details.
+
+9.4.1 Member Listing
+Querying /li/api/v6/rev-1/members/ will return all active members, sorted by chamber. The content of the 
+response will be an object with the following attributes:
+house_members: A list of house members
+•
+senate_members: A list of senate members
+•
+A member object has the following attributes:
+• KPID: A unique identifier for the member
+• NAME: The representatives title and last name. If two members have the same last name, this 
+will include that member's first initial.
+STATUS: This indicates whether the member is “Active” or “Inactive”. 
+•
+By default, the listing only shows active members. If you wish to see inactive members, you can query 
+/li/api/v6/rev-1/members/?STATUS=inactive
+You can also filter for specific chambers by querying: /li/api/v6/rev-1/members/house/ or /li/api/v6/rev-
+1/members/senate/
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+33/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+Example
+Querying: /li/api/v6/rev-1/members/ will yield the following result:
+
+{
+    "api_version": 6,
+    "content": {
+        "house_members": [
+            {
+                "KPID": "rep_alford_steve_1",
+                "NAME": "Rep. Alford",
+                "STATUS": "Active"
+            },
+            {
+                "KPID": "rep_aurand_clay_1",
+                "NAME": "Rep. Aurand",
+                "STATUS": "Active"
+            },
+
+< Members removed for brevity>
+
+        ],
+        "senate_members": [
+            {
+                "KPID": "sen_lee_janis_1",
+                "NAME": "Senator Lee",
+                "STATUS": "Inactive"
+            },
+            {
+                "KPID": "sen_abrams_steve_1",
+                "NAME": "Senator Abrams",
+                "STATUS": "Active"
+            },
+
+< Members removed for brevity>
+
+        ]
+    },
+    "revno": 162724
+}
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+34/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+9.4.2 Member Details
+The members API is accessible at /li/api/v6/rev-1/members/<member_kpid>, where <member_kpid> is 
+replaced with the KPID from the member listing. The content of the query is a member object, which 
+has the following attributes:
+• BUSADD : The address of the member's business
+• BUSADD2 : The second line of the address of the member's business
+• BUSCITY : The city of the member's business
+• BUSEMAIL : The member's business e-mail
+• BUSFAX : The member's business fax
+• BUSPH : The member's business phone number
+• BUSSTATE : The state of the member's business address.
+• BUSZIP : The zip code of the member's business address.
+• CELLPH : The member's cell phone number
+• CHAIRED_COMMITTEES : A list of committee objects that the member has chaired
+• COMMITTEES : A list of committee objects that the member belongs to
+• COUNTY : The member's county
+• DISTRICT : The member's district number
+• EMAIL : The member's e-mail address
+•
+FIRSTNAME : The member's first name
+•
+•
+FULLNAME : The member's full name
+• HMEMAIL : The member's home e-mail
+• HMFAX : The member's home fax
+• HMMAILADD : The member's home mailing address
+• HMMAILCITY : The member's home mailing address city
+• HMMAILSTATE : The member's home mailing address state
+• HMMAILZIP : The member's home mailing address zipcode
+
+FIRSTTERM : The first term the member served in this chamber
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+35/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+• HMPH : The member's home phone number
+• HMPHYSADD : The member's home physical address
+• HMPHYSCITY : The member's home phyiscal address city
+• HMPHYSZIP : The member's home phyiscal address zip code
+•
+JEMEMBFULLLONG : The member's full name with full title
+•
+
+JEMEMBFULLSHORT : The member's short name with full title. The short name will be just a 
+last name, unless two members have the same last name, in which case their first initial is 
+included.
+• KPID : The KPID used to uniquely identify the member
+• MAJORITYLEADER : Indicates whether the member is the chamber majority leader. The 
+value is a boolean true of the the member holds the position, and a blank string otherwise.
+• MAJORITYWHIP : Indicates whether the member is the chamber majority whip. The value is a 
+boolean true of the the member holds the position, and a blank string otherwise.
+• MINORITYLEADER : Indicates whether the member is the chamber minority leader. The 
+value is a boolean true of the the member holds the position, and a blank string otherwise.
+• MINORITYWHIP : Indicates whether the member is the chamber minority whip. The value is a 
+boolean true of the the member holds the position, and a blank string otherwise.
+• OCCUPATION : Indicates the members occupation.
+• OFFADD : The member's office address, line 1
+• OFFADD2 : The member's office address, line 2
+• OFFCITY : The member's office address, city
+• OFFFAX : The member's office fax
+• OFFICENUM : The member's office number
+• OFFPH : The member's office phone
+• OFFSTATE : The member's office address, state
+• OFFZIP : The member's office address, zip code
+•
+PARTY : The member's party
+•
+•
+
+PARTYPOSITION : The member's party position (“majority” or “minority”).
+
+PREFEMAIL : The member's preferred e-mail address
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+36/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+•
+PREFFNAME : The member's preferred name.
+• RMMEM_COMMITTEES : A list of committee objects for committees the member is the 
+ranking minority member.
+
+•
+•
+•
+
+SBILLS : A list of measure objects for bills the member has sponsored.
+
+SEATNUM : The member's seat number.
+
+SPEAKER : Indicates whether the member is the chamber speaker. The value is a boolean true 
+of the the member holds the position, and a blank string otherwise.
+
+SPOUSENAME : The name of the member's spouse
+
+•
+•
+SRESOS : A list of measure objects for resolutions the member has sponsored
+• URL : The member's URL
+• VICECHAIRED_COMMITTEES: A list of committees 
+Measure and committee objects have the same format as the measure and committee listing pages.
+
+Example
+Querying /li/api/v6/rev-1/members/rep_meigs_kelly_1/ yields the following result:
+
+{
+    "api_version": 6,
+    "content": {
+        "BUSADD": "",
+        "BUSADD2": "",
+        "BUSCITY": "",
+        "BUSEMAIL": "",
+        "BUSFAX": "",
+        "BUSPH": "913-239-6636",
+        "BUSSTATE": "",
+        "BUSZIP": "",
+        "CELLPH": "",
+        "CHAIRED_COMMITTEES": [],
+        "COMMITTEES": [
+            {
+                "KPID": "ctte_h_child_lbr_1",
+                "TITLE": "Children and Families"
+            },
+            {
+                "KPID": "ctte_h_electns_1",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+37/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+                "TITLE": "Elections"
+            },
+            < C omitted for brevity >
+        ],
+        "COUNTY": "Johnson",
+        "DISTRICT": 17,
+        "EMAIL": "kelly.meigs@house.ks.gov",
+        "FIRSTNAME": "Kelly",
+        "FIRSTTERM": 2011,
+        "FULLNAME": "Kelly Meigs",
+        "HMEMAIL": "",
+        "HMFAX": "",
+        "HMMAILADD": "7842 Rosehill Road",
+        "HMMAILCITY": "Lenexa",
+        "HMMAILSTATE": "Kansas",
+        "HMMAILZIP": 66216,
+        "HMPH": "913-631-3723",
+        "HMPHYSADD": "7842 Rosehill Road",
+        "HMPHYSCITY": "Lenexa",
+        "HMPHYSZIP": 66216,
+        "JEMEMBFULLLONG": "Representative Kelly Meigs",
+        "JEMEMBFULLSHORT": "Representative Meigs",
+        "KPID": "rep_meigs_kelly_1",
+        "MAJORITYLEADER": "",
+        "MAJORITYWHIP": "",
+        "MINORITYLEADER": "",
+        "MINORITYWHIP": "",
+        "OCCUPATION": "",
+        "OFFADD": "",
+        "OFFADD2": "",
+        "OFFCITY": "",
+        "OFFFAX": "",
+        "OFFICENUM": "DSOB",
+        "OFFPH": "785-296-7656",
+        "OFFSTATE": "",
+        "OFFZIP": "",
+        "PARTY": "Republican",
+        "PARTYPOSITION": "majority",
+        "PREFEMAIL": "",
+        "PREFFNAME": "",
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+38/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+        "RMMEM_COMMITTEES": [],
+        "SBILLS": [
+            {
+                "BILLNO": "HB2031",
+                "NAME": "HB2031",
+                "SHORTTITLE": "Allowing the attorney general or the county or district attorney to request of the district court the convening of a 
+grand jury to investigate alleged violations of serious felonies."
+            },
+            {
+                "BILLNO": "HB2035",
+                "NAME": "HB2035",
+                "SHORTTITLE": "Amending statutes regulating late-term and partial birth abortion."
+            },
+            < Measures omitted for brevity >
+        ],
+        "SEATNUM": 114,
+        "SPEAKER": "",
+        "SPOUSENAME": "",
+        "SRESOS": [
+            {
+                "BILLNO": "HCR5007",
+                "NAME": "HCR5007",
+                "SHORTTITLE": "Constitutional amendment to preserve right to choose health care services and participate in health insurance 
+plan."
+            },
+            {
+                "BILLNO": "HR6005",
+                "NAME": "HR6005",
+                "SHORTTITLE": "A RESOLUTION Honoring former Kansas Representative Don Rezac."
+            },
+            < Measures omitted for brevity >
+        ],
+        "URL": "",
+        "VICECHAIRED_COMMITTEES": []
+    },
+    "revno": 162724
+}
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+39/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+9.5 Chamber Status
+A chamber status API was added to check the current state of each chamber. The API can be queried at: 
+/li/api/v6/rev-1/chamber_status/
+The content is an object with the following attributes:
+house_status: A string describing the status of the house
+•
+senate_status: A string describing the status of the senate
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+40/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+10 API V7 Details
+Version 7 of the API adds an appointment API, and updates the bill status API.
+
+10.1 Bill Status Updates
+Version 7 adds an optional attribute to some bill objects.
+• GOVERNOR_EFFECTIVEDATE: A list of string formatted dates indicating when the bill will 
+become effective. The date is in “MM-DD-YYYY” format.
+
+10.2 Appointments API
+Version 7 adds an API for gathering information about appointments. It consists of two components, an 
+appointment listing, and an appointment details page.
+
+10.2.1 Appointment listing
+The appointment listing can be queried at li/api/v7/rev-1/appt/ Its content is a list of objects with the 
+following attributes:
+• APPOINTEE: A string indicating the appointee's first and last name
+• APPTNO: A unique integer for each appointment.
+• KPID: A unique string identifier for each appointment. KPID is null for some appointments.
+
+Example
+Querying /li/api/v7/rev-1/appt/ yields
+
+{
+    "api_version": 7,
+    "content": [
+        {
+            "APPOINTEE": "Thomas Williams",
+            "APPTNO": 1080,
+            "KPID": null
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+41/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+        },
+        {
+            "APPOINTEE": "Patricia Hill",
+            "APPTNO": 1079,
+            "KPID": null
+        },
+        {
+            "APPOINTEE": "Robert Honse",
+            "APPTNO": 1078,
+            "KPID": null
+        },
+
+        <appointments removed for brevity>
+
+    ],
+
+    "revno": 162750
+}
+
+10.2.2 Appointment Details
+Appointments details can be queried at /li/api/v7/rev-1/appt/<APPTNO>/ where <APPTNO> is replaced 
+with an APPTNO from the appointment listing. The content is an object with the following attributes:
+• APPOINTEE: The full name of the appointee
+• APPTAUTH: The authority naming the appointment
+• APPTNO: The unique integer for this appointment
+• ENTITY: The entity this appointment will serve
+• HISTORY: A list of history objects relating to the appointment
+• KPID: A unique string identifier for each appointment. KPID is null for some appointments.
+POSITION: The position being appointed
+•
+• TERM: A string indicating the term of the appointment. This may be a date, or it may indicate 
+an office that can terminate the appointment.
+History objects have the following attributes:
+action_code: An identifier for the action taking place
+•
+chamber: The chamber where the action occurred
+•
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+42/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+•
+•
+
+•
+•
+
+journal_page_number: Which page of the chamber's journal the action appears on
+occurred_datetime: A date formatted in ISO 8601 indicating when the history element was 
+created.
+status: A textual status message describing the event
+vote: If applicable, results of a vote relating to the action. Formatted as “Y:N”
+
+Example
+Querying li/api/v7/rev-1/appt/8/ provides the result:
+
+{
+    "api_version": 7,
+    "content": {
+        "APPOINTEE": "Colonel Lee Tafanelli",
+        "APPTAUTH": "By the Governor",
+        "APPTNO": 8,
+        "ENTITY": "Kansas National Guard",
+        "HISTORY": [
+            {
+                "action_code": "fa_fabc_905",
+                "chamber": "Senate",
+                "journal_page_number": "41",
+                "occurred_datetime": "2011-01-19T15:31:03",
+                "status": "FA, Appointment confirmed  Yea: 40 Nay: 0",
+                "vote": "40:0"
+            }
+        ],
+        "KPID": null,
+        "POSITION": "Brigadier General",
+        "TERM": "Serves at the pleasure of the Governor"
+    },
+    "revno": 162750
+}
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+43/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+11 RSS and Atom Feeds
+
+RSS and Atom Feeds are available to present some of the data from the JSON API in a format 
+understood by existing tools.
+
+11.1 Bill Listing Feed
+The bills feed provides a list of bills. New entries occur when new bills are introduced.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/bill_info.xml
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/bill_info.xml
+
+11.2 Bill Status Feeds
+The bill status feeds provide details about individual bills. New entries occur when new history 
+elements are generated.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/<billno>/bill_status.xml
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/<billno>/bill_status.xml
+
+11.3 Journal Feeds
+The journal feeds provide details about daily journals. New entries occur when new journals are 
+released.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/journal/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/journal/
+
+11.3.1 Chamber Specific Feeds
+There are also feeds available for journals from specific chambers:
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/journal/senate/
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/journal/house/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/journal/senate/
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+44/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/journal/house/
+
+11.4 Calendar Feeds
+The journal feeds provide details about daily calendars. New entries occur when new calendars are 
+released.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/calendar/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/calendar/
+
+11.4.1 Chamber Specific Feeds
+There are also feeds available for journals from specific chambers:
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/calendar/senate/
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/calendar/house/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/calendar/senate/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/calendar/house/
+
+11.5 Committee Feeds
+The committee feeds provide details about specific committees. New entries occur when the committee 
+considers or sponsors a new bill.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/ctte/<kpid>/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/ctte/<kpid>/
+
+11.6 Member Feeds
+The members feeds provide details about specific members. New entries occur when the member 
+sponsors a new bill.
+Atom Feed: http://kslegislature.org/li/data/feeds/atom/members/<kpid>/
+RSS Feed: http://kslegislature.org/li/data/feeds/rss/members/<kpid>/
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+45/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+12 History Element Action Codes
+
+History elements are added each time the chamber takes an action on a document. This section lists the 
+action codes and gives a brief description of what each one means.
+
+12.1 Action Code Listing
+ccac_om_370: Motion to accede adopted; appointed 
+efa_fabc_343: Emergency Final Action - Passed as amended; $vote_tally$ 
+efa_fabc_342: Emergency Final Action - Passed;  $vote_tally$ 
+cref_cref_500: Withdrawn from $committee$; Rereferred to $committee$ 
+gov_avm_336: Motion to override veto prevailed; $vote_tally$ 
+mot_cgo_200: Motion to change sequence on General Orders pending 
+mot_cgo_201: Motion to change sequence on General Orders adopted; $vote_tally$ 
+mot_cgo_202: Motion to change sequence on General Orders not adopted; $vote_tally$ 
+gov_mg_378: Aproved by Governor except line item veto of $id_line_items$ 
+fa_fabc_115: Final Action - Not adopted; $vote_tally$ 
+cr_rsc_292: Committee Report recommending substitute bill be passed by $committee$ 
+cr_rsc_276: Committee Report, be amended without recommendation by $committee$ 
+cr_rsc_274: Committee Report recommending the resolution be not adopted by $committee$ 
+cr_rsc_275: Committee Report recommending the bill be amended and be not passed by $committee$ 
+cr_rsc_273: Committee Report recommending the bill be not passed by $committee$ 
+cr_rsc_270: Substitute introduced and placed on General Orders 
+mot_tab_402: Motion to take from the table adopted; $vote_tally$ 
+mot_tab_403: Motion to take from the table not adopted; $vote_tally$ 
+mot_tab_401: Motion to lay on table adopted; $vote_tally$ 
+mot_tab_404: Motion to lay on table not adopted; $vote_tally$ 
+mot_rcon_303: Motion to Reconsider Failed $vote_tally$ 
+mot_rcon_302: Motion to Reconsider Adopted $vote_tally$ 
+ee_enrb_149: Enrolled and presented to Governor 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+46/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+cow_jcow_197: Committee of the Whole - Substitute bill be passed as amended 
+mot_pspn_405: Motion to postpone consideration to $month$ $day$ not adopted; $vote_tally$ 
+cow_jcow_211: Committee of the Whole - Enacting clause be stricken 
+cow_jcow_210: Committee of the Whole - Resolving clause be stricken 
+cow_jcow_214: Committee of the Whole - Stricken from the calendar 
+cow_jcow_695: Committee of the Whole - Now working on 
+cow_jcow_694: Committee of the Whole - Committee Report be rejected 
+cow_jcow_693: Committee of the Whole - Committee Report be rejected 
+cow_jcow_692: Committee of the Whole - Committee Report be rejected 
+cow_jcow_690: Committee of the Whole - Germaneness of the amendment was challenged 
+ccal_rcc_233: Withdrawn from Consent Calendar and placed on General Orders 
+efa_fabc_933: Emergency Final Action - Adopted by required 2/3 majority;  $vote_tally$ 
+efa_fabc_936: Emergency Final Action - Not adopted by required 2/3 majority;  $vote_tally$ 
+efa_fabc_934: Emergency Final Action - Adopted as amended by Required 2/3 Majority;  $vote_tally$ 
+cref_cref_316: Withdrawn from Calendar, Rereferred to $committee$ 
+cref_cref_315: Withdrawn from Calendar; Referred to $committee$ 
+cur_con_374: Nonconcurred with amendments; Conference Committee requested; appointed $conferee1$, $conferee2$ and 
+$conferee3$ 
+cr_rsc_801: Committee Report recommending the appointment be not confirmed by $committee$ 
+cr_rsc_800: Committee Report recommending the appointment be confirmed by $committee$ 
+cr_rsc_802: Committee Report reporting appointment without recommendation by $committee$ 
+gov_mg_150: Approved by Governor on $date$ 
+gov_mg_151: Will become law without Governor's signature 
+gov_mg_154: Vetoed by Governor; Returned to $originating_chamber$ 
+cow_jcow_180: Committee of the Whole - Be passed 
+ar_adj_605: Motion by $motioner$ to adjourn the $chamber$ proforma until $date$ at $time$ 
+ee_enrb_888: Enrolled and presented to Secretary of State 
+cow_jcow_239: Committee of the Whole - Be adopted 
+cur_con_875: Motion to noncur with amendments and not appoint conferees adopted; $vote_tally$ (Bill is killed) 
+cur_con_876: Motion to noncurred with amendments and not appoint failed; $vote_tally$ (Remains on Calendar) 
+cur_con_873: Motion to nonconcur with amendments and appoint conferees failed; $vote_tally$ 
+fa_fabc_341: Final Action - Passed as amended; $vote_tally$ 
+fa_fabc_340: Final Action - Passed;  $vote_tally$ 
+ccac_ccr_860: Conference Committee Report not adopted $conferee1$, $conferee2$ and $conferee3$ appointed as 
+conferees; $vote_tally$ 
+efa_fabc_115: Emergency Final Action - Not adopted;  $vote_tally$ 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+47/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+intro_iopbc_158: Received and Introduced 
+cr_rsc_291: Committee Report recommending substitute resolution be adopted by $committee$ 
+fa_fabc_116: Final Action - Substitute not adopted; $vote_tally$ 
+cow_jcow_728: Committee of the Whole - Amendment by $motioner$ was withdrawn 
+cow_jcow_727: Committee of the Whole - Amendment by $motioner$ was rejected 
+cow_jcow_726: Committee of the Whole - Amendment by $motioner$ was adopted 
+cow_jcow_725: Committee of the Whole - Substitute concurrent resolution be adopted as amended 
+mot_pspn_404: Motion to postpone indefinitely failed; $vote_tally$ 
+mot_pspn_403: Motion to postpone indefinitely adopted; $vote_tally$ 
+mot_pspn_402: Motion to postpone consideration to $month$ $day$ adopted; $vote_tally$ 
+fa_fabc_910: FA, Appointment not confirmed 
+mot_susp_216: Motion to suspend rule $rule_number$ not adopted; $vote_tally$ 
+mot_susp_214: Motion to suspend Joint Rule 4 (k) to allow consideration not adopted; $vote_tally$ 
+mot_susp_215: Motion to suspend rule 1502 not adopted; $vote_tally$ 
+cr_rsc_289: Committee Report without recommendation by $committee$ 
+ccac_ccr_375: Conference Committee Report agree to disagree adopted $conferee1$, $conferee2$ and $conferee3$ 
+appointed as $conference_number$ conferees 
+cur_con_337: Motion to concur with amdndments in conference failed; $vote_tally$ (Remains in Conference) 
+cur_con_336: Concurred with amendments; $vote_tally$ 
+cur_con_335: Concurred with amendments in conference; $vote_tally$ 
+ref_rbc_308: Referred jointly to $committee_list$ 
+ref_rbc_307: Referred separately to $committee_list$ 
+efa_fabc_352: Emergency Final Action - Adopted as amended; $vote_tally$ 
+efa_fabc_351: Emergency Final Action - Adopted;  $vote_tally$ 
+intro_ibc_251: Adopted without roll call 
+cow_jcow_705: Committee of the Whole - Committee Report be adopted recommending substitute resolution be adopted 
+cow_jcow_704: Committee of the Whole - Committee Report be adopted recommending substitute bill be passed 
+cow_jcow_707: Committee of the Whole - Motion to Amend - Offered 
+cow_jcow_709: Committee of the Whole - Be adopted as further amended 
+cow_jcow_708: Committee of the Whole - Be passed as further amended 
+ar_adj_625: Motion by $motioner$ to adjourn the $chamber$ until $date$ 
+ar_adj_626: The $chamber$ has recessed until $time$ 
+intro_ires_251: Adopted without roll call 
+ee_eng_225: Engrossed 
+ee_eng_227: Reengrossed 
+ref_rbc_235: Referred to Committee of the Whole 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+48/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+cur_iopbc_141: Ruled materially changed and referred to $committee$ 
+mot_wd_126: Motion to withdraw from $committee$ adopted; $vote_tally$ 
+mot_wd_127: Motion to withdraw from $committee$ not adopted; $vote_tally$ 
+mot_wd_125: Motion to withdraw from $committee$ pending 
+mot_strk_505: Striken from Calendar by Rule 1507 
+mot_strk_504: Motion to strike from Calendar not adopted; $vote_tally$ 
+mot_strk_501: Motion to strike from Calendar adopted; $vote_tally$ 
+ccac_om_832: Conference Committee Report was adopted; $vote_tally$ 
+ccac_ccr_862: Motion to not adopt Conference Committee Report failed; $vote_tally$ (Remains in Conference) 
+ccac_ccr_863: Motion to not adopt Conference Committee Report passed; $vote_tally$ (Bill is killed) 
+ccac_ccr_865: Motion to not adopt Conference Committee Report failed; $vote_tally$ (Remains in Conference) 
+ccac_ccr_867: Conference Committee Report agree to disagree, not adopted 
+cow_jcow_201: Committee of the Whole - Passed over and retain a place on the calendar 
+cow_jcow_202: Committee of the Whole - Passed over and retain its place on the calendar 
+cow_jcow_203: Committee of the Whole - Committee Report be rejected 
+ccac_cc_377: Change in Conference Committee; $confereeN$ to replace $confereeN$ 
+ee_enrb_226: Enrolled 
+cow_jcow_681: Committee of the Whole - Motion to strike the resolving clause failed 
+cow_jcow_682: Committee of the Whole - Motion to strike the enacting clause failed 
+cow_jcow_683: Committee of the Whole - Motion to strike from the calendar failed 
+cow_jcow_688: Committee of the Whole - Amendment was ruled not divisible 
+cow_jcow_689: Committee of the Whole - The ruling of the chair was challenged 
+gov_avm_885: Motion to override veto failed; Veto sustained; $vote_tally$ 
+gov_avm_887: Motion to override line item veto prevailed; Line item veto $id_line_item$ overridden; $vote_tally$ 
+ref_rsc_312: Now in 
+cow_jcow_903: Committee of the Whole - $sponsor$ part $amendment_part$ $result$ 
+cow_jcow_902: Committee of the Whole - Ruling of the chair was $result$ (sustained or overruled) 
+cow_jcow_901: Committee of the Whole - Amendment by $sponsor$ ruled $result$ (germane or not germane) 
+cow_jcow_905: Committee of the Whole - Motion to recommend favorably for passage failed 
+gov_avm_128: No motion to reconsider line item veto; Veto sustained on $id_line_item$ 
+gov_avm_129: No motion to reconsider vetoed bill; Veto sustained 
+cow_jcow_191: Committee of the Whole - Be passed as amended 
+cow_jcow_192: Committee of the Whole - Be adopted as amended 
+cow_jcow_195: Committee of the Whole - Committee Report be adopted 
+cow_jcow_196: Committee of the Whole - Substitute bill be passed 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+49/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+gov_avm_125: No motion to reconsider line item vetoes; Vetoes sustained 
+mot_ref_102: Motion to refer bill to $committee$ adopted; $vote_tally$ 
+mot_ref_105: Motion to refer bill to $committee$ not adopted; $vote_tally$ 
+cref_cref_551: Withdrawn from $committee$; Referred Separately to $committee_list$ 
+cref_cref_552: Withdrawn from $committee$; Referred Jointly to $committee_list$ 
+mot_apt_301: Returned to Senate for consideration after 20 days in Committee 
+ccac_om_878: Motion to accede failed 
+efa_fabc_925: Emergency Final Action - Substitute passed;  $vote_tally$ 
+efa_fabc_926: Emergency Final Action - Substitute passed as amended;  $vote_tally$ 
+efa_fabc_923: Emergency Final Action - Substitute adopted as amended; $vote_tally$ 
+efa_fabc_922: Emergency Final Action - Substitute adopted; $vote_tally$ 
+fa_fabc_105: Final Action - Substitute not passed; $vote_tally$ 
+fa_fabc_104: Final Action - Not  passed;  $vote_tally$ 
+intro_ibc_157: Introduced 
+intro_ibc_156: Prefiled for Introduction 
+fa_fabc_905: FA, Appointment confirmed 
+intro_ires_681: Introduced 
+cref_cref_290: Withdrawn from $committee$; Referred to $committee_list$ 
+fa_fabc_352: Final Action - Adopted as amended; $vote_tally$ 
+ccac_ccr_145: Conference Committee Report agree to disagree adopted, no conferees appointed; $vote_tally$ (Bill is 
+killed) 
+fa_fabc_351: Final Action - Adopted;  $vote_tally$ 
+mot_adv_303: Motion to move to General Orders failed; $vote_tally$ 
+mot_adv_302: Motion to move to General Orders adopted; $vote_tally$ 
+mot_adv_301: Motion to move to General Orders pending 
+efa_fabc_106: Emergency Final Action - Substitute not adopted; $vote_tally$ 
+efa_fabc_105: Emergency Final Action - Substitute not passed; $vote_tally$ 
+efa_fabc_104: Emergency Final Action - Not passed;  $vote_tally$ 
+ccac_ccr_833: Conference Committee Report not adopted; $vote_tally$ 
+ref_rbc_310: Referred to $committee$ 
+cr_rsc_283: Committee Report recommending bill be passed and placed on Consent Calendar by $committee$ 
+cr_rsc_282: Committee Report recommending bill be passed as amended by $committee$ 
+cr_rsc_281: Committee Report recommending bill be passed by $committee$ 
+cr_rsc_287: Committee Report recommending resolution be adopted and placed on Consent Calendar by $committee$ 
+cr_rsc_286: Committee Report recommending resolution be adopted as amended by $committee$ 
+cr_rsc_285: Committee Report recommending resolution be adopted by $committee$ 
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+50/51
+
+kliss_restian_interface_guide_v7
+
+Sean McGrath 01/11/12
+
+ref_rbc_500: Appointment referred to $committee$ 
+cr_rsc_288: Committee Report recommending bill be further amended and be passed as amended by $committee$ 
+ccac_ccr_883: Motion to not adopt Conference Committee Report to agree to disagree failed $vote_tally$ (Remains in 
+Conference) 
+ccac_ccr_880: Motion to adopt Conference Committee Report to agree to disagree failed $vote_tally$ (Remains in 
+Conference) 
+ccac_ccr_881: Motion to not adopt Conference Committee Report to agree to disagree passed $vote_tally$ (Remains in 
+Conference) 
+cow_jcow_712: Committee of the Whole - Substitute resolution be adopted as amended 
+cow_jcow_710: Committee of the Whole - Substitute concurrent resolution be adopted 
+cow_jcow_711: Committee of the Whole - Substitute resolution be adopted 
+cow_jcow_716: Committee of the Whole - Motion to postpone consideration indefinitely $result$ (adopted or not adopted) 
+fa_fabc_925: Final Action - Adopted as amended by required 2/3 Majority;  $vote_tally$ 
+fa_fabc_924: Final Action - Adopted by required 2/3 majority;  $vote_tally$ 
+fa_fabc_926: Final Action - Not adopted by required 2/3 majority;  $vote_tally$ 
+fa_fabc_921: Final Action - Substitute passed as amended;  $vote_tally$ 
+fa_fabc_920: Final Action - Substitute passed;  $vote_tally$ 
+fa_fabc_923: Final Action - Substitute adopted as amended; $vote_tally$ 
+fa_fabc_922: Final Action - Substitute adopted;  $vote_tally$ 
+cr_rsc_821: Committee Report recommending the resolution be amended and be not adopted by $committee$ 
+cow_jcow_305: Committee of the Whole - Rereferred to $committee$ 
+cow_jcow_304: Committee of the Whole - Referred to $committee$ 
+gov_avm_349: Motion to override line item veto failed; Line item veto $id_line_item$ sustained; $vote_tally$ 
+intro_ibc_681: Introduced 
+dss_627: Now in Session 
+mot_susp_203: Motion to suspend rule 1502 adopted; $vote_tally$ 
+mot_susp_202: Motion to suspend Joint Rule 4 (k) to allow consideration adopted; $vote_tally$ 
+mot_susp_206: Motion to suspend rule $rule_number$ adopted; $vote_tally$ 
+cur_con_101: Motion to concur with amendments failed; $vote_tally$ 
+cur_om_141: Ruled materially changed and referred to $committee$
+
+Last Modified:  Jan 11, 2012 - 01:54:42 PM
+
+51/51
+
+
